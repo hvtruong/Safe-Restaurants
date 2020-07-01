@@ -53,4 +53,16 @@ public class Restaurants {
     public boolean isAlphabeticallyGreater(int j, int minIndex){
         return this.get(minIndex).getName().compareTo(this.get(j).getName()) > 0;
     }
+
+    // Match inspection to restaurant by tracking number //
+    public int find(String trackingNumber){
+        int n = this.size();
+        int index = 0;
+        for(int i = 0; i < n ; i++){
+            if(trackingNumber.compareTo(restaurants.get(i).getTrackingNumber()) == 0){
+                index =  i;
+            }
+        }
+        return index;
+    }
 }
