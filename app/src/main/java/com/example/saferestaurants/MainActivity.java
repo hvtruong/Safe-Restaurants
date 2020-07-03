@@ -10,6 +10,8 @@ import com.example.saferestaurants.model.Restaurants;
 import java.io.FileNotFoundException;
 
 public class MainActivity extends AppCompatActivity {
+    //Fields
+    Restaurants restaurants;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +31,11 @@ public class MainActivity extends AppCompatActivity {
         }
         //                   //
 
-        Restaurants restaurants = Restaurants.getInstance();
+        restaurants = Restaurants.getInstance();
+        setUpListView();
 
+    }
+
+    private void setUpListView() {
     }
 }

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SafeRestaurants</string>
+    <string name="todo">TODO</string>
+    <string name="name">Name</string>
+    <string name="numer_of_issues_0">Numer of issues: 0</string>
+    <string name="last_inspection_x_days_ago">Last inspection: x days ago</string>
 </resources>
