@@ -2,7 +2,11 @@ package com.example.saferestaurants;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
@@ -21,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
             DataParser.parseRestaurants("src/main/java/com/example/saferestaurants/ProjectData/restaurants_itr1.csv");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            Toast.makeText(this,"File not worked",Toast.LENGTH_LONG).show();
         }
         try {
             DataParser.parseInspections("src/main/java/com/example/saferestaurants/ProjectData/inspectionreports_itr1.csv");
@@ -30,6 +35,14 @@ public class MainActivity extends AppCompatActivity {
         //                   //
 
         Restaurants restaurants = Restaurants.getInstance();
-
+        Button btn = findViewById(R.id.button);
+        //Toast.makeText(this, restaurants.size(),Toast.LENGTH_LONG).show();
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = RestaurantDetail.makeIntent(MainActivity.this,1);
+                startActivity(intent);
+            }
+        });
     }
 }
