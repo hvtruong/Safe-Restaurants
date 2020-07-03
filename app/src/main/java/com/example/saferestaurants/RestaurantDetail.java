@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.saferestaurants.model.Restaurant;
@@ -12,8 +13,9 @@ import com.example.saferestaurants.model.Restaurants;
 
 import org.w3c.dom.Text;
 
+import java.io.FileNotFoundException;
+
 public class RestaurantDetail extends AppCompatActivity {
-    Restaurants restaurants = Restaurants.getInstance();
     Restaurant restaurant;
 
     @Override
@@ -21,7 +23,19 @@ public class RestaurantDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_detail);
 
-        extractRestaurant();
+        try {
+            DataParser.parseRestaurants("src/main/java/com/example/saferestaurants/ProjectData/restaurants_itr1.csv");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            DataParser.parseInspections("src/main/java/com/example/saferestaurants/ProjectData/inspectionreports_itr1.csv");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Restaurants restaurants = Restaurants.getInstance();
+        restaurant = restaurants.get(2);
         TextView textView = findViewById(R.id.textview);
         TextView textView1 = findViewById(R.id.textview2);
         TextView textView2 = findViewById(R.id.textview3);
@@ -36,9 +50,9 @@ public class RestaurantDetail extends AppCompatActivity {
         return intent;
     }
 
-    public void extractRestaurant(){
+    /*public void extractRestaurant(){
         Intent intent = getIntent();
         int restaurantID = intent.getIntExtra("restaurantID",0);
         restaurant = restaurants.get(restaurantID);
-    }
+    }*/
 }

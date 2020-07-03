@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -25,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
             DataParser.parseRestaurants("src/main/java/com/example/saferestaurants/ProjectData/restaurants_itr1.csv");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            Toast.makeText(this,"File not worked",Toast.LENGTH_LONG).show();
         }
         try {
             DataParser.parseInspections("src/main/java/com/example/saferestaurants/ProjectData/inspectionreports_itr1.csv");
