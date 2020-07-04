@@ -2,6 +2,7 @@ package com.example.saferestaurants;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,7 +36,14 @@ public class MainActivity extends AppCompatActivity {
         }
         //                   //
 
-        Restaurants restaurants = Restaurants.getInstance();
+        /*File f = new File("src/main/java/com/example/saferestaurants/ProjectData/restaurants_itr1.csv");
+        if(f.exists()){
+            Toast.makeText(this,"worked",Toast.LENGTH_LONG).show();
+        }
+        else{
+            Toast.makeText(this,"not worked",Toast.LENGTH_LONG).show();
+        }
+        Restaurants restaurants = Restaurants.getInstance();*/
         Button btn = findViewById(R.id.button);
         //Toast.makeText(this, restaurants.size(),Toast.LENGTH_LONG).show();
         btn.setOnClickListener(new View.OnClickListener() {
@@ -45,4 +54,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    /*public boolean fileExists(Context context, String filename) {
+        File file = context.getFileStreamPath(filename);
+        if(file == null || !file.exists()) {
+            return false;
+        }
+        return true;
+    }*/
 }
