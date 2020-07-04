@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.saferestaurants.model.Inspection;
 import com.example.saferestaurants.model.Restaurant;
@@ -22,6 +23,7 @@ public class SingleInspection extends AppCompatActivity {
         setContentView(R.layout.activity_single_inspection);
 
         extractData();
+        Toast.makeText(this,""+inspection.getDate(),Toast.LENGTH_LONG).show();
     }
 
     public static Intent makeIntent(Context context, int restaurantID, int inspectionID){

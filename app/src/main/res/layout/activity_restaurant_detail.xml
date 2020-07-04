@@ -7,10 +7,11 @@
     tools:context=".RestaurantDetail">
 
     <TextView
-        android:id="@+id/textview"
+        android:id="@+id/restaurantName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:textColor="#000000"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,24 +19,26 @@
         app:layout_constraintVertical_bias="0.022" />
 
     <TextView
-        android:id="@+id/textview2"
+        android:id="@+id/restaurantAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:textColor="#000000"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview"
+        app:layout_constraintTop_toBottomOf="@+id/restaurantName"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/textview3"
+        android:id="@+id/restaurantGPS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:textColor="#000000"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview2" />
+        app:layout_constraintTop_toBottomOf="@+id/restaurantAddress" />
 
     <ListView
         android:id="@+id/inspectionListView"
@@ -44,5 +47,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview3" />
+        app:layout_constraintTop_toBottomOf="@+id/restaurantGPS" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,12 +1,15 @@
 package com.example.saferestaurants;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -15,34 +18,20 @@ import android.widget.TextView;
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
 
-import org.w3c.dom.Text;
-
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class RestaurantDetail extends AppCompatActivity {
     Restaurant restaurant;
-    int restaurantID;
-    ArrayAdapter inspectionsAdapter;
+    int restaurantID = 1;
+    ListView inspectionListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_detail);
 
-        try {
-            DataParser.parseRestaurants("src/main/java/com/example/saferestaurants/ProjectData/restaurants_itr1.csv");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            DataParser.parseInspections("src/main/java/com/example/saferestaurants/ProjectData/inspectionreports_itr1.csv");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
         Restaurants restaurants = Restaurants.getInstance();
-        restaurant = restaurants.get(2);
+        restaurant = restaurants.get(restaurantID);
 
         setUpTitle();
         setUpListView();
@@ -55,16 +44,16 @@ public class RestaurantDetail extends AppCompatActivity {
     }
 
     public void setUpTitle(){
-        TextView textView = findViewById(R.id.textview);
-        TextView textView1 = findViewById(R.id.textview2);
-        TextView textView2 = findViewById(R.id.textview3);
+        TextView textView = findViewById(R.id.restaurantName);
+        TextView textView1 = findViewById(R.id.restaurantAddress);
+        TextView textView2 = findViewById(R.id.restaurantGPS);
         textView.setText(restaurant.getName());
-        textView1.setText(restaurant.getPhysicalAddress());
-        textView2.setText(restaurant.getLatitude() + "\t" + restaurant.getLongitude());
+        textView1.setText(getString(R.string.address) + restaurant.getPhysicalAddress());
+        textView2.setText(getString(R.string.gps) + restaurant.getLatitude() + "\t \t" + restaurant.getLongitude());
     }
 
     public void setUpListView(){
-        ListView inspectionListView = findViewById(R.id.inspectionListView);
+        inspectionListView = findViewById(R.id.inspectionListView);
 
         // ArrayList of String to store all the information displayed in the listView
         ArrayList<String> inspectionsList = new ArrayList<>();
@@ -72,9 +61,24 @@ public class RestaurantDetail extends AppCompatActivity {
             inspectionsList.add( getString(R.string.empty) + restaurant.getInspection().get(i).getCriticalIssues() +getString(R.string.critical_issues_found) + restaurant.getInspection().get(i).getNonCriticalIssues() + getString(R.string.non_critical_issues_found));
         }
 
-        inspectionsAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,inspectionsList);
+        //Create an ArrayAdapter
+        ArrayAdapter inspectionsAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,inspectionsList){
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                String inspectionHazardLevel = restaurant.getInspection().get(position).getHazardRating();
+                View view = super.getView(position, convertView, parent);
+                if(inspectionHazardLevel.equals("Low"))
+                    view.setBackgroundColor(Color.GREEN);
+                else if(inspectionHazardLevel.equals("Moderate"))
+                    view.setBackgroundColor(Color.YELLOW);
+                else
+                    view.setBackgroundColor(Color.RED);
+
+                return view;
+            }
+        };
         inspectionListView.setAdapter(inspectionsAdapter);
-        setUpHazardColor();
 
         inspectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -86,8 +90,14 @@ public class RestaurantDetail extends AppCompatActivity {
     }
 
     public void setUpHazardColor(){
-        for(int i = 0; i < restaurant.getInspection().size(); i++){
-            return;
+        for(int i = 0; i < inspectionListView.getChildCount(); i++){
+            String inspectionHazardLevel = restaurant.getInspection().get(i).getHazardRating();
+            if(inspectionHazardLevel.equals("Low"))
+                inspectionListView.getChildAt(i).setBackgroundColor(getResources().getColor(android.R.color.holo_green_dark));
+            else if(inspectionHazardLevel.equals("Moderate"))
+                inspectionListView.getChildAt(i).setBackgroundColor(Color.YELLOW);
+            else
+                inspectionListView.getChildAt(i).setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
         }
     }
 

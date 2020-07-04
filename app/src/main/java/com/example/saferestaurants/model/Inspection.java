@@ -85,4 +85,7 @@ public class Inspection {
         return this.violations;
     }
 
+    public String getDateDifferent(){
+
+    }
 }
