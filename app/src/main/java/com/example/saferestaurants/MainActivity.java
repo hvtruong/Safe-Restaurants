@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
@@ -27,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
         
         setData();
         Restaurants restaurants = Restaurants.getInstance();
-
     }
 
     private void setData(){
