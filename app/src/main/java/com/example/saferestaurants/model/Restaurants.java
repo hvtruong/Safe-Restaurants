@@ -27,6 +27,10 @@ public class Restaurants {
         return restaurants.get(index);
     }
 
+    public ArrayList<Restaurant> getList(){
+        return  restaurants;
+    }
+
     // sorting restaurants to be in alphabetical order //
     // uses selection sort algorithm //
     public void sort(){
