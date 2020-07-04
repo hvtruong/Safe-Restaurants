@@ -35,7 +35,13 @@ public class MainActivity extends AppCompatActivity {
 
         setData();
         restaurants = Restaurants.getInstance();
-        setUpListView();
+
+        // these lines can be removed once the mainactivity has a clickable list view //
+        Intent i = RestaurantDetail.makeIntent(MainActivity.this, 0);
+        startActivity(i);
+        //                                                                            //
+
+        //setUpListView();      // this can be uncommented when list view works //
     }
 
     private void setData(){

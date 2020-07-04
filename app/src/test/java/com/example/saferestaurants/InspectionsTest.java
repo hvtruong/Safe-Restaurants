@@ -36,16 +36,16 @@ public class InspectionsTest {
         date = "20200122";
         inspections.add(new Inspection(date, type, criticalIssues, nonCriticalIssues, hazardRating, violations));
 
-        Date date1 = new Date(2020, 0, 22);
+        Date date1 = new Date(2020-1900, 0, 22);
         assertTrue(date1.equals(inspections.get(0).getDate()));
 
-        Date date2 = new Date(2019, 9, 02);
+        Date date2 = new Date(2019-1900, 9, 02);
         assertTrue(date2.equals(inspections.get(1).getDate()));
 
-        Date date3 = new Date(2018, 9, 24);
+        Date date3 = new Date(2018-1900, 9, 24);
         assertTrue(date3.equals(inspections.get(2).getDate()));
 
-        Date date4 = new Date(2018, 2, 20);
+        Date date4 = new Date(2018-1900, 2, 20);
         assertTrue(date4.equals(inspections.get(3).getDate()));
     }
 }
