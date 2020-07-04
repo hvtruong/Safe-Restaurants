@@ -22,8 +22,9 @@ import com.example.saferestaurants.model.Restaurants;
 import java.util.ArrayList;
 
 public class RestaurantDetail extends AppCompatActivity {
+    Restaurants restaurants = Restaurants.getInstance();
     Restaurant restaurant;
-    int restaurantID = 1;
+    int restaurantID;
     ListView inspectionListView;
 
     @Override
@@ -31,7 +32,7 @@ public class RestaurantDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_detail);
 
-        Restaurants restaurants = Restaurants.getInstance();
+        extractRestaurant();
         restaurant = restaurants.get(restaurantID);
 
         setUpTitle();
@@ -101,9 +102,9 @@ public class RestaurantDetail extends AppCompatActivity {
         return inspectionTimeInSring;
     }
 
-    /*public void extractRestaurant(){
+    public void extractRestaurant(){
         Intent intent = getIntent();
         int restaurantID = intent.getIntExtra("restaurantID",0);
         restaurant = restaurants.get(restaurantID);
-    }*/
+    }
 }
