@@ -69,50 +69,54 @@ public class Restaurants {
 
     // making a deep copy of current restaurants object //
     // only copies the most recent inspection information //
-    public ArrayList<Restaurant> getList() {
-        ArrayList<Restaurant> newRestaurants = new ArrayList<>();
+//    public ArrayList<Restaurant> getList() {
+//        ArrayList<Restaurant> newRestaurants = new ArrayList<>();
+//
+//        int i = 0;
+//
+//        for (Restaurant restaurant: this.restaurants){
+//
+//            // adding a restaurant to copy //
+//            newRestaurants.add(new Restaurant(
+//                    restaurant.getTrackingNumber(),
+//                    restaurant.getName(),
+//                    restaurant.getPhysicalAddress(),
+//                    restaurant.getPhysicalCity(),
+//                    restaurant.getFactType(),
+//                    restaurant.getLatitude() + "",
+//                    restaurant.getLongitude() + ""
+//            ));
+//
+//            // setting up inspections date //
+//            Inspection inspection = restaurant.getInspection().get(0);
+//            Date date = inspection.getDate();
+//            String dateString = "" + (date.getYear()+1900) + (date.getMonth()+1) + date.getDate();
+//
+//            // creating string of violations //
+//            ArrayList<String> violations = new ArrayList<>();
+//            for(Violation violation: inspection.getViolations()){
+//                violations.add(violation.getCode() + ","
+//                        + violation.getCriticalValue() + ","
+//                                + violation.getDescription() + ","
+//                                        + violation.getRepeated());
+//            }
+//
+//            // adding the most recent inspection of the restaurant to the copy //
+//            newRestaurants.get(i).addInspection(new Inspection(
+//                    dateString,
+//                    inspection.getType(),
+//                    inspection.getCriticalIssues() + "",
+//                    inspection.getNonCriticalIssues() + "",
+//                    inspection.getHazardRating(),
+//                    violations
+//            ));
+//            i++;
+//        }
+//
+//        return newRestaurants;
+//    }
 
-        int i = 0;
-
-        for (Restaurant restaurant: this.restaurants){
-
-            // adding a restaurant to copy //
-            newRestaurants.add(new Restaurant(
-                    restaurant.getTrackingNumber(),
-                    restaurant.getName(),
-                    restaurant.getPhysicalAddress(),
-                    restaurant.getPhysicalCity(),
-                    restaurant.getFactType(),
-                    restaurant.getLatitude() + "",
-                    restaurant.getLongitude() + ""
-            ));
-
-            // setting up inspections date //
-            Inspection inspection = restaurant.getInspection().get(0);
-            Date date = inspection.getDate();
-            String dateString = "" + (date.getYear()+1900) + (date.getMonth()+1) + date.getDate();
-
-            // creating string of violations //
-            ArrayList<String> violations = new ArrayList<>();
-            for(Violation violation: inspection.getViolations()){
-                violations.add(violation.getCode() + ","
-                        + violation.getCriticalValue() + ","
-                                + violation.getDescription() + ","
-                                        + violation.getRepeated());
-            }
-
-            // adding the most recent inspection of the restaurant to the copy // 
-            newRestaurants.get(i).addInspection(new Inspection(
-                    dateString,
-                    inspection.getType(),
-                    inspection.getCriticalIssues() + "",
-                    inspection.getNonCriticalIssues() + "",
-                    inspection.getHazardRating(),
-                    violations
-            ));
-            i++;
-        }
-
-        return newRestaurants;
+    public ArrayList<Restaurant> getList(){
+        return  this.restaurants;
     }
 }

@@ -26,7 +26,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     //Fields
-    Restaurants restaurants;
+    private Restaurants restaurants;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +37,11 @@ public class MainActivity extends AppCompatActivity {
         restaurants = Restaurants.getInstance();
 
         // these lines can be removed once the mainactivity has a clickable list view //
-        Intent i = RestaurantDetail.makeIntent(MainActivity.this, 0);
-        startActivity(i);
+        //Intent i = RestaurantDetail.makeIntent(MainActivity.this, 0);
+        //startActivity(i);
         //                                                                            //
 
-        //setUpListView();      // this can be uncommented when list view works //
+        setUpListView();      // this can be uncommented when list view works //
     }
 
     private void setData(){
@@ -72,8 +72,7 @@ public class MainActivity extends AppCompatActivity {
     private class MyListAdapter extends ArrayAdapter<Restaurant>{
 
         public MyListAdapter() {
-            //Correct this line later. Jasleen might not call the method that send the arrayList getList
-            super(MainActivity.this,R.layout.restaurants_item_view,restaurants.getList());
+            super(MainActivity.this, R.layout.restaurants_item_view,restaurants.getList());
 
         }
 
@@ -89,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             //find the Restaurant
             Restaurant restaurant = restaurants.get(position);
             //Fill the view
-            TextView name = (TextView) findViewById(R.id.RestaurantName);
+            TextView name = (TextView) itemView.findViewById(R.id.RestaurantName);
             name.setText(restaurant.getName());
 
             return itemView;
