@@ -25,9 +25,7 @@ public class SingleInspection extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_inspection);
 
-        Date currentDate = Calendar.getInstance().getTime();
         extractData();
-        Toast.makeText(this,inspection.getDate().toString(),Toast.LENGTH_LONG).show();
     }
 
     public static Intent makeIntent(Context context, int restaurantID, int inspectionID){

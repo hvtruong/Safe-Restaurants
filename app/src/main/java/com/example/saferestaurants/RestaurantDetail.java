@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.saferestaurants.model.Inspection;
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
 
@@ -58,7 +59,7 @@ public class RestaurantDetail extends AppCompatActivity {
         // ArrayList of String to store all the information displayed in the listView
         ArrayList<String> inspectionsList = new ArrayList<>();
         for(int i = 0; i < restaurant.getInspection().size(); i++){
-            inspectionsList.add( getString(R.string.empty) + restaurant.getInspection().get(i).getCriticalIssues() +getString(R.string.critical_issues_found) + restaurant.getInspection().get(i).getNonCriticalIssues() + getString(R.string.non_critical_issues_found));
+            inspectionsList.add(inspectionTime(restaurant.getInspection().get(i)) + getString(R.string.empty) + restaurant.getInspection().get(i).getCriticalIssues() +getString(R.string.critical_issues_found) + restaurant.getInspection().get(i).getNonCriticalIssues() + getString(R.string.non_critical_issues_found));
         }
 
         //Create an ArrayAdapter
@@ -89,16 +90,15 @@ public class RestaurantDetail extends AppCompatActivity {
         });
     }
 
-    public void setUpHazardColor(){
-        for(int i = 0; i < inspectionListView.getChildCount(); i++){
-            String inspectionHazardLevel = restaurant.getInspection().get(i).getHazardRating();
-            if(inspectionHazardLevel.equals("Low"))
-                inspectionListView.getChildAt(i).setBackgroundColor(getResources().getColor(android.R.color.holo_green_dark));
-            else if(inspectionHazardLevel.equals("Moderate"))
-                inspectionListView.getChildAt(i).setBackgroundColor(Color.YELLOW);
-            else
-                inspectionListView.getChildAt(i).setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
-        }
+    public String inspectionTime(Inspection inspection){
+        long different = inspection.inspectionTimeDifferent();
+        String inspectionTimeInSring;
+
+        if(different <= 30) inspectionTimeInSring = (getString(R.string.inspection) + different + getString(R.string.days_ago));
+        else if(different <= 365) inspectionTimeInSring = (getString(R.string.inspection_on) + inspection.getInspectionMonth() + getString(R.string.space) + inspection.getInspectionDay() + getString(R.string.colon));
+        else inspectionTimeInSring = (getString(R.string.inspection_on) + inspection.getInspectionMonth() + getString(R.string.space) + inspection.getInspectionYear() + getString(R.string.colon));
+
+        return inspectionTimeInSring;
     }
 
     /*public void extractRestaurant(){

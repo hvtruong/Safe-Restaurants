@@ -5,4 +5,9 @@
     <string name="empty" />
     <string name="address">\Address: \</string>
     <string name="gps">\GPS: \</string>
+    <string name="inspection">\Inspection \</string>
+    <string name="days_ago"> days ago: </string>
+    <string name="inspection_on">Inspection on \</string>
+    <string name="space">\ \</string>
+    <string name="colon">\: \</string>
 </resources>

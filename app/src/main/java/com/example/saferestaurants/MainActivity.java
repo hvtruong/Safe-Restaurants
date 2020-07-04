@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         // Setting up Restaurants Class Data //
         InputStream inputStreamRestaurants = getResources().openRawResource(R.raw.restaurants_itr1);
         BufferedReader readerRestaurants = new BufferedReader(
-                new InputStreamReader(inputStreamRestaurants, Charset.forName("UTF-8"))
+                new InputStreamReader(inputStreamRestaurants, StandardCharsets.UTF_8)
         );
         DataParser.parseRestaurants(readerRestaurants);
         //                                  //
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         // Setting up Inspections Data for each Restaurant //
         InputStream inputStreamInspections = getResources().openRawResource(R.raw.inspectionreports_itr1);
         BufferedReader readerInspections = new BufferedReader(
-                new InputStreamReader(inputStreamInspections, Charset.forName("UTF-8"))
+                new InputStreamReader(inputStreamInspections, StandardCharsets.UTF_8)
         );
         DataParser.parseInspections(readerInspections);
         //                                                //

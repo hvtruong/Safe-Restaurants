@@ -33,7 +33,7 @@ public class RestaurantsTest {
         restaurants.add(new Restaurant(trackingNumber, name3, address, city, fact, latitude, longitude));
 
         assertEquals(trackingNumber, restaurants.get(0).getTrackingNumber());
-        assertTrue(restaurants.getInstance() != null);
+        assertTrue(Restaurants.getInstance() != null);
 
         assertEquals(name2, restaurants.get(0).getName());
         assertEquals(name, restaurants.get(1).getName());
