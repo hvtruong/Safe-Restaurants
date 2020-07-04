@@ -1,6 +1,8 @@
 package com.example.saferestaurants.model;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Inspection {
@@ -85,7 +87,16 @@ public class Inspection {
         return this.violations;
     }
 
-    public String getDateDifferent(){
+    public String inspectionTime(){
+        Calendar calendar = Calendar.getInstance();
+        Date currentDate = calendar.getTime();
+        long different = (currentDate.getTime() - date.getTime())/(1000*60*60*24);
 
+        String inspectionTime;
+        if(different <= 30) inspectionTime = ("Inspection " + different + " days ago: ");
+        else if(different <= 365) inspectionTime = ("Inspection on " + date.getMonth() + " " + date.getDay());
+        else inspectionTime = ("Inspection on" + date.getMonth() + " " + date.getYear());
+
+        return inspectionTime;
     }
 }

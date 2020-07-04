@@ -11,6 +11,9 @@ import com.example.saferestaurants.model.Inspection;
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class SingleInspection extends AppCompatActivity {
     Restaurants restaurants = Restaurants.getInstance();
     int restaurantID;
@@ -22,8 +25,9 @@ public class SingleInspection extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_inspection);
 
+        Date currentDate = Calendar.getInstance().getTime();
         extractData();
-        Toast.makeText(this,""+inspection.getDate(),Toast.LENGTH_LONG).show();
+        Toast.makeText(this,inspection.getDate().toString(),Toast.LENGTH_LONG).show();
     }
 
     public static Intent makeIntent(Context context, int restaurantID, int inspectionID){
