@@ -65,4 +65,8 @@ public class Restaurants {
         }
         return index;
     }
+
+    public ArrayList<Restaurant> getList() {
+        return null;
+    }
 }
