@@ -23,7 +23,7 @@ public class InspectionTest {
 
         Inspection inspection = new Inspection(date, type, criticalIssues, nonCriticalIssues, hazardRating, violations);
 
-        Date date_ = new Date(2018, 9, 24);
+        Date date_ = new Date(2018-1900, 9, 24);
         assertEquals(date_, inspection.getDate());
         assertEquals(type, inspection.getType());
         assertEquals(0, inspection.getCriticalIssues());
@@ -44,7 +44,7 @@ public class InspectionTest {
 
         Inspection inspection = new Inspection(date, type, criticalIssues, nonCriticalIssues, hazardRating, violations);
 
-        Date date_ = new Date(2018, 9, 24);
+        Date date_ = new Date(2018-1900, 9, 24);
         assertTrue(date_.equals(inspection.getDate()));
         assertEquals(type, inspection.getType());
         assertEquals(0, inspection.getCriticalIssues());
