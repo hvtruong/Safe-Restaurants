@@ -33,7 +33,6 @@ public class RestaurantDetail extends AppCompatActivity {
         setContentView(R.layout.activity_restaurant_detail);
 
         extractRestaurant();
-        restaurant = restaurants.get(restaurantID);
 
         setUpTitle();
         setUpListView();
@@ -104,7 +103,7 @@ public class RestaurantDetail extends AppCompatActivity {
 
     public void extractRestaurant(){
         Intent intent = getIntent();
-        int restaurantID = intent.getIntExtra("restaurantID",0);
+        restaurantID = intent.getIntExtra("restaurantID",0);
         restaurant = restaurants.get(restaurantID);
     }
 }
