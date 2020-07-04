@@ -7,11 +7,9 @@ import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class DataParser {
     public static void parseRestaurants(BufferedReader reader) {
