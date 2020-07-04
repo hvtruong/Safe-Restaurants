@@ -2,19 +2,22 @@ package com.example.saferestaurants;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,44 +25,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Parsing Data Files //
-        try {
-            DataParser.parseRestaurants("src/main/java/com/example/saferestaurants/ProjectData/restaurants_itr1.csv");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            DataParser.parseInspections("src/main/java/com/example/saferestaurants/ProjectData/inspectionreports_itr1.csv");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        //                   //
-
-        /*File f = new File("src/main/java/com/example/saferestaurants/ProjectData/restaurants_itr1.csv");
-        if(f.exists()){
-            Toast.makeText(this,"worked",Toast.LENGTH_LONG).show();
-        }
-        else{
-            Toast.makeText(this,"not worked",Toast.LENGTH_LONG).show();
-        }
-        Restaurants restaurants = Restaurants.getInstance();*/
-        Button btn = findViewById(R.id.button);
-        //Toast.makeText(this, restaurants.size(),Toast.LENGTH_LONG).show();
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = RestaurantDetail.makeIntent(MainActivity.this,1);
-                startActivity(intent);
-            }
-        });
+        
+        setData();
+        Restaurants restaurants = Restaurants.getInstance();
     }
 
-    /*public boolean fileExists(Context context, String filename) {
-        File file = context.getFileStreamPath(filename);
-        if(file == null || !file.exists()) {
-            return false;
-        }
-        return true;
-    }*/
+    private void setData(){
+
+        // Setting up Restaurants Class Data //
+        InputStream inputStreamRestaurants = getResources().openRawResource(R.raw.restaurants_itr1);
+        BufferedReader readerRestaurants = new BufferedReader(
+                new InputStreamReader(inputStreamRestaurants, Charset.forName("UTF-8"))
+        );
+        DataParser.parseRestaurants(readerRestaurants);
+        //                                  //
+
+        // Setting up Inspections Data for each Restaurant //
+        InputStream inputStreamInspections = getResources().openRawResource(R.raw.inspectionreports_itr1);
+        BufferedReader readerInspections = new BufferedReader(
+                new InputStreamReader(inputStreamInspections, Charset.forName("UTF-8"))
+        );
+        DataParser.parseInspections(readerInspections);
+        //                                                //
+    }
+
 }
