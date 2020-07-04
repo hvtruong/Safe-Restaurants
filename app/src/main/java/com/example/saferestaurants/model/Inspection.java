@@ -1,6 +1,10 @@
 package com.example.saferestaurants.model;
 
+import com.example.saferestaurants.R;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Inspection {
@@ -12,6 +16,7 @@ public class Inspection {
     private int nonCriticalIssues;
     private String hazardRating;
     private ArrayList<Violation> violations;
+    private String inspectionDay, inspectionMonth, inspectionYear;
 
     // constructor //
     public Inspection(String date, String type, String criticalIssues, String nonCriticalIssues, String hazardRating, ArrayList<String> violations){
@@ -37,11 +42,15 @@ public class Inspection {
     }
 
     public void setDate(String date){
-        int year = Integer.parseInt(date.substring(0,4));
+        int year = Integer.parseInt(date.substring(0,4)) - 1900;
         int month = Integer.parseInt(date.substring(4,6)) - 1;
         int day = Integer.parseInt(date.substring(6,8));
         this.date = new Date(year, month, day);
+        year = year + 1900;
 
+        this.inspectionDay = ("" + day);
+        this.inspectionMonth = this.getDate().toString().substring(4,7);
+        this.inspectionYear = ("" + year);
     }
 
     public void setType(String type){
@@ -85,4 +94,22 @@ public class Inspection {
         return this.violations;
     }
 
+    public String getInspectionDay() {
+        return this.inspectionDay;
+    }
+
+    public String getInspectionMonth() {
+        return this.inspectionMonth;
+    }
+
+    public String getInspectionYear() {
+        return this.inspectionYear;
+    }
+
+    public long inspectionTimeDifferent(){ ;
+        Date currentDate = new Date();
+        long inspectionTimeDifferent = (currentDate.getTime() - date.getTime())/(1000*60*60*24);
+
+        return inspectionTimeDifferent;
+    }
 }
