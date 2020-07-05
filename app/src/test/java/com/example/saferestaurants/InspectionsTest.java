@@ -10,6 +10,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class InspectionsTest {
@@ -47,5 +48,8 @@ public class InspectionsTest {
 
         Date date4 = new Date(2018-1900, 2, 20);
         assertTrue(date4.equals(inspections.get(3).getDate()));
+
+        ArrayList<Inspection> inspectionsCopy = inspections.getInspections();
+        assertEquals(4,inspectionsCopy.size());
     }
 }
