@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -20,15 +19,11 @@ import com.example.saferestaurants.model.Inspection;
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class RestaurantDetail extends AppCompatActivity {
     Restaurants restaurants = Restaurants.getInstance();
     Restaurant restaurant;
     int restaurantID;
     ListView inspectionListView;
-    private List<Inspection> inspectionList = new ArrayList<Inspection>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +31,6 @@ public class RestaurantDetail extends AppCompatActivity {
         setContentView(R.layout.activity_restaurant_detail);
 
         extractRestaurant();
-        inspectionList = (List<Inspection>) restaurant.getInspection();
 
         setUpTitle();
         setUpListView();
@@ -68,65 +62,32 @@ public class RestaurantDetail extends AppCompatActivity {
     }
 
     //Display the list of inspections of the restaurant
-    /*public void setUpListView(){
-        inspectionListView = findViewById(R.id.inspectionListView);
-
-        // ArrayList of String to store all the information displayed in the listView
-        ArrayList<String> inspectionsList = new ArrayList<>();
-        for(int i = 0; i < restaurant.getInspection().size(); i++){
-            inspectionsList.add(inspectionTime(restaurant.getInspection().get(i)) + getString(R.string.empty) + restaurant.getInspection().get(i).getCriticalIssues() +getString(R.string.critical_issues_found) + restaurant.getInspection().get(i).getNonCriticalIssues() + getString(R.string.non_critical_issues_found));
-        }
-
-        //Create an ArrayAdapter, changing colors and icons for hazard level
-        ArrayAdapter inspectionsAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,inspectionsList){
-            @NonNull
-            @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                String inspectionHazardLevel = restaurant.getInspection().get(position).getHazardRating();
-                View view = super.getView(position, convertView, parent);
-                if(inspectionHazardLevel.equals("Low"))
-                    view.setBackgroundColor(Color.GREEN);
-                else if(inspectionHazardLevel.equals("Moderate"))
-                    view.setBackgroundColor(Color.YELLOW);
-                else
-                    view.setBackgroundColor(Color.RED);
-
-                return view;
-            }
-        };
-        inspectionListView.setAdapter(inspectionsAdapter);
-
-        inspectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent singleInspection = SingleInspection.makeIntent(RestaurantDetail.this, restaurantID, position);
-                startActivity(singleInspection);
-            }
-        });
-    }*/
-
     public void setUpListView(){
-        inspectionListView = findViewById(R.id.inspectionListView);
         ArrayAdapter<Inspection> inspectionArrayAdapter = new inspectionAdapter();
+        inspectionListView = findViewById(R.id.inspectionListView);
         inspectionListView.setAdapter(inspectionArrayAdapter);
     }
 
     private class inspectionAdapter extends ArrayAdapter<Inspection>{
+
         public inspectionAdapter(){
-            super(RestaurantDetail.this,R.layout.item_view, inspectionList);
+            super(RestaurantDetail.this,R.layout.inspection_item_view, restaurant.getInspection().getInspections());
         }
 
         @NonNull
         @Override
-        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            //Make sure view is not null
             View itemView = convertView;
-
             if(itemView == null)
-                itemView = getLayoutInflater().inflate(R.layout.item_view,parent,false);
+                itemView = getLayoutInflater().inflate(R.layout.inspection_item_view,parent,false);
 
-            Inspection currentInspection = inspectionList.get(position);
+            Inspection currentInspection = restaurant.getInspection().get(position);
+
+            //Set up hazard icons and colors for items of list view
             String hazardLevel = currentInspection.getHazardRating();
             ImageView hazardIcon = itemView.findViewById(R.id.item_icon);
+
             if(hazardLevel.equals("Low")) {
                 hazardIcon.setImageResource(R.drawable.healthy_food_icon);
                 itemView.setBackgroundColor(Color.GREEN);
@@ -140,8 +101,19 @@ public class RestaurantDetail extends AppCompatActivity {
                 itemView.setBackgroundColor(Color.RED);
             }
 
-            TextView inspectionInfo = findViewById(R.id.inspectionInfo);
-            inspectionInfo.setText(inspectionTime(currentInspection) + getString(R.string.empty) + currentInspection.getCriticalIssues() +getString(R.string.critical_issues_found) + currentInspection.getNonCriticalIssues() + getString(R.string.non_critical_issues_found));
+            //Displaying summary of inspection information
+            TextView inspectionInfo = itemView.findViewById(R.id.inspectionInfo);
+            String inspectionInformation = (inspectionTime(currentInspection)) + getString(R.string.empty) + currentInspection.getCriticalIssues() + getString(R.string.critical_issues_found) + currentInspection.getNonCriticalIssues() + getString(R.string.non_critical_issues_found);
+            inspectionInfo.setText(inspectionInformation);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent singleInspection = SingleInspection.makeIntent(RestaurantDetail.this, restaurantID, position);
+                    startActivity(singleInspection);
+                }
+            });
+
             return itemView;
         }
     }

@@ -46,4 +46,7 @@ public class Inspections {
         return inspections.get(minIndex).getDate().compareTo(inspections.get(j).getDate()) < 0;
     }
 
+    public ArrayList<Inspection> getInspections() {
+        return this.inspections;
+    }
 }
