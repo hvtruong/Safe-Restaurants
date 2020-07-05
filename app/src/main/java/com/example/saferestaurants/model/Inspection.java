@@ -106,6 +106,7 @@ public class Inspection {
         return this.inspectionYear;
     }
 
+    //Time Different calculator
     public long inspectionTimeDifferent(){ ;
         Date currentDate = new Date();
         long inspectionTimeDifferent = (currentDate.getTime() - date.getTime())/(1000*60*60*24);
