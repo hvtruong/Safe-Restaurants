@@ -38,21 +38,32 @@ public class RestaurantDetail extends AppCompatActivity {
         setUpListView();
     }
 
+    //Return intent to MainActivity
     public static Intent makeIntent(Context context, int restaurantID){
         Intent intent = new Intent(context, RestaurantDetail.class);
         intent.putExtra("restaurantID",restaurantID);
         return intent;
     }
 
+    //Extract the chosen restaurant
+    public void extractRestaurant(){
+        Intent intent = getIntent();
+        restaurantID = intent.getIntExtra("restaurantID",0);
+        restaurant = restaurants.get(restaurantID);
+    }
+
+    //Display Name, Address and GPS coordinates of the restaurant
     public void setUpTitle(){
         TextView textView = findViewById(R.id.restaurantName);
         TextView textView1 = findViewById(R.id.restaurantAddress);
         TextView textView2 = findViewById(R.id.restaurantGPS);
+
         textView.setText(restaurant.getName());
         textView1.setText(getString(R.string.address) + restaurant.getPhysicalAddress());
         textView2.setText(getString(R.string.gps) + restaurant.getLatitude() + "\t \t" + restaurant.getLongitude());
     }
 
+    //Display the list of inspections of the restaurant
     public void setUpListView(){
         inspectionListView = findViewById(R.id.inspectionListView);
 
@@ -62,7 +73,7 @@ public class RestaurantDetail extends AppCompatActivity {
             inspectionsList.add(inspectionTime(restaurant.getInspection().get(i)) + getString(R.string.empty) + restaurant.getInspection().get(i).getCriticalIssues() +getString(R.string.critical_issues_found) + restaurant.getInspection().get(i).getNonCriticalIssues() + getString(R.string.non_critical_issues_found));
         }
 
-        //Create an ArrayAdapter
+        //Create an ArrayAdapter, changing colors and icons for hazard level
         ArrayAdapter inspectionsAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,inspectionsList){
             @NonNull
             @Override
@@ -90,6 +101,7 @@ public class RestaurantDetail extends AppCompatActivity {
         });
     }
 
+    //Return a String which tells how long ago a specific inspection happened
     public String inspectionTime(Inspection inspection){
         long different = inspection.inspectionTimeDifferent();
         String inspectionTimeInSring;
@@ -99,11 +111,5 @@ public class RestaurantDetail extends AppCompatActivity {
         else inspectionTimeInSring = (getString(R.string.inspection_on) + inspection.getInspectionMonth() + getString(R.string.space) + inspection.getInspectionYear() + getString(R.string.colon));
 
         return inspectionTimeInSring;
-    }
-
-    public void extractRestaurant(){
-        Intent intent = getIntent();
-        restaurantID = intent.getIntExtra("restaurantID",0);
-        restaurant = restaurants.get(restaurantID);
     }
 }
