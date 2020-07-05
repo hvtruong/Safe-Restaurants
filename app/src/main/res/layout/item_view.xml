@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/item_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
@@ -18,10 +18,10 @@
         tools:layout_editor_absoluteY="98dp" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/inspectionInfo"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/imageView"
+        android:layout_toEndOf="@+id/item_icon"
         android:textColor="#000000" />
 </RelativeLayout>

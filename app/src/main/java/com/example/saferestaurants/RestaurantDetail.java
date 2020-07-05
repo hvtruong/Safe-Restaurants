@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,12 +21,14 @@ import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RestaurantDetail extends AppCompatActivity {
     Restaurants restaurants = Restaurants.getInstance();
     Restaurant restaurant;
     int restaurantID;
     ListView inspectionListView;
+    private List<Inspection> inspectionList = new ArrayList<Inspection>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,7 @@ public class RestaurantDetail extends AppCompatActivity {
         setContentView(R.layout.activity_restaurant_detail);
 
         extractRestaurant();
+        inspectionList = (List<Inspection>) restaurant.getInspection();
 
         setUpTitle();
         setUpListView();
@@ -64,7 +68,7 @@ public class RestaurantDetail extends AppCompatActivity {
     }
 
     //Display the list of inspections of the restaurant
-    public void setUpListView(){
+    /*public void setUpListView(){
         inspectionListView = findViewById(R.id.inspectionListView);
 
         // ArrayList of String to store all the information displayed in the listView
@@ -99,6 +103,47 @@ public class RestaurantDetail extends AppCompatActivity {
                 startActivity(singleInspection);
             }
         });
+    }*/
+
+    public void setUpListView(){
+        inspectionListView = findViewById(R.id.inspectionListView);
+        ArrayAdapter<Inspection> inspectionArrayAdapter = new inspectionAdapter();
+        inspectionListView.setAdapter(inspectionArrayAdapter);
+    }
+
+    private class inspectionAdapter extends ArrayAdapter<Inspection>{
+        public inspectionAdapter(){
+            super(RestaurantDetail.this,R.layout.item_view, inspectionList);
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            View itemView = convertView;
+
+            if(itemView == null)
+                itemView = getLayoutInflater().inflate(R.layout.item_view,parent,false);
+
+            Inspection currentInspection = inspectionList.get(position);
+            String hazardLevel = currentInspection.getHazardRating();
+            ImageView hazardIcon = itemView.findViewById(R.id.item_icon);
+            if(hazardLevel.equals("Low")) {
+                hazardIcon.setImageResource(R.drawable.healthy_food_icon);
+                itemView.setBackgroundColor(Color.GREEN);
+            }
+            else if(hazardLevel.equals("Moderate")) {
+                hazardIcon.setImageResource(R.drawable.warning_icon);
+                itemView.setBackgroundColor(Color.YELLOW);
+            }
+            else{
+                hazardIcon.setImageResource(R.drawable.super_hazard_icon);
+                itemView.setBackgroundColor(Color.RED);
+            }
+
+            TextView inspectionInfo = findViewById(R.id.inspectionInfo);
+            inspectionInfo.setText(inspectionTime(currentInspection) + getString(R.string.empty) + currentInspection.getCriticalIssues() +getString(R.string.critical_issues_found) + currentInspection.getNonCriticalIssues() + getString(R.string.non_critical_issues_found));
+            return itemView;
+        }
     }
 
     //Return a String which tells how long ago a specific inspection happened
