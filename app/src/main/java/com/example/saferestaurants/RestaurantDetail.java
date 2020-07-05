@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +26,8 @@ public class RestaurantDetail extends AppCompatActivity {
     Restaurant restaurant;
     int restaurantID;
     ListView inspectionListView;
+    public static final String SHARED_PREF = "sharedPrefs";
+    public static final String reservedRestaurantID = "restaurantID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +54,16 @@ public class RestaurantDetail extends AppCompatActivity {
     //Extract the chosen restaurant
     public void extractRestaurant(){
         Intent intent = getIntent();
-        restaurantID = intent.getIntExtra("restaurantID",0);
+        restaurantID = intent.getIntExtra("restaurantID",-1);
+        if(restaurantID == -1){
+            getReservedRestaurantID();
+        }
         restaurant = restaurants.get(restaurantID);
+    }
+
+    public void getReservedRestaurantID(){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
+        this.restaurantID = sharedPreferences.getInt(reservedRestaurantID, 0);
     }
 
     //Display Name, Address and GPS coordinates of the restaurant
