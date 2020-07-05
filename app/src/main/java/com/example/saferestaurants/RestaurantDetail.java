@@ -102,10 +102,28 @@ public class RestaurantDetail extends AppCompatActivity {
             }
 
             //Displaying summary of inspection information
-            TextView inspectionInfo = itemView.findViewById(R.id.inspectionInfo);
-            String inspectionInformation = (inspectionTime(currentInspection)) + getString(R.string.empty) + currentInspection.getCriticalIssues() + getString(R.string.critical_issues_found) + currentInspection.getNonCriticalIssues() + getString(R.string.non_critical_issues_found);
-            inspectionInfo.setText(inspectionInformation);
+            TextView inspectionDate = itemView.findViewById(R.id.inspectionDate);
+            inspectionDate.setText(inspectionTime(currentInspection));
 
+            TextView inspectionCriticalIssues = itemView.findViewById(R.id.inspectionNumberOfCriticalIssues);
+            int numberOfCriticalIssues = currentInspection.getCriticalIssues();
+            if(numberOfCriticalIssues == 0)
+                inspectionCriticalIssues.setText(R.string.no_critical_issue_found);
+            else if(numberOfCriticalIssues == 1)
+                inspectionCriticalIssues.setText(getString(R.string.Line) + numberOfCriticalIssues + getString(R.string.critical_issues_found));
+            else
+                inspectionCriticalIssues.setText(getString(R.string.Line) + numberOfCriticalIssues + getString(R.string.critical_issues_found));
+
+            TextView inspectionNonCriticalIssues = itemView.findViewById(R.id.inspectionNumberOfNonCriticalIssues);
+            int numberOfNonCriticalIssues = currentInspection.getNonCriticalIssues();
+            if(numberOfNonCriticalIssues == 0)
+                inspectionNonCriticalIssues.setText(R.string.no_non_critical_issue_found);
+            else if(numberOfNonCriticalIssues == 1)
+                inspectionNonCriticalIssues.setText(getString(R.string.Line) + numberOfNonCriticalIssues + getString(R.string.non_critical_issues_found));
+            else
+                inspectionNonCriticalIssues.setText(getString(R.string.Line) + numberOfNonCriticalIssues + getString(R.string.non_critical_issues_found));
+
+            //Passing chosen inspection to the next Acitivity
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
