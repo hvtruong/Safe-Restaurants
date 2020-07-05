@@ -83,12 +83,20 @@ public class MainActivity extends AppCompatActivity {
 
         @NonNull
         @Override
-        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             //Make sure we have a view to work with
             View itemView = convertView;
             if (itemView == null) {
                 itemView = getLayoutInflater().inflate(R.layout.restaurants_item_view, parent, false);
             }
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = RestaurantDetail.makeIntent(MainActivity.this, position);
+                    startActivity(i);
+                }
+            });
 
             //find the Restaurant
             Restaurant restaurant = restaurants.get(position);
@@ -116,23 +124,27 @@ public class MainActivity extends AppCompatActivity {
         Date date = tmp.getDate();
         //getting current date
         int month = Calendar.getInstance().get(Calendar.MONTH);
-        System.out.println("System month "+ month );
         int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         int year = Calendar.getInstance().get(Calendar.YEAR);
+        System.out.println("System year "+ year );
         //inspection date info
-        System.out.println(tmp.getInspectionMonth());
+        //System.out.println(tmp.getInspectionMonth());
         int inspectionMonth = monthStringToInt(tmp.getInspectionMonth());
-        System.out.println("non system month: "  + inspectionMonth);
         int inspectionDay = Integer.parseInt(tmp.getInspectionDay());
         int inspectionYear = Integer.parseInt(tmp.getInspectionYear());
+        System.out.println("non system year: "  + inspectionYear);
 
-        //Date formating depending when inspection was done
+        //Date formatting depending when inspection was done
         if(month == inspectionMonth && year == inspectionYear){
             String lessThanMonthFormat = "Last Inspection: " + (day - inspectionDay) + " days ago";
             return lessThanMonthFormat;
+        } else if(year == inspectionYear){
+            String withinYearFormat = "Last Inspection: " + tmp.getInspectionMonth() + " " + inspectionDay;
+            return withinYearFormat;
+        } else{
+            String pastYearFormat = "Last Inspection: " + tmp.getInspectionMonth() + " " + inspectionDay + " " + inspectionYear;
+            return pastYearFormat;
         }
-        //dw ill change it
-        return "something went wrong :(";
     }
 
     /**
