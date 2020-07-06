@@ -15,8 +15,11 @@
     <string name="space">\ \</string>
     <string name="colon">\: \</string>
     <string name="textOffSet">\t\t\t\t\t\t</string>
-    <string name="no_critical_issue_found">\t\t\t\t\t\tNo Critical Issues Found!</string>
+    <string name="no_critical_issue_found">\t\t\t\t\t\tNo Critical Issue Found!</string>
     <string name="Line">"- "</string>
-    <string name="no_non_critical_issue_found">\t\t\t\t\t\tNo Non-Critical Issues Found!</string>
+    <string name="no_non_critical_issue_found">\t\t\t\t\t\tNo Non-Critical Issue Found!</string>
     <string name="hazard_level_icon">hazard level icon</string>
+    <string name="back">BACK</string>
+    <string name="non_critical_issue_found">\ non-critical issue found!</string>
+    <string name="critical_issue_found">\ critical issue found!</string>
 </resources>

@@ -32,15 +32,15 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     //Fields
-    private Restaurants restaurants;
+    private Restaurants restaurants = Restaurants.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setData();
-        restaurants = Restaurants.getInstance();
+        if(restaurants.size() == 0)
+            setData();
 
         // these lines can be removed once the mainactivity has a clickable list view //
         //Intent i = RestaurantDetail.makeIntent(MainActivity.this, 0);
