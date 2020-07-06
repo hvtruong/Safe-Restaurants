@@ -6,7 +6,10 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.saferestaurants.model.Inspection;
@@ -34,6 +37,48 @@ public class SingleInspection extends AppCompatActivity {
 
         extractData();
         saveRestaurantID();
+
+
+        // Organize data into arrays for iterative updating of TextViews.
+        int[] textViews = {R.id.textHazardLevel, R.id.textInspectionDate, R.id.textInspectionType, R.id.textCritical, R.id.textNonCritical};
+        String[] textPrefixes = {"Hazard Level: ", "Date: ", "Type: ", "Critical Issues: ", "Non-Critical Issues: "};
+
+        String inspectionDate = (inspection.getInspectionMonth() + " " +
+                inspection.getInspectionDay() + ", " +
+                inspection.getInspectionYear()
+        );
+
+        String[] inspectionDetails = {
+                inspection.getHazardRating(),
+                inspectionDate,
+                inspection.getType(),
+                Integer.toString(inspection.getCriticalIssues()),
+                Integer.toString(inspection.getNonCriticalIssues())
+        };
+
+        // Display information into the relevant TextViews.
+        for (int i = 0; i < textViews.length; i++) {
+            TextView view = findViewById(textViews[i]);
+            view.setText(textPrefixes[i] + inspectionDetails[i]);
+        }
+
+        ImageView ratingImage = findViewById(R.id.imageHazardLevel);
+        TextView ratingText = findViewById(R.id.textHazardLevel);
+        switch (inspection.getHazardRating()) {
+            case "Low":
+                ratingText.setBackgroundColor(Color.GREEN);
+                ratingImage.setImageResource(R.drawable.healthy_food_icon);
+                break;
+            case "Moderate":
+                ratingText.setBackgroundColor(Color.YELLOW);
+                ratingImage.setImageResource(R.drawable.warning_icon);
+                break;
+            case "High":
+                ratingText.setBackgroundColor(Color.RED);
+                ratingImage.setImageResource(R.drawable.super_hazard_icon);
+                break;
+        }
+
     }
 
     public static Intent makeIntent(Context context, int restaurantID, int inspectionID){
