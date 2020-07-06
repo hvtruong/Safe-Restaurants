@@ -136,7 +136,7 @@ public class RestaurantDetail extends AppCompatActivity {
             if(numberOfCriticalIssues == 0)
                 inspectionCriticalIssues.setText(R.string.no_critical_issue_found);
             else if(numberOfCriticalIssues == 1)
-                inspectionCriticalIssues.setText(getString(R.string.textOffSet) + numberOfCriticalIssues + getString(R.string.critical_issues_found));
+                inspectionCriticalIssues.setText(getString(R.string.textOffSet) + numberOfCriticalIssues + getString(R.string.critical_issue_found));
             else
                 inspectionCriticalIssues.setText(getString(R.string.textOffSet) + numberOfCriticalIssues + getString(R.string.critical_issues_found));
 
@@ -145,7 +145,7 @@ public class RestaurantDetail extends AppCompatActivity {
             if(numberOfNonCriticalIssues == 0)
                 inspectionNonCriticalIssues.setText(R.string.no_non_critical_issue_found);
             else if(numberOfNonCriticalIssues == 1)
-                inspectionNonCriticalIssues.setText(getString(R.string.textOffSet) + numberOfNonCriticalIssues + getString(R.string.non_critical_issues_found));
+                inspectionNonCriticalIssues.setText(getString(R.string.textOffSet) + numberOfNonCriticalIssues + getString(R.string.non_critical_issue_found));
             else
                 inspectionNonCriticalIssues.setText(getString(R.string.textOffSet) + numberOfNonCriticalIssues + getString(R.string.non_critical_issues_found));
 
