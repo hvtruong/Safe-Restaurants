@@ -114,16 +114,16 @@ public class RestaurantDetail extends AppCompatActivity {
             ImageView hazardIcon = itemView.findViewById(R.id.item_icon);
 
             if(hazardLevel.equals("Low")) {
-                hazardIcon.setImageResource(R.drawable.healthy_food_icon);
-                itemView.setBackgroundColor(Color.GREEN);
+                hazardIcon.setImageResource(R.drawable.low_hazard);
+                itemView.setBackgroundColor(Color.parseColor("#9090FF81"));
             }
             else if(hazardLevel.equals("Moderate")) {
-                hazardIcon.setImageResource(R.drawable.warning_icon);
-                itemView.setBackgroundColor(Color.YELLOW);
+                hazardIcon.setImageResource(R.drawable.moderate_hazard);
+                itemView.setBackgroundColor(Color.parseColor("#88FFD372"));
             }
             else{
-                hazardIcon.setImageResource(R.drawable.super_hazard_icon);
-                itemView.setBackgroundColor(Color.RED);
+                hazardIcon.setImageResource(R.drawable.high_hazard);
+                itemView.setBackgroundColor(Color.parseColor("#83FF8273"));
             }
 
             //Displaying summary of inspection information
@@ -132,21 +132,22 @@ public class RestaurantDetail extends AppCompatActivity {
 
             TextView inspectionCriticalIssues = itemView.findViewById(R.id.inspectionNumberOfCriticalIssues);
             int numberOfCriticalIssues = currentInspection.getCriticalIssues();
+
             if(numberOfCriticalIssues == 0)
                 inspectionCriticalIssues.setText(R.string.no_critical_issue_found);
             else if(numberOfCriticalIssues == 1)
-                inspectionCriticalIssues.setText(getString(R.string.Line) + numberOfCriticalIssues + getString(R.string.critical_issues_found));
+                inspectionCriticalIssues.setText(getString(R.string.textOffSet) + numberOfCriticalIssues + getString(R.string.critical_issues_found));
             else
-                inspectionCriticalIssues.setText(getString(R.string.Line) + numberOfCriticalIssues + getString(R.string.critical_issues_found));
+                inspectionCriticalIssues.setText(getString(R.string.textOffSet) + numberOfCriticalIssues + getString(R.string.critical_issues_found));
 
             TextView inspectionNonCriticalIssues = itemView.findViewById(R.id.inspectionNumberOfNonCriticalIssues);
             int numberOfNonCriticalIssues = currentInspection.getNonCriticalIssues();
             if(numberOfNonCriticalIssues == 0)
                 inspectionNonCriticalIssues.setText(R.string.no_non_critical_issue_found);
             else if(numberOfNonCriticalIssues == 1)
-                inspectionNonCriticalIssues.setText(getString(R.string.Line) + numberOfNonCriticalIssues + getString(R.string.non_critical_issues_found));
+                inspectionNonCriticalIssues.setText(getString(R.string.textOffSet) + numberOfNonCriticalIssues + getString(R.string.non_critical_issues_found));
             else
-                inspectionNonCriticalIssues.setText(getString(R.string.Line) + numberOfNonCriticalIssues + getString(R.string.non_critical_issues_found));
+                inspectionNonCriticalIssues.setText(getString(R.string.textOffSet) + numberOfNonCriticalIssues + getString(R.string.non_critical_issues_found));
 
             //Passing chosen inspection to the next Acitivity
             itemView.setOnClickListener(new View.OnClickListener() {

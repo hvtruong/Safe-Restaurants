@@ -4,8 +4,8 @@
     <string name="name">Name</string>
     <string name="numer_of_issues_0">Numer of issues: 0</string>
     <string name="last_inspection_x_days_ago">Last inspection: x days ago</string>
-    <string name="non_critical_issues_found">\ non-critical issues found!</string>
-    <string name="critical_issues_found">\ critical issues found! \</string>
+    <string name="non_critical_issues_found">\ Non-Critical Issues Found!</string>
+    <string name="critical_issues_found">\ Critical Issues Found! \</string>
     <string name="empty" />
     <string name="address">\Address: \</string>
     <string name="gps">\GPS: \</string>
@@ -14,9 +14,10 @@
     <string name="inspection_on">Inspection on \</string>
     <string name="space">\ \</string>
     <string name="colon">\: \</string>
-    <string name="no_critical_issue_found">- No critical issue found!</string>
+    <string name="textOffSet">\t\t\t\t\t\t</string>
+    <string name="no_critical_issue_found">\t\t\t\t\t\tNo Critical Issues Found!</string>
     <string name="Line">"- "</string>
-    <string name="no_non_critical_issue_found">- No non-critical issue found!</string>
+    <string name="no_non_critical_issue_found">\t\t\t\t\t\tNo Non-Critical Issues Found!</string>
     <string name="hazard_level_icon">hazard level icon</string>
     <string name="back">BACK</string>
 </resources>
