@@ -17,4 +17,5 @@
     <string name="no_critical_issue_found">- No critical issue found!</string>
     <string name="Line">"- "</string>
     <string name="no_non_critical_issue_found">- No non-critical issue found!</string>
+    <string name="hazard_level_icon">hazard level icon</string>
 </resources>
