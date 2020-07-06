@@ -10,7 +10,7 @@
         android:id="@+id/singleInspectionToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
+        android:background="#7986CB"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintBottom_toBottomOf="parent"
