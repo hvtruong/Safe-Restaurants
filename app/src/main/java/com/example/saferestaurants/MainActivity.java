@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -106,11 +107,18 @@ public class MainActivity extends AppCompatActivity {
             name.setText(restaurant.getName());
             //adding the # of issues
             TextView issues = (TextView) itemView.findViewById(R.id.issuesFound);
-            int issuesFound = getNumberOfIssues(restaurant.getInspection());
-            issues.setText("Number Of issues: " + issuesFound);
+            if(restaurant.getInspection().size() == 0){
+                issues.setText("Number of issues: 0");
+            } else {
+                int issuesFound = getNumberOfIssues(restaurant.getInspection());
+                issues.setText("Number Of issues: " + issuesFound);
+            }
             //adding the date of last inspection
             TextView lastInspectionDate = (TextView) itemView.findViewById(R.id.date);
-            lastInspectionDate.setText("Last Inspection: " + getDateOfLastInspection(restaurant.getInspection()));
+            lastInspectionDate.setText(getDateOfLastInspection(restaurant.getInspection()));
+            //setting an image
+            ImageView imageView = (ImageView) itemView.findViewById(R.id.restaurantImage);
+            imageView.setImageResource(R.drawable.plate);
 
             return itemView;
         }
@@ -156,11 +164,10 @@ public class MainActivity extends AppCompatActivity {
     private int getNumberOfIssues(Inspections inspection) {
         int issues = 0;
 
-        for (int i = 0; i < inspection.size(); i++) {
-            Inspection tmp = inspection.get(0);
-            issues += tmp.getCriticalIssues();
-            issues += tmp.getNonCriticalIssues();
-        }
+        Inspection tmp = inspection.get(0);
+        issues += tmp.getCriticalIssues();
+        issues += tmp.getNonCriticalIssues();
+
         return issues;
     }
 
