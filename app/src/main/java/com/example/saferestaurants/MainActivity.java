@@ -3,6 +3,7 @@ package com.example.saferestaurants;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.Intent;
@@ -42,12 +43,10 @@ public class MainActivity extends AppCompatActivity {
         if(restaurants.size() == 0)
             setData();
 
-        // these lines can be removed once the mainactivity has a clickable list view //
-        //Intent i = RestaurantDetail.makeIntent(MainActivity.this, 0);
-        //startActivity(i);
-        //                                                                            //
+        Toolbar toolbar = findViewById(R.id.mainActivityBar);
+        toolbar.setTitle("Safe Restaurants");
 
-        setUpListView();      // this can be uncommented when list view works //
+        setUpListView();
     }
 
     private void setData() {
@@ -171,6 +170,11 @@ public class MainActivity extends AppCompatActivity {
         return issues;
     }
 
+    /**
+     * converting months that are in strings to int's
+     * @param month
+     * @return
+     */
     private int monthStringToInt(String month){
         String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
         for(int i = 0; i < months.length; i++){
