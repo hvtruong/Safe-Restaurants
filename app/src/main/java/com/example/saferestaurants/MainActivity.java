@@ -118,6 +118,26 @@ public class MainActivity extends AppCompatActivity {
             //setting an image
             ImageView imageView = (ImageView) itemView.findViewById(R.id.restaurantImage);
             imageView.setImageResource(R.drawable.plate);
+            //set hazard level image and colour;
+            ImageView hazardImage = (ImageView) itemView.findViewById(R.id.harzardLevelImage);
+
+            //check the hazard levels and add image
+            //first if statement is to check if the list is empty or not.
+            if(restaurant.getInspection().size() == 0) {
+                hazardImage.setImageResource(R.drawable.low_hazard);
+                return itemView;
+            }
+
+            Inspection inspection = restaurant.getInspection().get(0); //get the latest inspection
+
+            if(inspection.getHazardRating() == "Low"){
+                hazardImage.setImageResource(R.drawable.low_hazard);
+            } else if(inspection.getHazardRating() == "Moderate"){
+                hazardImage.setImageResource(R.drawable.moderate_hazard);
+            } else{
+                hazardImage.setImageResource(R.drawable.high_hazard);
+            }
+
 
             return itemView;
         }
@@ -133,13 +153,13 @@ public class MainActivity extends AppCompatActivity {
         int month = Calendar.getInstance().get(Calendar.MONTH);
         int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         int year = Calendar.getInstance().get(Calendar.YEAR);
-        System.out.println("System year "+ year );
+        //System.out.println("System year "+ year );
         //inspection date info
         //System.out.println(tmp.getInspectionMonth());
         int inspectionMonth = monthStringToInt(tmp.getInspectionMonth());
         int inspectionDay = Integer.parseInt(tmp.getInspectionDay());
         int inspectionYear = Integer.parseInt(tmp.getInspectionYear());
-        System.out.println("non system year: "  + inspectionYear);
+        //System.out.println("non system year: "  + inspectionYear);
 
         //Date formatting depending when inspection was done
         if(month == inspectionMonth && year == inspectionYear){
