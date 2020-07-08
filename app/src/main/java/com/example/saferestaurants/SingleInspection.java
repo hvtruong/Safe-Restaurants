@@ -19,14 +19,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.saferestaurants.model.Inspection;
-import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
 import com.example.saferestaurants.model.Violation;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 public class SingleInspection extends AppCompatActivity {
     Restaurants restaurants = Restaurants.getInstance();
@@ -75,16 +71,16 @@ public class SingleInspection extends AppCompatActivity {
         TextView ratingText = findViewById(R.id.textHazardLevel);
         switch (inspection.getHazardRating()) {
             case "Low":
-                ratingText.setBackgroundColor(Color.GREEN);
-                ratingImage.setImageResource(R.drawable.healthy_food_icon);
+                ratingText.setBackgroundColor(Color.parseColor("#9090FF81"));
+                ratingImage.setImageResource(R.drawable.low_hazard);
                 break;
             case "Moderate":
-                ratingText.setBackgroundColor(Color.YELLOW);
-                ratingImage.setImageResource(R.drawable.warning_icon);
+                ratingText.setBackgroundColor(Color.parseColor("#88FFD372"));
+                ratingImage.setImageResource(R.drawable.moderate_hazard);
                 break;
             case "High":
-                ratingText.setBackgroundColor(Color.RED);
-                ratingImage.setImageResource(R.drawable.super_hazard_icon);
+                ratingText.setBackgroundColor(Color.parseColor("#83FF8273"));
+                ratingImage.setImageResource(R.drawable.high_hazard);
                 break;
         }
 
@@ -141,10 +137,13 @@ public class SingleInspection extends AppCompatActivity {
                     break;
             }
 
+            imageCriticalRating = (ImageView) convertView.findViewById(R.id.violationCriticalIcon);
             if (violation.getCriticalValue().equals("Critical")) {
-                imageCriticalRating = (ImageView) convertView.findViewById(R.id.violationCriticalIcon);
-                imageCriticalRating.setImageResource(R.drawable.warning_icon);
+                imageCriticalRating.setImageResource(R.drawable.super_hazard_icon);
                 itemLayout.setBackgroundColor(Color.parseColor("#83FF8273"));
+            } else {
+                imageCriticalRating.setImageResource(0);
+                itemLayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
             }
 
 
