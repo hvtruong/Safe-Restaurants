@@ -1,5 +1,8 @@
 package com.example.saferestaurants.model;
 
+/* Restaurant class holds the information for a single restaurant including its
+    inspections, tracking number, name, address, city, fact type, latitude and longitude
+ */
 public class Restaurant {
 
     // attributes //

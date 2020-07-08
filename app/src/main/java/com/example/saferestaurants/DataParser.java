@@ -11,6 +11,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/*
+DataParser class parses the data file and sets up the Restaurants object with that data.
+ */
 public class DataParser {
     public static void parseRestaurants(BufferedReader reader) {
 

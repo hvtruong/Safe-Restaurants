@@ -1,12 +1,12 @@
 package com.example.saferestaurants.model;
 
-import com.example.saferestaurants.R;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
+/* Inspection class holds the information for a single inspection on a restaurant
+    including its date, type, number of critical and non critical issues, hazard rating, and list of
+    violations
+ */
 public class Inspection {
 
     // attributes //
