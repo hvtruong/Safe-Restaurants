@@ -107,10 +107,10 @@ public class MainActivity extends AppCompatActivity {
             //adding the # of issues
             TextView issues = (TextView) itemView.findViewById(R.id.issuesFound);
             if(restaurant.getInspection().size() == 0){
-                issues.setText("Number of issues: 0");
+                issues.setText(R.string.zeroIssues);
             } else {
                 int issuesFound = getNumberOfIssues(restaurant.getInspection());
-                issues.setText("Number Of issues: " + issuesFound);
+                issues.setText(getString(R.string.numOfIssues) + " " + issuesFound);
             }
             //adding the date of last inspection
             TextView lastInspectionDate = (TextView) itemView.findViewById(R.id.date);
@@ -130,9 +130,9 @@ public class MainActivity extends AppCompatActivity {
 
             Inspection inspection = restaurant.getInspection().get(0); //get the latest inspection
 
-            if(inspection.getHazardRating() == "Low"){
+            if(inspection.getHazardRating().equals(getString(R.string.low))){
                 hazardImage.setImageResource(R.drawable.low_hazard);
-            } else if(inspection.getHazardRating() == "Moderate"){
+            } else if(inspection.getHazardRating().equals(getString(R.string.moderate))){
                 hazardImage.setImageResource(R.drawable.moderate_hazard);
             } else{
                 hazardImage.setImageResource(R.drawable.high_hazard);
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String getDateOfLastInspection(Inspections inspection) {
         if(inspection.size() == 0){
-            return "No Inspections Done";
+            return getString(R.string.noInspection);
         }
         Inspection tmp = inspection.get(0);
         Date date = tmp.getDate();
@@ -163,13 +163,13 @@ public class MainActivity extends AppCompatActivity {
 
         //Date formatting depending when inspection was done
         if(month == inspectionMonth && year == inspectionYear){
-            String lessThanMonthFormat = "Last Inspection: " + (day - inspectionDay) + " days ago";
+            String lessThanMonthFormat = getString(R.string.lastInspection) + " "+  (day - inspectionDay) + getString(R.string.daysAgo);
             return lessThanMonthFormat;
         } else if(year == inspectionYear){
-            String withinYearFormat = "Last Inspection: " + tmp.getInspectionMonth() + " " + inspectionDay;
+            String withinYearFormat = getString(R.string.lastInspection) + " " +  tmp.getInspectionMonth() + " " + inspectionDay;
             return withinYearFormat;
         } else{
-            String pastYearFormat = "Last Inspection: " + tmp.getInspectionMonth() + " " + inspectionDay + " " + inspectionYear;
+            String pastYearFormat = getString(R.string.lastInspection) + " " + tmp.getInspectionMonth() + " " + inspectionDay + " " + inspectionYear;
             return pastYearFormat;
         }
     }

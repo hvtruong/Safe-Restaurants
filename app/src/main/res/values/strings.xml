@@ -22,4 +22,11 @@
     <string name="back">BACK</string>
     <string name="non_critical_issue_found">\ non-critical issue found!</string>
     <string name="critical_issue_found">\ critical issue found!</string>
+    <string name="zeroIssues">Number of issues: 0</string>
+    <string name="numOfIssues">Number Of issues: </string>
+    <string name="noInspection">No Inspections Done</string>
+    <string name="lastInspection">Last Inspection: </string>
+    <string name="daysAgo"> days ago</string>
+    <string name="low">Low</string>
+    <string name="moderate">Moderate</string>
 </resources>
