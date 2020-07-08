@@ -1,8 +1,11 @@
+
+
 package com.example.saferestaurants;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import androidx.annotation.NonNull;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,7 +26,22 @@ import com.example.saferestaurants.model.Restaurants;
 import com.example.saferestaurants.model.Violation;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
+
+/*
+ * Displays information about a single inspection of a restaurant (passed by intent):
+ *   - Full date of inspection
+ *   - Inspection type (routine / follow-up)
+ *   - Number of critical issues found
+ *   - Number of non-critical issues found
+ *   - Hazard level (Low, Moderate, High)
+ *   - Scrollable list of violations
+ *       - Violation category
+ *       - Description and violation code (tap for a toast message)
+ *       - Violation code
+ *       - Severity (critical / non-critical)
+ * */
 public class SingleInspection extends AppCompatActivity {
     Restaurants restaurants = Restaurants.getInstance();
     public static final String SHARED_PREF = "sharedPrefs";
@@ -38,7 +56,7 @@ public class SingleInspection extends AppCompatActivity {
         setContentView(R.layout.activity_single_inspection);
         Toolbar toolbar = findViewById(R.id.singleInspectionToolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         extractData();
         saveRestaurantID();
@@ -64,7 +82,7 @@ public class SingleInspection extends AppCompatActivity {
         // Display information into the relevant TextViews.
         for (int i = 0; i < textViews.length; i++) {
             TextView view = findViewById(textViews[i]);
-            view.setText(textPrefixes[i] + inspectionDetails[i]);
+            view.setText(String.format("%s%s", textPrefixes[i], inspectionDetails[i]));
         }
 
         ImageView ratingImage = findViewById(R.id.imageHazardLevel);
@@ -93,14 +111,16 @@ public class SingleInspection extends AppCompatActivity {
             super(context, android.R.layout.simple_list_item_1, violations);
         }
 
+        @NonNull
         @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
             final Violation violation = getItem(position);
 
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_violation, parent, false);
             }
 
+            assert violation != null;
             String description = violation.getDescription();
             String shortDescription = "Violation: " + description.substring(description.indexOf('['), description.indexOf(']') + 1);
 
@@ -111,7 +131,7 @@ public class SingleInspection extends AppCompatActivity {
             ImageView imageCriticalRating;
             ImageView imageViolationCategory = (ImageView) convertView.findViewById(R.id.violationCategoryIcon);
 
-            textCategory.setText("Category: " + violation.getType());
+            textCategory.setText(String.format("Category: %s", violation.getType()));
 
             switch(violation.getType()) {
                 case "Food":
@@ -148,7 +168,7 @@ public class SingleInspection extends AppCompatActivity {
 
 
             textDescription.setText(shortDescription);
-            textCriticalRating.setText("Critical Rating: " + violation.getCriticalValue());
+            textCriticalRating.setText(String.format("Critical Rating: %s", violation.getCriticalValue()));
 
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override

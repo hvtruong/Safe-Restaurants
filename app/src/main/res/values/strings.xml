@@ -29,4 +29,6 @@
     <string name="daysAgo"> days ago</string>
     <string name="low">Low</string>
     <string name="moderate">Moderate</string>
+    <string name="violation_critical_rating_icon">violation critical rating icon</string>
+    <string name="violation_category_icon">violation category icon</string>
 </resources>
