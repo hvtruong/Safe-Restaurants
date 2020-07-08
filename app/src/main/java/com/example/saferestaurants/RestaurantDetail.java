@@ -1,3 +1,8 @@
+/*This class is displaying the details about a single restaurant including:
+ -name
+ -physical address
+ -GPS coordinates
+ -a list of inspections that happened to this restaurant.*/
 package com.example.saferestaurants;
 
 import androidx.annotation.NonNull;
