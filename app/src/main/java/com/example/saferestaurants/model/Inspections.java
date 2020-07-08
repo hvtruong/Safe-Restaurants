@@ -2,6 +2,9 @@ package com.example.saferestaurants.model;
 
 import java.util.ArrayList;
 
+/* Inspections class holds a collection of all inspections on a single restaurant
+    ordered by date (most recent to latest)
+ */
 public class Inspections {
 
     // attributes //
