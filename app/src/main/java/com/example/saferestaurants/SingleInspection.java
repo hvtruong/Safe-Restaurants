@@ -8,14 +8,23 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.saferestaurants.model.Inspection;
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
+import com.example.saferestaurants.model.Violation;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -79,6 +88,87 @@ public class SingleInspection extends AppCompatActivity {
                 break;
         }
 
+        // Load violations into the ListView
+        loadViolations();
+    }
+
+    private class ViolationsAdapter extends ArrayAdapter<Violation> {
+        public ViolationsAdapter(Context context, ArrayList<Violation> violations) {
+            super(context, android.R.layout.simple_list_item_1, violations);
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            final Violation violation = getItem(position);
+
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_violation, parent, false);
+            }
+
+            String description = violation.getDescription();
+            String shortDescription = "Violation: " + description.substring(description.indexOf('['), description.indexOf(']') + 1);
+
+            LinearLayout itemLayout = (LinearLayout) convertView.findViewById(R.id.itemLayout);
+            TextView textDescription = (TextView) convertView.findViewById(R.id.violationDescription);
+            TextView textCriticalRating = (TextView) convertView.findViewById(R.id.violationCriticalRating);
+            TextView textCategory = (TextView) convertView.findViewById(R.id.violationCategoryText);
+            ImageView imageCriticalRating;
+            ImageView imageViolationCategory = (ImageView) convertView.findViewById(R.id.violationCategoryIcon);
+
+            textCategory.setText("Category: " + violation.getType());
+
+            switch(violation.getType()) {
+                case "Food":
+                    imageViolationCategory.setImageResource(R.drawable.food);
+                    break;
+                case "Pest":
+                    imageViolationCategory.setImageResource(R.drawable.pest);
+                    break;
+                case "Equipment":
+                    imageViolationCategory.setImageResource(R.drawable.equipment);
+                    break;
+                case "Sanitary":
+                    imageViolationCategory.setImageResource(R.drawable.sanitary);
+                    break;
+                case "Employee":
+                    imageViolationCategory.setImageResource(R.drawable.employee);
+                    break;
+                case "Building":
+                    imageViolationCategory.setImageResource(R.drawable.building);
+                    break;
+                case "Qualifications":
+                    imageViolationCategory.setImageResource(R.drawable.qualifications);
+                    break;
+            }
+
+            if (violation.getCriticalValue().equals("Critical")) {
+                imageCriticalRating = (ImageView) convertView.findViewById(R.id.violationCriticalIcon);
+                imageCriticalRating.setImageResource(R.drawable.warning_icon);
+                itemLayout.setBackgroundColor(Color.parseColor("#83FF8273"));
+            }
+
+
+            textDescription.setText(shortDescription);
+            textCriticalRating.setText("Critical Rating: " + violation.getCriticalValue());
+
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String toastMessage = violation.getDescription();
+                    Toast.makeText(SingleInspection.this, toastMessage, Toast.LENGTH_LONG).show();
+                }
+            });
+
+            return convertView;
+
+        }
+
+    }
+
+    private void loadViolations() {
+        ArrayAdapter<Violation> violationsAdapter = new ViolationsAdapter(this, inspection.getViolations());
+        ListView violationsListView = findViewById(R.id.listViolations);
+        violationsListView.setAdapter(violationsAdapter);
     }
 
     public static Intent makeIntent(Context context, int restaurantID, int inspectionID){
