@@ -13,8 +13,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -38,14 +36,6 @@ public class RestaurantDetail extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.singleRestaurantToolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        /*ImageButton backButton = findViewById(R.id.backButton);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            finish();
-            }
-        });*/
 
         extractRestaurant();
 
@@ -110,14 +100,13 @@ public class RestaurantDetail extends AppCompatActivity {
             Inspection currentInspection = restaurant.getInspection().get(position);
 
             //Set up hazard icons and colors for items of list view
-            String hazardLevel = currentInspection.getHazardRating();
             ImageView hazardIcon = itemView.findViewById(R.id.item_icon);
 
-            if(hazardLevel.equals("Low")) {
+            if(isLowHazard(currentInspection)) {
                 hazardIcon.setImageResource(R.drawable.low_hazard);
                 itemView.setBackgroundColor(Color.parseColor("#9090FF81"));
             }
-            else if(hazardLevel.equals("Moderate")) {
+            else if(isModerateHazard(currentInspection)) {
                 hazardIcon.setImageResource(R.drawable.moderate_hazard);
                 itemView.setBackgroundColor(Color.parseColor("#88FFD372"));
             }
@@ -131,23 +120,10 @@ public class RestaurantDetail extends AppCompatActivity {
             inspectionDate.setText(inspectionTime(currentInspection));
 
             TextView inspectionCriticalIssues = itemView.findViewById(R.id.inspectionNumberOfCriticalIssues);
-            int numberOfCriticalIssues = currentInspection.getCriticalIssues();
-
-            if(numberOfCriticalIssues == 0)
-                inspectionCriticalIssues.setText(R.string.no_critical_issue_found);
-            else if(numberOfCriticalIssues == 1)
-                inspectionCriticalIssues.setText(getString(R.string.textOffSet) + numberOfCriticalIssues + getString(R.string.critical_issue_found));
-            else
-                inspectionCriticalIssues.setText(getString(R.string.textOffSet) + numberOfCriticalIssues + getString(R.string.critical_issues_found));
+            inspectionCriticalIssues.setText(getStringCriticalIssues(currentInspection));
 
             TextView inspectionNonCriticalIssues = itemView.findViewById(R.id.inspectionNumberOfNonCriticalIssues);
-            int numberOfNonCriticalIssues = currentInspection.getNonCriticalIssues();
-            if(numberOfNonCriticalIssues == 0)
-                inspectionNonCriticalIssues.setText(R.string.no_non_critical_issue_found);
-            else if(numberOfNonCriticalIssues == 1)
-                inspectionNonCriticalIssues.setText(getString(R.string.textOffSet) + numberOfNonCriticalIssues + getString(R.string.non_critical_issue_found));
-            else
-                inspectionNonCriticalIssues.setText(getString(R.string.textOffSet) + numberOfNonCriticalIssues + getString(R.string.non_critical_issues_found));
+            inspectionNonCriticalIssues.setText(getStringNonCriticalIssues(currentInspection));
 
             //Passing chosen inspection to the next Acitivity
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -160,6 +136,34 @@ public class RestaurantDetail extends AppCompatActivity {
 
             return itemView;
         }
+    }
+
+    private String getStringNonCriticalIssues(Inspection inspection){
+        int numberOfNonCriticalIssues = inspection.getNonCriticalIssues();
+        if(numberOfNonCriticalIssues == 0)
+            return getString(R.string.no_non_critical_issue_found);
+        else if(numberOfNonCriticalIssues == 1)
+            return getString(R.string.textOffSet) + numberOfNonCriticalIssues + getString(R.string.non_critical_issue_found);
+        else
+            return getString(R.string.textOffSet) + numberOfNonCriticalIssues + getString(R.string.non_critical_issues_found);
+    }
+
+    private String getStringCriticalIssues(Inspection inspection){
+        int numberOfCriticalIssues = inspection.getCriticalIssues();
+        if(numberOfCriticalIssues == 0)
+            return getString(R.string.no_critical_issue_found);
+        else if(numberOfCriticalIssues == 1)
+            return getString(R.string.textOffSet) + numberOfCriticalIssues + getString(R.string.critical_issue_found);
+        else
+            return getString(R.string.textOffSet) + numberOfCriticalIssues + getString(R.string.critical_issues_found);
+    }
+
+    private boolean isModerateHazard(Inspection inspection) {
+        return inspection.getHazardRating().equals(getString(R.string.moderate));
+    }
+
+    private boolean isLowHazard(Inspection inspection) {
+        return inspection.getHazardRating().equals(getString(R.string.low));
     }
 
     //Return a String which tells how long ago a specific inspection happened
