@@ -65,11 +65,12 @@
         android:id="@+id/harzardLevelImage"
         android:layout_width="45dp"
         android:layout_height="41dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/todo"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars"
-        android:contentDescription="@string/todo" />
+        tools:srcCompat="@tools:sample/avatars" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
