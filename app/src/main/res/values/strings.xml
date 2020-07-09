@@ -31,4 +31,25 @@
     <string name="moderate">Moderate</string>
     <string name="violation_critical_rating_icon">violation critical rating icon</string>
     <string name="violation_category_icon">violation category icon</string>
+    <string name="safe_restaurants">Safe Restaurants</string>
+    <string name="jan">Jan</string>
+    <string name="feb">Feb</string>
+    <string name="mar">Mar</string>
+    <string name="apr">Apr</string>
+    <string name="may">May</string>
+    <string name="jun">Jun</string>
+    <string name="jul">Jul</string>
+    <string name="aug">Aug</string>
+    <string name="sep">Sep</string>
+    <string name="oct">Oct</string>
+    <string name="nov">Nov</string>
+    <string name="dec">Dec</string>
+    <string name="hazard_level">"Hazard Level: "</string>
+    <string name="date">"Date: "</string>
+    <string name="type">"Type: "</string>
+    <string name="critical_issues">"Critical Issues: "</string>
+    <string name="non_critical_issue">"Non-Critical Issues: "</string>
+    <string name="violation">"Violation: "</string>
+    <string name="category">Category: %s</string>
+    <string name="critical_rating">Critical Rating: %s</string>
 </resources>

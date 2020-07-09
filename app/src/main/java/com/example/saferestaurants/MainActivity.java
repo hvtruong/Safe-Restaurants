@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             setData();
 
         Toolbar toolbar = findViewById(R.id.mainActivityBar);
-        toolbar.setTitle("Safe Restaurants");
+        toolbar.setTitle(R.string.safe_restaurants);
 
         setUpListView();
     }
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
      * @return
      */
     private int monthStringToInt(String month){
-        String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        String[] months = {getString(R.string.jan), getString(R.string.feb), getString(R.string.mar), getString(R.string.apr), getString(R.string.may), getString(R.string.jun), getString(R.string.jul), getString(R.string.aug), getString(R.string.sep), getString(R.string.oct), getString(R.string.nov), getString(R.string.dec)};
         for(int i = 0; i < months.length; i++){
             if(month.equals(months[i])){
                 return i;

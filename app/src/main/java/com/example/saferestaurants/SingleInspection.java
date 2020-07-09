@@ -64,7 +64,7 @@ public class SingleInspection extends AppCompatActivity {
 
         // Organize data into arrays for iterative updating of TextViews.
         int[] textViews = {R.id.textHazardLevel, R.id.textInspectionDate, R.id.textInspectionType, R.id.textCritical, R.id.textNonCritical};
-        String[] textPrefixes = {"Hazard Level: ", "Date: ", "Type: ", "Critical Issues: ", "Non-Critical Issues: "};
+        String[] textPrefixes = {getString(R.string.hazard_level), getString(R.string.date), getString(R.string.type), getString(R.string.critical_issues), getString(R.string.non_critical_issue)};
 
         String inspectionDate = (inspection.getInspectionMonth() + " " +
                 inspection.getInspectionDay() + ", " +
@@ -122,7 +122,7 @@ public class SingleInspection extends AppCompatActivity {
 
             assert violation != null;
             String description = violation.getDescription();
-            String shortDescription = "Violation: " + description.substring(description.indexOf('['), description.indexOf(']') + 1);
+            String shortDescription = getString(R.string.violation) + description.substring(description.indexOf('['), description.indexOf(']') + 1);
 
             LinearLayout itemLayout = (LinearLayout) convertView.findViewById(R.id.itemLayout);
             TextView textDescription = (TextView) convertView.findViewById(R.id.violationDescription);
@@ -131,7 +131,7 @@ public class SingleInspection extends AppCompatActivity {
             ImageView imageCriticalRating;
             ImageView imageViolationCategory = (ImageView) convertView.findViewById(R.id.violationCategoryIcon);
 
-            textCategory.setText(String.format("Category: %s", violation.getType()));
+            textCategory.setText(String.format(getString(R.string.category), violation.getType()));
 
             switch(violation.getType()) {
                 case "Food":
@@ -168,7 +168,7 @@ public class SingleInspection extends AppCompatActivity {
 
 
             textDescription.setText(shortDescription);
-            textCriticalRating.setText(String.format("Critical Rating: %s", violation.getCriticalValue()));
+            textCriticalRating.setText(String.format(getString(R.string.critical_rating), violation.getCriticalValue()));
 
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
