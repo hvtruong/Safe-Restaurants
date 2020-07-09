@@ -1,3 +1,11 @@
+/**
+ * File Name: MainActivity.java
+ * Date completed: July 8, 2020
+ * Completed by: Jaiveer Dhanju
+ * Purpose: This is the main activity, which is the start of the app.
+ *          At the beginning this activity displays restaurants and
+ *          information about there most recent health inspection
+ */
 package com.example.saferestaurants;
 
 import androidx.annotation.NonNull;
