@@ -11,33 +11,28 @@ public class DataFetcher {
     private final static String inspectionDatabaseURL = "https://data.surrey.ca/api/3/action/package_show?id=fraser-health-restaurant-inspection-reports";
     private final static String inspectionFileName = "inspectionreports_itr2.csv";
 
-    // Get the calling activity to set this variable with getFilesDir().
-    private static String fileLocation;
+    private final static String restaurantDatabaseURL = "https://data.surrey.ca/api/3/action/package_show?id=restaurants";
+    private final static String restaurantFileName = "restaurants_itr2.csv";
 
+    // Get the calling activity to set this variable with getFilesDir().
+    private static String fileLocation = null;
     private static String inspectionDataURL = null;
+    private static String restaurantDataURL = null;
 
     static class RetrieveData extends AsyncTask<Void, Void, Void> {
-
         // Asynchronously fetch inspection data.
         @Override
         protected Void doInBackground(Void... voids) {
-            fetchInspectionData();
+            fetchData(inspectionDatabaseURL);
+            fetchData(restaurantDatabaseURL);
             return null;
         }
-
     }
 
-    public static void setFileLocation(String location) {
-        fileLocation = location;
-    }
-
-    public static String getInspectionFileName() {
-        return inspectionFileName;
-    }
-
-    public static String fetchInspectionDataURL() {
+    public static String fetchDataURL(String urlString) {
+        /* Obtain the URL for the most recent list of inspections. */
         try {
-            URL url = new URL(inspectionDatabaseURL);
+            URL url = new URL(urlString);
             URLConnection urlConnection = url.openConnection();
             InputStream raw = urlConnection.getInputStream();
             InputStream buffer = new BufferedInputStream(raw);
@@ -48,7 +43,7 @@ public class DataFetcher {
             // Checking that the JSON string we read from the server isn't empty.
             assert line != null;
 
-            // Dig through the JSON file to find the download URL for the most recent inspection.
+            // Dig through the JSON file to find the download URL for the relevant data.
             JSONObject json = new JSONObject(line);
             json = new JSONObject(json.get("result").toString());
             JSONArray array = new JSONArray(json.get("resources").toString());
@@ -59,13 +54,38 @@ public class DataFetcher {
         }
     }
 
-    public static void fetchInspectionData() {
-        inspectionDataURL = fetchInspectionDataURL();
+    public static void fetchRestaurantData() {
+        /* Download restaurant list CSV file. */
+
+        assert fileLocation != null;
+
+        // Get updated URL for restaurant file before downloading.
+        restaurantDataURL = fetchDataURL(restaurantDatabaseURL);
+
+
+    }
+
+    public static void fetchData(String urlString) {
+        /* Download inspection list CSV file. */
+
+        assert fileLocation != null;
+
+        // Get updated URL for inspection file before downloading.
+        String dataURL = fetchDataURL(urlString);
+        String fileName;
+        if (dataURL.contains("restaurants.csv")) {
+            restaurantDataURL = new String(dataURL);
+            fileName = restaurantFileName;
+        } else if (dataURL.contains("inspectionreports.csv")) {
+            inspectionDataURL = new String(dataURL);
+            fileName = inspectionFileName;
+        } else {
+            throw new RuntimeException();
+        }
 
         // Following code taken from https://www.baeldung.com/java-download-file#using-java-io
-        System.out.println(fileLocation + "/" + inspectionFileName);
-        try (BufferedInputStream in = new BufferedInputStream(new URL(inspectionDataURL).openStream());
-             FileOutputStream fileOutputStream = new FileOutputStream(fileLocation + "/" + inspectionFileName)) {
+        try (BufferedInputStream in = new BufferedInputStream(new URL(dataURL).openStream());
+             FileOutputStream fileOutputStream = new FileOutputStream(fileLocation + "/" + fileName)) {
             byte[] dataBuffer = new byte[1024];
             int bytesRead;
             while((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
@@ -76,6 +96,13 @@ public class DataFetcher {
         }
         // End of repurposed code.
 
+    }
+
+    public static void setFileLocation(String location) {
+        fileLocation = location;
+    }
+    public static String getInspectionFileName() {
+        return inspectionFileName;
     }
 
     // Currently, the DataParser can't handle the orientation of data in the new CSV file.
