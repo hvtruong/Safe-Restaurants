@@ -29,8 +29,21 @@ public class DataParser {
 
         try {
             while((line = reader.readLine()) != null){
+                String restaurantName;
+                String[] restaurantAttributes;
+                if (line.contains("\"")) {
+                    restaurantName = line.split("\"")[1];
+                    String lineFix = line.replace("\"" + restaurantName + "\"", "");
+                    restaurantAttributes = lineFix.split(",");
+                } else {
+                    restaurantName = "";
+                    restaurantAttributes = line.split(",");
+                }
 
-                String[] restaurantAttributes = line.split(",");
+                if (restaurantAttributes[1].equals("")) {
+                    restaurantAttributes[1] = new String(restaurantName);
+                }
+
                 Restaurant restaurant = new Restaurant(
                         restaurantAttributes[0].replace("\"", ""),     // tracking Number
                         restaurantAttributes[1].replace("\"", ""),     // name
@@ -63,22 +76,44 @@ public class DataParser {
 
         try {
             while((line = reader.readLine()) != null){
+                // Format from Fraser Health inspection lists:
+                // {TRACKINGNUMBER},{INSPECTIONDATE},{INSPTYPE},{NUMCRITICAL},{VIOLLUMP},{HAZARDRATING}
 
-                String[] inspectionAttributes;
+                String[] inspectionAttributes = new String[7];
+                String[] rawInspectionAttributes = line.split(",");
 
+                if (rawInspectionAttributes.length == 0) {
+                    break;
+                }
+
+                /*
+                // x = last character in the string.
                 char x = line.charAt(line.length()-1);
 
-                if(x == ','){ // if a line ends in a comma then it has no violations
+                if(x == ',') { // if a line ends in a comma then it has no violations
                     inspectionAttributes = line.split(",", 6);
                     inspectionAttributes[5] = inspectionAttributes[5].replaceAll(",", "");
                 } else {
                     inspectionAttributes = line.split(",", 7);
                 }
 
+                 */
+
+                // Separate the data into elements of a string array.
+                for (int i = 0; i < 5; i++) {
+                    inspectionAttributes[i] = rawInspectionAttributes[i];
+                }
+                inspectionAttributes[6] = rawInspectionAttributes[rawInspectionAttributes.length - 1];
+
+                // Make sure the array has violations before attempting to access them.
+                if (line.indexOf('\"') != -1) {
+                    inspectionAttributes[5] = line.split("\"")[1];
+                }
+
                 ArrayList<String> violations = new ArrayList<>();
 
-                if(inspectionAttributes.length == 7){
-                    String[] violationsSplit = inspectionAttributes[6].replace("\"", "").split("\\|");
+                if (inspectionAttributes[5] != null) {
+                    String[] violationsSplit = inspectionAttributes[5].replace("\"", "").split("\\|");
                     for(String violation: violationsSplit){
                         violations.add(violation);
                     }
@@ -88,11 +123,13 @@ public class DataParser {
                         inspectionAttributes[2].replace("\"", ""),  // type
                         inspectionAttributes[3],                                        // critical issues
                         inspectionAttributes[4],                                        // non critical issues
-                        inspectionAttributes[5].replace("\"", ""),  // hazard rating
+                        inspectionAttributes[6].replace("\"", ""),  // hazard rating
                         violations                                                      // violations
                 );
                 int index = restaurants.find(inspectionAttributes[0].replace("\"", ""));
                 restaurants.get(index).addInspection(inspection);
+
+
 
             }
         } catch (IOException e) {
