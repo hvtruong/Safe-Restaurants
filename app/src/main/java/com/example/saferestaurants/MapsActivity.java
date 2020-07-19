@@ -70,7 +70,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void setData() {
 
         // Setting up Restaurants Class Data //
-        InputStream inputStreamRestaurants = getResources().openRawResource(R.raw.restaurants_itr1);
+        FileInputStream inputStreamRestaurants = null;
+        try {
+            File file = new File(getFilesDir().toString() + "/" + "restaurants_itr2.csv");
+            for (String filee : getFilesDir().list()) {
+                System.out.println(filee);
+            }
+
+            inputStreamRestaurants = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // InputStream inputStreamRestaurants = getResources().openRawResource(R.raw.restaurants_itr1);
         BufferedReader readerRestaurants = new BufferedReader(
                 new InputStreamReader(inputStreamRestaurants, Charset.forName("UTF-8"))
         );
@@ -78,7 +89,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //                                  //
 
         // Setting up Inspections Data for each Restaurant //
-        InputStream inputStreamInspections = getResources().openRawResource(R.raw.inspectionreports_itr1);
+        InputStream inputStreamInspections = null;
+        try {
+            File file = new File(getFilesDir().toString() + "/" + "inspectionreports_itr2.csv");
+            for (String filee : getFilesDir().list()) {
+                System.out.println(filee);
+            }
+
+            inputStreamInspections = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        //InputStream inputStreamInspections = getResources().openRawResource(R.raw.inspectionreports_itr1);
         BufferedReader readerInspections = new BufferedReader(
                 new InputStreamReader(inputStreamInspections, Charset.forName("UTF-8"))
         );

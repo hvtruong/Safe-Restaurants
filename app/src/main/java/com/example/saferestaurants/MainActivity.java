@@ -29,6 +29,9 @@ import com.example.saferestaurants.model.Restaurants;
 
 import java.io.BufferedReader;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
@@ -46,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        DataFetcher.setFileLocation(getFilesDir().toString());
+        new DataFetcher.RetrieveData().execute();
+
         if(isRestaurantsEmpty())
             setData();
 
@@ -53,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle(R.string.safe_restaurants);
 
         setUpListView();
+
     }
 
     private boolean isRestaurantsEmpty() {
@@ -62,7 +69,18 @@ public class MainActivity extends AppCompatActivity {
     private void setData() {
 
         // Setting up Restaurants Class Data //
-        InputStream inputStreamRestaurants = getResources().openRawResource(R.raw.restaurants_itr1);
+        FileInputStream inputStreamRestaurants = null;
+        try {
+            File file = new File(getFilesDir().toString() + "/" + "restaurants_itr2.csv");
+            for (String filee : getFilesDir().list()) {
+                System.out.println(filee);
+            }
+
+            inputStreamRestaurants = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // InputStream inputStreamRestaurants = getResources().openRawResource(R.raw.restaurants_itr1);
         BufferedReader readerRestaurants = new BufferedReader(
                 new InputStreamReader(inputStreamRestaurants, Charset.forName("UTF-8"))
         );
@@ -70,7 +88,18 @@ public class MainActivity extends AppCompatActivity {
         //                                  //
 
         // Setting up Inspections Data for each Restaurant //
-        InputStream inputStreamInspections = getResources().openRawResource(R.raw.inspectionreports_itr1);
+        InputStream inputStreamInspections = null;
+        try {
+            File file = new File(getFilesDir().toString() + "/" + "inspectionreports_itr2.csv");
+            for (String filee : getFilesDir().list()) {
+                System.out.println(filee);
+            }
+
+            inputStreamInspections = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        //InputStream inputStreamInspections = getResources().openRawResource(R.raw.inspectionreports_itr1);
         BufferedReader readerInspections = new BufferedReader(
                 new InputStreamReader(inputStreamInspections, Charset.forName("UTF-8"))
         );
