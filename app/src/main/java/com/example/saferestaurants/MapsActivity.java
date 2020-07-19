@@ -36,8 +36,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        if(isRestaurantsEmpty())
-            setData();
+        /*if(isRestaurantsEmpty())
+            setData();*/
     }
 
 
@@ -112,6 +112,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for(int i = 0; i < restaurants.size(); i++){
             Restaurant currentRestaurant = restaurants.get(i);
             LatLng restaurantGPS = new LatLng(currentRestaurant.getLatitude(), currentRestaurant.getLongitude());
+
+            //String restaurantHazardLevel = currentRestaurant.getInspection().get(0).getHazardRating();
+
             mMap.addMarker(new MarkerOptions()
                     .position(restaurantGPS)
                     .title(currentRestaurant.getName())
