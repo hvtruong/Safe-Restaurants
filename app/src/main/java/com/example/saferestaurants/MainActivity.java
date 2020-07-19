@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle(R.string.safe_restaurants);
 
         long time = System.currentTimeMillis();
-        if(isUpdateTime(time)){
+        if(isUpdateTime(time) && isRestaurantsEmpty()){
             showUpdatePopUp(time);
         }
 
@@ -155,7 +155,24 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
     //              //              //              //
+    private void setInitialData(){
+        // Setting up Restaurants Class Data //
+        InputStream inputStreamRestaurants = getResources().openRawResource(R.raw.restaurants_itr1);
+        BufferedReader readerRestaurants = new BufferedReader(
+                new InputStreamReader(inputStreamRestaurants, Charset.forName("UTF-8"))
+        );
+        DataParser.parseRestaurantsIteration1(readerRestaurants);
+        //                                  //
 
+        // Setting up Inspections Data for each Restaurant //
+        InputStream inputStreamInspections = getResources().openRawResource(R.raw.inspectionreports_itr1);
+        BufferedReader readerInspections = new BufferedReader(
+                new InputStreamReader(inputStreamInspections, Charset.forName("UTF-8"))
+        );
+        DataParser.parseInspectionsIteration1(readerInspections);
+        //                                                //
+
+    }
     private void setData() {
 
         // Setting up Restaurants Class Data //
@@ -193,6 +210,9 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        if(isRestaurantsEmpty()){
+            setInitialData();
+        }
     }
 
     private void setUpListView() {
