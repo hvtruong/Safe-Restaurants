@@ -79,10 +79,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //verify permissions
         getLocationAccess();
         setUpToggleButton();
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-//                .findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(this);
 
         long time = System.currentTimeMillis();
         if(isUpdateTime(time) && isRestaurantsEmpty()){
@@ -360,21 +356,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.addMarker(new MarkerOptions()
                         .position(restaurantGPS)
                         .title(currentRestaurant.getName())
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+                        .icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.moderate_hazard_24))
                 );
             }
             else if(hazardLevel.equals(getString(R.string.low))){
                 mMap.addMarker(new MarkerOptions()
                         .position(restaurantGPS)
                         .title(currentRestaurant.getName())
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                        .icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.low_hazard_24dp))
                 );
             }
             else{
                 mMap.addMarker(new MarkerOptions()
                         .position(restaurantGPS)
                         .title(currentRestaurant.getName())
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                        .icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.high_hazard_24dp))
                 );
             }
         }
