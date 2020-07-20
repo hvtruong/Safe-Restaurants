@@ -9,6 +9,9 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.nfc.Tag;
 import android.os.Bundle;
@@ -25,6 +28,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -87,12 +91,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(49.2797519, -122.96552349999997);
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Current location"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
         if (permissionGranted) {
             getDeviceLocation();
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -101,7 +99,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.setMyLocationEnabled(true);
         }
         //Display pegs for restaurants in out list
-        //displayRestaurantPegs();
+        displayRestaurantPegs();
     }
 
     private void getDeviceLocation(){
@@ -236,22 +234,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 hazardLevel = ("Low");
             }
 
-            float hazardColor;
             if(hazardLevel.equals(getString(R.string.moderate))){
-                hazardColor = BitmapDescriptorFactory.HUE_YELLOW;
+                mMap.addMarker(new MarkerOptions()
+                        .position(restaurantGPS)
+                        .title(currentRestaurant.getName())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+                );
             }
             else if(hazardLevel.equals(getString(R.string.low))){
-                hazardColor = BitmapDescriptorFactory.HUE_GREEN;
+                mMap.addMarker(new MarkerOptions()
+                        .position(restaurantGPS)
+                        .title(currentRestaurant.getName())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                );
             }
             else{
-                hazardColor = BitmapDescriptorFactory.HUE_RED;
+                mMap.addMarker(new MarkerOptions()
+                        .position(restaurantGPS)
+                        .title(currentRestaurant.getName())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                );
             }
-            mMap.addMarker(new MarkerOptions()
-                    .position(restaurantGPS)
-                    .title(currentRestaurant.getName())
-                    .draggable(false)
-                    .icon(BitmapDescriptorFactory.defaultMarker(hazardColor))
-            );
         }
+    }
+
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 }
