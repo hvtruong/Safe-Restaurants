@@ -54,4 +54,6 @@
     <string name="critical_rating">Critical Rating: %s</string>
     <string name="title_activity_maps">Map</string>
     <string name="list_view">List View</string>
+    <string name="Hazard_level">"Hazard level: "</string>
+    <string name="end_line">\n</string>
 </resources>
