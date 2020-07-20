@@ -13,8 +13,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -26,6 +32,8 @@ import com.example.saferestaurants.model.Inspection;
 import com.example.saferestaurants.model.Inspections;
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 
@@ -34,6 +42,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 import java.util.Calendar;
@@ -43,29 +52,127 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
     //Fields
     private Restaurants restaurants = Restaurants.getInstance();
+    private static ProgressDialog loadingAlert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DataFetcher.setFileLocation(getFilesDir().toString());
-        new DataFetcher.RetrieveData().execute();
+        Toolbar toolbar = findViewById(R.id.mainActivityBar);
+        toolbar.setTitle(R.string.safe_restaurants);
+
+        long time = System.currentTimeMillis();
+        if(isUpdateTime(time) && isRestaurantsEmpty()){
+            showUpdatePopUp(time);
+        }
 
         if(isRestaurantsEmpty())
             setData();
 
-        Toolbar toolbar = findViewById(R.id.mainActivityBar);
-        toolbar.setTitle(R.string.safe_restaurants);
-
         setUpListView();
-
     }
 
     private boolean isRestaurantsEmpty() {
         return restaurants.size() == 0;
     }
 
+    class RetrieveData extends AsyncTask<Void, Void, Void> {
+        // Asynchronously fetch inspection data.
+        @Override
+        protected Void doInBackground(Void... voids) {
+            DataFetcher.fetchData(DataFetcher.inspectionDatabaseURL);
+            DataFetcher.fetchData(DataFetcher.restaurantDatabaseURL);
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            loadingAlert = new ProgressDialog(MainActivity.this);
+            loadingAlert.setMessage("Updating data, Please wait..");
+            loadingAlert.setCancelable(false);
+            loadingAlert.show();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            restaurants = Restaurants.newInstance();
+            setData();
+            setUpListView();
+            loadingAlert.dismiss();
+        }
+    }
+
+    //          new stuff for time             //
+    private boolean isUpdateTime(long currentTime){
+        long time = loadTime();
+        return currentTime - time >= 7.2E7;
+    }
+    private void saveTime(long time){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(time);
+        editor.putString("Time", json);
+        editor.apply();
+    }
+    private long loadTime(){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("Time", String.valueOf(0));
+        Type type = new TypeToken<Long>() {}.getType();
+        return (Long) gson.fromJson(json, type);
+    }
+    //              //              //              //
+
+//  ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   //
+
+    //              //              //              //
+    private void showUpdatePopUp(final long time){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage("Do you want to update your restaurant data?");
+        builder.setTitle("Update Available");
+        builder.setCancelable(false);
+
+        builder.setPositiveButton("Update", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                saveTime(time);
+                dialog.cancel();
+
+                DataFetcher.setFileLocation(getFilesDir().toString());
+                new RetrieveData().execute();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+    //              //              //              //
+    private void setInitialData(){
+        // Setting up Restaurants Class Data //
+        InputStream inputStreamRestaurants = getResources().openRawResource(R.raw.restaurants_itr1);
+        BufferedReader readerRestaurants = new BufferedReader(
+                new InputStreamReader(inputStreamRestaurants, Charset.forName("UTF-8"))
+        );
+        DataParser.parseRestaurantsIteration1(readerRestaurants);
+        //                                  //
+
+        // Setting up Inspections Data for each Restaurant //
+        InputStream inputStreamInspections = getResources().openRawResource(R.raw.inspectionreports_itr1);
+        BufferedReader readerInspections = new BufferedReader(
+                new InputStreamReader(inputStreamInspections, Charset.forName("UTF-8"))
+        );
+        DataParser.parseInspectionsIteration1(readerInspections);
+        //                                                //
+
+    }
     private void setData() {
 
         // Setting up Restaurants Class Data //
@@ -77,18 +184,16 @@ public class MainActivity extends AppCompatActivity {
             }
 
             inputStreamRestaurants = new FileInputStream(file);
+            BufferedReader readerRestaurants = new BufferedReader(
+                    new InputStreamReader(inputStreamRestaurants, Charset.forName("UTF-8"))
+            );
+            DataParser.parseRestaurants(readerRestaurants);
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        // InputStream inputStreamRestaurants = getResources().openRawResource(R.raw.restaurants_itr1);
-        BufferedReader readerRestaurants = new BufferedReader(
-                new InputStreamReader(inputStreamRestaurants, Charset.forName("UTF-8"))
-        );
-        DataParser.parseRestaurants(readerRestaurants);
-        //                                  //
 
-        // Setting up Inspections Data for each Restaurant //
-        InputStream inputStreamInspections = null;
+        FileInputStream inputStreamInspections = null;
         try {
             File file = new File(getFilesDir().toString() + "/" + "inspectionreports_itr2.csv");
             for (String filee : getFilesDir().list()) {
@@ -96,15 +201,18 @@ public class MainActivity extends AppCompatActivity {
             }
 
             inputStreamInspections = new FileInputStream(file);
+            BufferedReader readerInspections = new BufferedReader(
+                    new InputStreamReader(inputStreamInspections, Charset.forName("UTF-8"))
+            );
+            DataParser.parseInspections(readerInspections);
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        //InputStream inputStreamInspections = getResources().openRawResource(R.raw.inspectionreports_itr1);
-        BufferedReader readerInspections = new BufferedReader(
-                new InputStreamReader(inputStreamInspections, Charset.forName("UTF-8"))
-        );
-        DataParser.parseInspections(readerInspections);
-        //                                                //
+
+        if(isRestaurantsEmpty()){
+            setInitialData();
+        }
     }
 
     private void setUpListView() {

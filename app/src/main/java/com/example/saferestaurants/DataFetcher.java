@@ -1,17 +1,22 @@
 package com.example.saferestaurants;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
+import android.app.Fragment;
 
 import java.net.*;
 import java.io.*;
 import org.json.*;
 
+
+
 public class DataFetcher {
 
-    private final static String inspectionDatabaseURL = "https://data.surrey.ca/api/3/action/package_show?id=fraser-health-restaurant-inspection-reports";
+    public final static String inspectionDatabaseURL = "https://data.surrey.ca/api/3/action/package_show?id=fraser-health-restaurant-inspection-reports";
     private final static String inspectionFileName = "inspectionreports_itr2.csv";
 
-    private final static String restaurantDatabaseURL = "https://data.surrey.ca/api/3/action/package_show?id=restaurants";
+    public final static String restaurantDatabaseURL = "https://data.surrey.ca/api/3/action/package_show?id=restaurants";
     private final static String restaurantFileName = "restaurants_itr2.csv";
 
     // Get the calling activity to set this variable with getFilesDir().
@@ -19,6 +24,7 @@ public class DataFetcher {
     private static String inspectionDataURL = null;
     private static String restaurantDataURL = null;
 
+    /*
     static class RetrieveData extends AsyncTask<Void, Void, Void> {
         // Asynchronously fetch inspection data.
         @Override
@@ -27,7 +33,8 @@ public class DataFetcher {
             fetchData(restaurantDatabaseURL);
             return null;
         }
-    }
+
+    }*/
 
     public static String fetchDataURL(String urlString) {
         /* Obtain the URL for the most recent list of inspections. */
