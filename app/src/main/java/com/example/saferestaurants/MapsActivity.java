@@ -11,8 +11,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import com.example.saferestaurants.model.Inspection;
+import com.example.saferestaurants.model.Inspections;
+import com.example.saferestaurants.model.Restaurant;
+import com.example.saferestaurants.model.Restaurants;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -35,6 +41,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        DataFetcher.setFileLocation(getFilesDir().toString());
+        new DataFetcher.RetrieveData().execute();
 
         if(isRestaurantsEmpty())
             setData();
@@ -108,16 +117,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //                                                //
     }
 
+
     public void displayRestaurantPegs(){
         for(int i = 0; i < restaurants.size(); i++){
             Restaurant currentRestaurant = restaurants.get(i);
             LatLng restaurantGPS = new LatLng(currentRestaurant.getLatitude(), currentRestaurant.getLongitude());
+            String hazardLevel;
 
-            //String restaurantHazardLevel = "SHIT";
+            if(currentRestaurant.getInspection().size()!= 0){
+                hazardLevel = currentRestaurant.getInspection().get(0).getHazardRating();
+            }
+            else{
+                hazardLevel = ("Low");
+            }
 
+            float hazardColor;
+            if(hazardLevel.equals(getString(R.string.moderate))){
+                hazardColor = BitmapDescriptorFactory.HUE_YELLOW;
+            }
+            else if(hazardLevel.equals(getString(R.string.low))){
+                hazardColor = BitmapDescriptorFactory.HUE_GREEN;
+            }
+            else{
+                hazardColor = BitmapDescriptorFactory.HUE_RED;
+            }
             mMap.addMarker(new MarkerOptions()
                     .position(restaurantGPS)
                     .title(currentRestaurant.getName())
+                    .draggable(false)
+                    .icon(BitmapDescriptorFactory.defaultMarker(hazardColor))
             );
         }
     }
