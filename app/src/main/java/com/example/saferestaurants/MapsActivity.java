@@ -6,8 +6,12 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -15,6 +19,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.nfc.Tag;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +42,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 
 import com.example.saferestaurants.model.Inspection;
@@ -50,6 +57,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -62,6 +70,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Boolean permissionGranted = false;
     private FusedLocationProviderClient fusedLocationProviderClient;
     Restaurants restaurants = Restaurants.getInstance();
+    private static ProgressDialog loadingAlert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +84,150 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                .findFragmentById(R.id.map);
 //        mapFragment.getMapAsync(this);
 
-        DataFetcher.setFileLocation(getFilesDir().toString());
-        new DataFetcher.RetrieveData().execute();
+        long time = System.currentTimeMillis();
+        if(isUpdateTime(time) && isRestaurantsEmpty()){
+            showUpdatePopUp(time);
+        }
 
         if(isRestaurantsEmpty())
             setData();
+    }
+
+    class RetrieveData extends AsyncTask<Void, Void, Void> {
+        // Asynchronously fetch inspection data.
+        @Override
+        protected Void doInBackground(Void... voids) {
+            DataFetcher.fetchData(DataFetcher.inspectionDatabaseURL);
+            DataFetcher.fetchData(DataFetcher.restaurantDatabaseURL);
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            loadingAlert = new ProgressDialog(MapsActivity.this);
+            loadingAlert.setMessage("Updating data, Please wait..");
+            loadingAlert.setCancelable(false);
+            loadingAlert.show();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            restaurants = Restaurants.newInstance();
+            setData();
+            loadingAlert.dismiss();
+        }
+    }
+
+    //          new stuff for time             //
+    private boolean isUpdateTime(long currentTime){
+        long time = loadTime();
+        return currentTime - time >= 7.2E7;
+    }
+    private void saveTime(long time){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(time);
+        editor.putString("Time", json);
+        editor.apply();
+    }
+    private long loadTime(){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("Time", String.valueOf(0));
+        Type type = new TypeToken<Long>() {}.getType();
+        return (Long) gson.fromJson(json, type);
+    }
+    //              //              //              //
+
+//  ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   //
+
+    //              //              //              //
+    private void showUpdatePopUp(final long time){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+        builder.setMessage("Do you want to update your restaurant data?");
+        builder.setTitle("Update Available");
+        builder.setCancelable(false);
+
+        builder.setPositiveButton("Update", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                saveTime(time);
+                dialog.cancel();
+
+                DataFetcher.setFileLocation(getFilesDir().toString());
+                new MapsActivity.RetrieveData().execute();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+    //              //              //              //
+    private void setInitialData(){
+        // Setting up Restaurants Class Data //
+        InputStream inputStreamRestaurants = getResources().openRawResource(R.raw.restaurants_itr1);
+        BufferedReader readerRestaurants = new BufferedReader(
+                new InputStreamReader(inputStreamRestaurants, Charset.forName("UTF-8"))
+        );
+        DataParser.parseRestaurantsIteration1(readerRestaurants);
+        //                                  //
+
+        // Setting up Inspections Data for each Restaurant //
+        InputStream inputStreamInspections = getResources().openRawResource(R.raw.inspectionreports_itr1);
+        BufferedReader readerInspections = new BufferedReader(
+                new InputStreamReader(inputStreamInspections, Charset.forName("UTF-8"))
+        );
+        DataParser.parseInspectionsIteration1(readerInspections);
+        //                                                //
+
+    }
+    private void setData() {
+
+        // Setting up Restaurants Class Data //
+        FileInputStream inputStreamRestaurants = null;
+        try {
+            File file = new File(getFilesDir().toString() + "/" + "restaurants_itr2.csv");
+            for (String filee : getFilesDir().list()) {
+                System.out.println(filee);
+            }
+
+            inputStreamRestaurants = new FileInputStream(file);
+            BufferedReader readerRestaurants = new BufferedReader(
+                    new InputStreamReader(inputStreamRestaurants, Charset.forName("UTF-8"))
+            );
+            DataParser.parseRestaurants(readerRestaurants);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        FileInputStream inputStreamInspections = null;
+        try {
+            File file = new File(getFilesDir().toString() + "/" + "inspectionreports_itr2.csv");
+            for (String filee : getFilesDir().list()) {
+                System.out.println(filee);
+            }
+
+            inputStreamInspections = new FileInputStream(file);
+            BufferedReader readerInspections = new BufferedReader(
+                    new InputStreamReader(inputStreamInspections, Charset.forName("UTF-8"))
+            );
+            DataParser.parseInspections(readerInspections);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if(isRestaurantsEmpty()){
+            setInitialData();
+        }
     }
 
     private void setUpToggleButton() {
@@ -151,7 +299,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //verify permissions
     private void getLocationAccess(){
         String [] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION};
+                Manifest.permission.ACCESS_COARSE_LOCATION};
 
         if(ContextCompat.checkSelfPermission(this.getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             if(ContextCompat.checkSelfPermission(this.getApplicationContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -194,48 +342,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean isRestaurantsEmpty() {
         return restaurants.size() == 0;
     }
-
-    private void setData() {
-
-        // Setting up Restaurants Class Data //
-        FileInputStream inputStreamRestaurants = null;
-        try {
-            File file = new File(getFilesDir().toString() + "/" + "restaurants_itr2.csv");
-            for (String filee : getFilesDir().list()) {
-                System.out.println(filee);
-            }
-
-            inputStreamRestaurants = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        // InputStream inputStreamRestaurants = getResources().openRawResource(R.raw.restaurants_itr1);
-        BufferedReader readerRestaurants = new BufferedReader(
-                new InputStreamReader(inputStreamRestaurants, Charset.forName("UTF-8"))
-        );
-        DataParser.parseRestaurants(readerRestaurants);
-        //                                  //
-
-        // Setting up Inspections Data for each Restaurant //
-        InputStream inputStreamInspections = null;
-        try {
-            File file = new File(getFilesDir().toString() + "/" + "inspectionreports_itr2.csv");
-            for (String filee : getFilesDir().list()) {
-                System.out.println(filee);
-            }
-
-            inputStreamInspections = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        //InputStream inputStreamInspections = getResources().openRawResource(R.raw.inspectionreports_itr1);
-        BufferedReader readerInspections = new BufferedReader(
-                new InputStreamReader(inputStreamInspections, Charset.forName("UTF-8"))
-        );
-        DataParser.parseInspections(readerInspections);
-        //                                                //
-    }
-
 
     public void displayRestaurantPegs(){
         for(int i = 0; i < restaurants.size(); i++){
@@ -282,4 +388,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         vectorDrawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
+
 }
