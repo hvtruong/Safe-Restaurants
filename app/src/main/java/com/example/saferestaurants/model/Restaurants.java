@@ -19,6 +19,12 @@ public class Restaurants {
         return instance;
     }
 
+    public static Restaurants newInstance(){
+        instance = null;
+        instance = new Restaurants();
+        return instance;
+    }
+
     // 'setter' //
     public void add(Restaurant restaurant){
         this.restaurants.add(restaurant);
