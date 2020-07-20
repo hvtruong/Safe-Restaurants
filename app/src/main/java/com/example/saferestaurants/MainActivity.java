@@ -70,9 +70,6 @@ public class MainActivity extends AppCompatActivity {
         if(isRestaurantsEmpty())
             setData();
 
-        Toolbar toolbar = findViewById(R.id.mainActivityBar);
-        toolbar.setTitle(R.string.safe_restaurants);
-        //test
         setUpListView();
     }
 
