@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(isRestaurantsEmpty())
             setData();
+        //test
 
         setUpListView();
     }

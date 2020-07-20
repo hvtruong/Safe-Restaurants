@@ -33,7 +33,7 @@
             android:value="AIzaSyC7a2k7u8mVPY28WUEg_UHsHi2ecZaA2v0" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".MapsActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,7 +48,7 @@
             android:name=".RestaurantDetail"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".MapsActivity"
+            android:name=".MainActivity"
             android:parentActivityName=".RestaurantDetail" />
 
         <meta-data
