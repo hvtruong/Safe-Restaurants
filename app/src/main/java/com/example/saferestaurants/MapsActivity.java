@@ -10,6 +10,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.nfc.Tag;
 import android.os.Bundle;
@@ -28,11 +31,18 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+
+import com.example.saferestaurants.model.Inspection;
+import com.example.saferestaurants.model.Inspections;
+import com.example.saferestaurants.model.Restaurant;
+import com.example.saferestaurants.model.Restaurants;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -65,8 +75,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                .findFragmentById(R.id.map);
 //        mapFragment.getMapAsync(this);
 
-        //if(isRestaurantsEmpty())
-        //setData();
+        DataFetcher.setFileLocation(getFilesDir().toString());
+        new DataFetcher.RetrieveData().execute();
+
+        if(isRestaurantsEmpty())
+            setData();
     }
 
     private void setUpToggleButton() {
@@ -94,12 +107,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(49.2797519, -122.96552349999997);
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Current location"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
         if (permissionGranted) {
             getDeviceLocation();
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -108,7 +115,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.setMyLocationEnabled(true);
         }
         //Display pegs for restaurants in out list
-        //displayRestaurantPegs();
+        displayRestaurantPegs();
     }
 
     private void getDeviceLocation(){
@@ -229,17 +236,50 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //                                                //
     }
 
+
     public void displayRestaurantPegs(){
         for(int i = 0; i < restaurants.size(); i++){
             Restaurant currentRestaurant = restaurants.get(i);
             LatLng restaurantGPS = new LatLng(currentRestaurant.getLatitude(), currentRestaurant.getLongitude());
+            String hazardLevel;
 
-            //String restaurantHazardLevel = "SHIT";
+            if(currentRestaurant.getInspection().size()!= 0){
+                hazardLevel = currentRestaurant.getInspection().get(0).getHazardRating();
+            }
+            else{
+                hazardLevel = ("Low");
+            }
 
-            mMap.addMarker(new MarkerOptions()
-                    .position(restaurantGPS)
-                    .title(currentRestaurant.getName())
-            );
+            if(hazardLevel.equals(getString(R.string.moderate))){
+                mMap.addMarker(new MarkerOptions()
+                        .position(restaurantGPS)
+                        .title(currentRestaurant.getName())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+                );
+            }
+            else if(hazardLevel.equals(getString(R.string.low))){
+                mMap.addMarker(new MarkerOptions()
+                        .position(restaurantGPS)
+                        .title(currentRestaurant.getName())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                );
+            }
+            else{
+                mMap.addMarker(new MarkerOptions()
+                        .position(restaurantGPS)
+                        .title(currentRestaurant.getName())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                );
+            }
         }
+    }
+
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 }

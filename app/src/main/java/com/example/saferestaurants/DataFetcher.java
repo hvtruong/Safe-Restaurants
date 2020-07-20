@@ -24,7 +24,7 @@ public class DataFetcher {
     private static String inspectionDataURL = null;
     private static String restaurantDataURL = null;
 
-    /*
+
     static class RetrieveData extends AsyncTask<Void, Void, Void> {
         // Asynchronously fetch inspection data.
         @Override
@@ -34,7 +34,7 @@ public class DataFetcher {
             return null;
         }
 
-    }*/
+    }
 
     public static String fetchDataURL(String urlString) {
         /* Obtain the URL for the most recent list of inspections. */
