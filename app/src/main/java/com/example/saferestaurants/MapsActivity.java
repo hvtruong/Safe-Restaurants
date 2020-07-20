@@ -27,8 +27,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.saferestaurants.model.ClusterMarker;
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
+import com.example.saferestaurants.util.ClusterManagerRenderer;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
@@ -50,6 +52,7 @@ import com.example.saferestaurants.model.Inspection;
 import com.example.saferestaurants.model.Inspections;
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
+import com.google.maps.android.clustering.ClusterManager;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -59,6 +62,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -71,6 +75,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient fusedLocationProviderClient;
     Restaurants restaurants = Restaurants.getInstance();
     private static ProgressDialog loadingAlert;
+    private ClusterManager<ClusterMarker> clusterManager;
+    private ClusterManagerRenderer clusterManagerRenderer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -258,7 +264,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             mMap.setMyLocationEnabled(true);
         }
-        //Display pegs for restaurants in out list
+        //Display and cluster pegs for restaurants in out list
         displayRestaurantPegs();
     }
 
@@ -340,10 +346,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void displayRestaurantPegs(){
+        if(clusterManager == null) {
+            clusterManager = new ClusterManager<ClusterMarker>(getApplicationContext(), mMap);
+            mMap.setOnCameraIdleListener(clusterManager);
+            mMap.setOnMarkerClickListener(clusterManager);
+            mMap.setOnInfoWindowClickListener(clusterManager);
+        }
+        if(clusterManagerRenderer == null){
+            clusterManagerRenderer = new ClusterManagerRenderer(
+                    MapsActivity.this,
+                    mMap,
+                    clusterManager
+            );
+            clusterManager.setRenderer(clusterManagerRenderer);
+        }
         for(int i = 0; i < restaurants.size(); i++){
             Restaurant currentRestaurant = restaurants.get(i);
             LatLng restaurantGPS = new LatLng(currentRestaurant.getLatitude(), currentRestaurant.getLongitude());
             String hazardLevel;
+            if(currentRestaurant.getInspection().size()!= 0){
+                hazardLevel = currentRestaurant.getInspection().get(0).getHazardRating();
+            }
+            else{
+                hazardLevel = ("Low");
+            }
+            int hazardIcon;
+            if(hazardLevel.equals("Low")){
+                hazardIcon = R.drawable.low_hazard_24dp;
+            }
+            else if (hazardLevel.equals("Moderate")){
+                hazardIcon = R.drawable.moderate_hazard_24;
+            }
+            else{
+                hazardIcon = R.drawable.high_hazard_24dp;
+            }
+            ClusterMarker newClusterMarker = new ClusterMarker(
+                    restaurantGPS,
+                    currentRestaurant.getName(),
+                    currentRestaurant.getPhysicalAddress(),
+                    hazardIcon
+            );
+            clusterManager.addItem(newClusterMarker);
 
             if(currentRestaurant.getInspection().size()!= 0){
                 hazardLevel = currentRestaurant.getInspection().get(0).getHazardRating();
@@ -352,11 +395,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 hazardLevel = ("Low");
             }
 
-            if(hazardLevel.equals(getString(R.string.moderate))){
+            /*if(hazardLevel.equals(getString(R.string.moderate))){
                 mMap.addMarker(new MarkerOptions()
                         .position(restaurantGPS)
                         .title(currentRestaurant.getName())
                         .icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.moderate_hazard_24))
+                        .snippet(currentRestaurant.getPhysicalAddress() + getString(R.string.end_line) + getString(R.string.Hazard_level) + hazardLevel)
                 );
             }
             else if(hazardLevel.equals(getString(R.string.low))){
@@ -364,6 +408,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .position(restaurantGPS)
                         .title(currentRestaurant.getName())
                         .icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.low_hazard_24dp))
+                        .snippet(currentRestaurant.getPhysicalAddress() + getString(R.string.end_line) + getString(R.string.Hazard_level) + hazardLevel)
                 );
             }
             else{
@@ -371,9 +416,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .position(restaurantGPS)
                         .title(currentRestaurant.getName())
                         .icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.high_hazard_24dp))
+                        .snippet(currentRestaurant.getPhysicalAddress() + getString(R.string.end_line) + getString(R.string.Hazard_level) + hazardLevel)
                 );
-            }
+            }*/
         }
+        clusterManager.cluster();
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
