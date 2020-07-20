@@ -1,18 +1,35 @@
 package com.example.saferestaurants;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.widget.Toast;
 
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,20 +41,28 @@ import java.nio.charset.Charset;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private static final String TAG = "Problem!";
     private GoogleMap mMap;
-    Restaurants restaurants= Restaurants.getInstance();
+    private static final int PERMISSION_REQUEST_CODE = 1;
+    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
+    private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private Boolean permissionGranted = false;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    Restaurants restaurants = Restaurants.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        //verify permissions
+        getLocationAccess();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+//                .findFragmentById(R.id.map);
+//        mapFragment.getMapAsync(this);
 
-        if(isRestaurantsEmpty())
-            setData();
+        //if(isRestaurantsEmpty())
+        //setData();
     }
 
 
@@ -55,12 +80,92 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(49.2797519, -122.96552349999997);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Current location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        //LatLng sydney = new LatLng(49.2797519, -122.96552349999997);
+        //mMap.addMarker(new MarkerOptions().position(sydney).title("Current location"));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
+        if (permissionGranted) {
+            getDeviceLocation();
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            mMap.setMyLocationEnabled(true);
+        }
         //Display pegs for restaurants in out list
-        displayRestaurantPegs();
+        //displayRestaurantPegs();
+    }
+
+    private void getDeviceLocation(){
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        try{
+            if(permissionGranted) {
+                Task place = fusedLocationProviderClient.getLastLocation();
+                place.addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful()) {
+                            //found the location
+                            Location currentL = (Location) task.getResult();
+                            moveCamera(new LatLng(currentL.getLatitude(), currentL.getLongitude()), 15f);
+                        } else {
+                            //Didn't find location
+                            Toast.makeText(MapsActivity.this, "Cant get current location", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        } catch (SecurityException e){
+            Log.e(TAG, e.getMessage());
+        }
+    }
+
+    // move the camera view to the given location
+    private void moveCamera (LatLng latLng, float zoom){
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,zoom));
+    }
+
+    //verify permissions
+    private void getLocationAccess(){
+        String [] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION};
+
+        if(ContextCompat.checkSelfPermission(this.getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            if(ContextCompat.checkSelfPermission(this.getApplicationContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                permissionGranted = true;
+                mapINIT();
+            } else{
+                ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUEST_CODE);
+            }
+        } else{
+            ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        permissionGranted = false;
+        switch(requestCode){
+            case PERMISSION_REQUEST_CODE:{
+                if(grantResults.length > 0){
+                    for(int i = 0; i < grantResults.length; i++){
+                        if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
+                            permissionGranted = false;
+                            return;
+                        }
+                    }
+                    permissionGranted = true;
+                    //setUp map
+                    mapINIT();
+                }
+            }
+        }
+    }
+
+    private void mapINIT(){
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(MapsActivity.this);
     }
 
     private boolean isRestaurantsEmpty() {
