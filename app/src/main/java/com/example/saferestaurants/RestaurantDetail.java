@@ -33,6 +33,10 @@ public class RestaurantDetail extends AppCompatActivity {
     ListView inspectionListView;
     public static final String SHARED_PREF = "sharedPrefs";
     public static final String reservedRestaurantID = "restaurantID";
+    public static double selectedLad;
+    public static double selectedLong;
+    public static boolean gpsClicked = false;
+    public static Restaurant restaurantPicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,25 @@ public class RestaurantDetail extends AppCompatActivity {
 
         setUpTitle();
         setUpListView();
+        GpsClickSetUp();
+    }
+
+    private void GpsClickSetUp() {
+        TextView textView = findViewById(R.id.restaurantGPS);
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedLad = restaurant.getLatitude();
+                selectedLong = restaurant.getLongitude();
+                gpsClicked = true;
+                restaurantPicked = restaurant;
+                Intent intent = new Intent(RestaurantDetail.this, MapsActivity.class);
+                startActivity(intent);
+                //not sure what to do
+                //finish();
+            }
+        });
+
     }
 
     //Return intent to MainActivity

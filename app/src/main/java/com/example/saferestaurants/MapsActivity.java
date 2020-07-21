@@ -342,7 +342,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // move the camera view to the given location
     private void moveCamera (LatLng latLng, float zoom){
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,zoom));
+
+        if(RestaurantDetail.gpsClicked == true){
+            LatLng rData = new LatLng(RestaurantDetail.selectedLad, RestaurantDetail.selectedLong);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(rData,zoom));
+            //make pin info appear here
+        } else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+        }
     }
 
     //verify permissions
