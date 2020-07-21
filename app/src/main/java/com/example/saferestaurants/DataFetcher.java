@@ -24,8 +24,6 @@ public class DataFetcher {
     private static String inspectionDataURL = null;
     private static String restaurantDataURL = null;
 
-    public boolean taskCancelled = false;
-
     public static String fetchDataURL(String urlString) {
         /* Obtain the URL for the most recent list of inspections. */
         try {
@@ -85,7 +83,7 @@ public class DataFetcher {
              FileOutputStream fileOutputStream = new FileOutputStream(fileLocation + "/" + fileName)) {
             byte[] dataBuffer = new byte[1024];
             int bytesRead;
-            while(((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) && !this.taskCancelled) {
+            while((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
                 fileOutputStream.write(dataBuffer, 0, bytesRead);
             }
         } catch (IOException e) {

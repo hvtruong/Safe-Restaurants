@@ -105,8 +105,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         @Override
         protected Void doInBackground(Void... voids) {
-            dataFetcher.fetchData(DataFetcher.inspectionDatabaseURL);
-            dataFetcher.fetchData(DataFetcher.restaurantDatabaseURL);
+            if(!isCancelled()){
+                dataFetcher.fetchData(DataFetcher.restaurantDatabaseURL);
+            }
+
+            if(!isCancelled()){
+                dataFetcher.fetchData(DataFetcher.inspectionDatabaseURL);
+            }
             return null;
         }
 
@@ -119,6 +124,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            loadingAlert.dismiss();
                             RetrieveData.this.cancel(true);
                         }
                     }
@@ -140,11 +146,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             setData();
             loadingAlert.dismiss();
-        }
 
-        @Override
-        protected void onCancelled() {
-            dataFetcher.taskCancelled = true;
         }
     }
 
