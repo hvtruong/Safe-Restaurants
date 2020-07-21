@@ -2,11 +2,15 @@ package com.example.saferestaurants.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.saferestaurants.MapsActivity;
 import com.example.saferestaurants.R;
+import com.example.saferestaurants.RestaurantDetail;
 import com.example.saferestaurants.model.ClusterMarker;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
@@ -23,7 +27,7 @@ public class CustomMarkerInfoWindow implements GoogleMap.InfoWindowAdapter {
     }
 
     private void renderWindowText(Marker marker, View view){
-        ClusterMarker clusterMarker = (ClusterMarker) marker.getTag();
+        final ClusterMarker clusterMarker = (ClusterMarker) marker.getTag();
 
         String restaurantName = marker.getTitle();
         TextView restaurant_Name = markerItemView.findViewById(R.id.restaurant_name);
@@ -38,6 +42,13 @@ public class CustomMarkerInfoWindow implements GoogleMap.InfoWindowAdapter {
         if(!restaurantAddressAndHazard.equals("")){
             restaurant_Address_And_Hazard.setText(restaurantAddressAndHazard);
         }
+        /*Button navigateButton = markerItemView.findViewById(R.id.navigateButton);
+        navigateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = RestaurantDetail.makeIntent(, clusterMarker.getRestaurantID())
+            }
+        });*/
     }
 
     @Override

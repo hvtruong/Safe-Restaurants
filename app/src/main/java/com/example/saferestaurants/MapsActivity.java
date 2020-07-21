@@ -32,12 +32,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 
+import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 
 import java.io.BufferedReader;
@@ -48,6 +50,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -355,28 +358,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnInfoWindowClickListener(clusterManager);
 
         //Display pegs for restaurants
-        for(int i = 0; i < restaurants.size(); i++){
+        for(int i = 0; i < restaurants.size(); i++) {
             Restaurant currentRestaurant = restaurants.get(i);
             LatLng restaurantGPS = new LatLng(currentRestaurant.getLatitude(), currentRestaurant.getLongitude());
 
             //Extract hazard color of restaurants
             String hazardLevel;
-            if(currentRestaurant.getInspection().size()!= 0){
+            if (currentRestaurant.getInspection().size() != 0) {
                 hazardLevel = currentRestaurant.getInspection().get(0).getHazardRating();
-            }
-            else{
+            } else {
                 hazardLevel = ("Low");
             }
 
             //Assign hazard color for pegs
             int hazardIcon;
-            if(hazardLevel.equals("Low")){
+            if (hazardLevel.equals("Low")) {
                 hazardIcon = R.drawable.low_hazard_24dp;
-            }
-            else if (hazardLevel.equals("Moderate")){
+            } else if (hazardLevel.equals("Moderate")) {
                 hazardIcon = R.drawable.moderate_hazard_24;
-            }
-            else{
+            } else {
                 hazardIcon = R.drawable.high_hazard_24dp;
             }
 
@@ -385,11 +385,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     restaurantGPS,
                     currentRestaurant.getName(),
                     currentRestaurant.getPhysicalAddress() + getString(R.string.end_line) +
-                    getString(R.string.Hazard_level) + hazardLevel,
+                            getString(R.string.Hazard_level) + hazardLevel,
                     hazardIcon,
                     i
             );
             clusterManager.addItem(newClusterMarker);
+
+            clusterManager.setOnClusterItemInfoWindowClickListener(new ClusterManager.OnClusterItemInfoWindowClickListener<ClusterMarker>() {
+                @Override
+                public void onClusterItemInfoWindowClick(ClusterMarker item) {
+                    Intent intent = RestaurantDetail.makeIntent(MapsActivity.this, item.getRestaurantID());
+                    startActivity(intent);
+                    finish();
+                }
+            });
         }
         clusterManager.cluster();
     }
