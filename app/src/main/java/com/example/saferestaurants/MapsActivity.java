@@ -27,8 +27,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.saferestaurants.model.ClusterMarker;
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
+import com.example.saferestaurants.util.ClusterManagerRenderer;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
@@ -50,6 +52,7 @@ import com.example.saferestaurants.model.Inspection;
 import com.example.saferestaurants.model.Inspections;
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
+import com.google.maps.android.clustering.ClusterManager;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -75,6 +78,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient fusedLocationProviderClient;
     Restaurants restaurants = Restaurants.getInstance();
     private static ProgressDialog loadingAlert;
+    private ClusterManager<ClusterMarker> clusterManager;
+    private ClusterManagerRenderer clusterManagerRenderer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,10 +88,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //verify permissions
         getLocationAccess();
         setUpToggleButton();
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-//                .findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(this);
 
         long time = System.currentTimeMillis();
         if (isUpdateTime(time) && isRestaurantsEmpty()) {
@@ -297,6 +298,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Intent intent = new Intent(MapsActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
+                //finish
             }
         });
     }
@@ -321,7 +323,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             mMap.setMyLocationEnabled(true);
         }
-        //Display pegs for restaurants in out list
+        //Display and cluster pegs for restaurants in out list
         displayRestaurantPegs();
     }
 
@@ -403,10 +405,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void displayRestaurantPegs(){
+        if(clusterManager == null) {
+            clusterManager = new ClusterManager<ClusterMarker>(getApplicationContext(), mMap);
+            mMap.setOnCameraIdleListener(clusterManager);
+            mMap.setOnMarkerClickListener(clusterManager);
+            mMap.setOnInfoWindowClickListener(clusterManager);
+        }
+        if(clusterManagerRenderer == null){
+            clusterManagerRenderer = new ClusterManagerRenderer(
+                    MapsActivity.this,
+                    mMap,
+                    clusterManager
+            );
+            clusterManager.setRenderer(clusterManagerRenderer);
+        }
         for(int i = 0; i < restaurants.size(); i++){
             Restaurant currentRestaurant = restaurants.get(i);
             LatLng restaurantGPS = new LatLng(currentRestaurant.getLatitude(), currentRestaurant.getLongitude());
             String hazardLevel;
+            if(currentRestaurant.getInspection().size()!= 0){
+                hazardLevel = currentRestaurant.getInspection().get(0).getHazardRating();
+            }
+            else{
+                hazardLevel = ("Low");
+            }
+            int hazardIcon;
+            if(hazardLevel.equals("Low")){
+                hazardIcon = R.drawable.low_hazard_24dp;
+            }
+            else if (hazardLevel.equals("Moderate")){
+                hazardIcon = R.drawable.moderate_hazard_24;
+            }
+            else{
+                hazardIcon = R.drawable.high_hazard_24dp;
+            }
+            ClusterMarker newClusterMarker = new ClusterMarker(
+                    restaurantGPS,
+                    currentRestaurant.getName(),
+                    currentRestaurant.getPhysicalAddress(),
+                    hazardIcon
+            );
+            clusterManager.addItem(newClusterMarker);
 
             if(currentRestaurant.getInspection().size()!= 0){
                 hazardLevel = currentRestaurant.getInspection().get(0).getHazardRating();
@@ -415,28 +454,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 hazardLevel = ("Low");
             }
 
-            if(hazardLevel.equals(getString(R.string.moderate))){
+            /*if(hazardLevel.equals(getString(R.string.moderate))){
                 mMap.addMarker(new MarkerOptions()
                         .position(restaurantGPS)
                         .title(currentRestaurant.getName())
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+                        .icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.moderate_hazard_24))
+                        .snippet(currentRestaurant.getPhysicalAddress() + getString(R.string.end_line) + getString(R.string.Hazard_level) + hazardLevel)
                 );
             }
             else if(hazardLevel.equals(getString(R.string.low))){
                 mMap.addMarker(new MarkerOptions()
                         .position(restaurantGPS)
                         .title(currentRestaurant.getName())
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                        .icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.low_hazard_24dp))
+                        .snippet(currentRestaurant.getPhysicalAddress() + getString(R.string.end_line) + getString(R.string.Hazard_level) + hazardLevel)
                 );
             }
             else{
                 mMap.addMarker(new MarkerOptions()
                         .position(restaurantGPS)
                         .title(currentRestaurant.getName())
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                        .icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.high_hazard_24dp))
+                        .snippet(currentRestaurant.getPhysicalAddress() + getString(R.string.end_line) + getString(R.string.Hazard_level) + hazardLevel)
                 );
-            }
+            }*/
         }
+        clusterManager.cluster();
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
