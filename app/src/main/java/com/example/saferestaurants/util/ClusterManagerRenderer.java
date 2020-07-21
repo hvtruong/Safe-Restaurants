@@ -35,7 +35,7 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
     protected void onBeforeClusterItemRendered(@NonNull ClusterMarker item, @NonNull MarkerOptions markerOptions) {
         imageView.setImageResource(item.getIcon());
         Bitmap icon  = iconGenerator.makeIcon();
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(item.getTitle());
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(item.getTitle()).snippet(item.getSnippet());
     }
 
     @Override
@@ -45,6 +45,6 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
 
     @Override
     protected boolean shouldRenderAsCluster(@NonNull Cluster<ClusterMarker> cluster) {
-        return cluster.getSize() > 5;
+        return cluster.getSize() > 3;
     }
 }
