@@ -14,27 +14,15 @@ import org.json.*;
 public class DataFetcher {
 
     public final static String inspectionDatabaseURL = "https://data.surrey.ca/api/3/action/package_show?id=fraser-health-restaurant-inspection-reports";
-    private final static String inspectionFileName = "inspectionreports_itr2.csv";
+    public final static String inspectionFileName = "inspectionreports_fetched.csv";
 
     public final static String restaurantDatabaseURL = "https://data.surrey.ca/api/3/action/package_show?id=restaurants";
-    private final static String restaurantFileName = "restaurants_itr2.csv";
+    public final static String restaurantFileName = "restaurants_fetched.csv";
 
     // Get the calling activity to set this variable with getFilesDir().
     private static String fileLocation = null;
     private static String inspectionDataURL = null;
     private static String restaurantDataURL = null;
-
-
-    static class RetrieveData extends AsyncTask<Void, Void, Void> {
-        // Asynchronously fetch inspection data.
-        @Override
-        protected Void doInBackground(Void... voids) {
-            fetchData(inspectionDatabaseURL);
-            fetchData(restaurantDatabaseURL);
-            return null;
-        }
-
-    }
 
     public static String fetchDataURL(String urlString) {
         /* Obtain the URL for the most recent list of inspections. */
@@ -72,7 +60,7 @@ public class DataFetcher {
 
     }
 
-    public static void fetchData(String urlString) {
+    public void fetchData(String urlString) {
         /* Download inspection list CSV file. */
 
         assert fileLocation != null;

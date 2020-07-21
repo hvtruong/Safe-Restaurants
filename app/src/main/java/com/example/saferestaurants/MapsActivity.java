@@ -58,9 +58,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
@@ -87,20 +90,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setUpToggleButton();
 
         long time = System.currentTimeMillis();
-        if(isUpdateTime(time) && isRestaurantsEmpty()){
+        if (isUpdateTime(time) && isRestaurantsEmpty()) {
             showUpdatePopUp(time);
         }
 
-        if(isRestaurantsEmpty())
+        if (isRestaurantsEmpty()) {
             setData();
+        }
+
     }
 
     class RetrieveData extends AsyncTask<Void, Void, Void> {
         // Asynchronously fetch inspection data.
+        DataFetcher dataFetcher = new DataFetcher();
+
         @Override
         protected Void doInBackground(Void... voids) {
-            DataFetcher.fetchData(DataFetcher.inspectionDatabaseURL);
-            DataFetcher.fetchData(DataFetcher.restaurantDatabaseURL);
+            if(!isCancelled()){
+                dataFetcher.fetchData(DataFetcher.restaurantDatabaseURL);
+            }
+
+            if(!isCancelled()){
+                dataFetcher.fetchData(DataFetcher.inspectionDatabaseURL);
+            }
             return null;
         }
 
@@ -109,18 +121,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             loadingAlert = new ProgressDialog(MapsActivity.this);
             loadingAlert.setMessage("Updating data, Please wait..");
             loadingAlert.setCancelable(false);
+            loadingAlert.setButton(
+                    DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            loadingAlert.dismiss();
+                            RetrieveData.this.cancel(true);
+                        }
+                    }
+            );
             loadingAlert.show();
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             restaurants = Restaurants.newInstance();
+            saveTime(System.currentTimeMillis());
+            try {
+                copyFile(new File(getFilesDir().toString() + "/" + DataFetcher.restaurantFileName),
+                        new File(getFilesDir().toString() + "/" + "restaurants_itr2.csv"));
+                copyFile(new File(getFilesDir().toString() + "/" + DataFetcher.inspectionFileName),
+                        new File(getFilesDir().toString() + "/" + "inspectionreports_itr2.csv"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             setData();
             loadingAlert.dismiss();
+
         }
     }
 
-    //          new stuff for time             //
+    //         // new stuff for time //         //
     private boolean isUpdateTime(long currentTime){
         long time = loadTime();
         return currentTime - time >= 7.2E7;
@@ -155,7 +186,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         builder.setPositiveButton("Update", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                saveTime(time);
                 dialog.cancel();
 
                 DataFetcher.setFileLocation(getFilesDir().toString());
@@ -172,6 +202,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         alertDialog.show();
     }
     //              //              //              //
+
+    // Source: https://stackoverflow.com/questions/29867121/how-to-copy-programmatically-a-file-to-another-directory
+    public static void copyFile(File sourceFile, File destFile) throws IOException {
+        if (!destFile.getParentFile().exists())
+            destFile.getParentFile().mkdirs();
+
+        if (!destFile.exists()) {
+            destFile.createNewFile();
+        }
+
+        FileChannel source = null;
+        FileChannel destination = null;
+
+        try {
+            source = new FileInputStream(sourceFile).getChannel();
+            destination = new FileOutputStream(destFile).getChannel();
+            destination.transferFrom(source, 0, source.size());
+        } finally {
+            if (source != null) {
+                source.close();
+            }
+            if (destination != null) {
+                destination.close();
+            }
+        }
+    }
+    //          //          //          //          //          //          //          //          //
+
     private void setInitialData(){
         // Setting up Restaurants Class Data //
         InputStream inputStreamRestaurants = getResources().openRawResource(R.raw.restaurants_itr1);
