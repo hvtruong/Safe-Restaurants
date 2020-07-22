@@ -1,13 +1,17 @@
 package com.example.saferestaurants;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.os.AsyncTask;
-import android.app.Fragment;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.net.*;
-import java.io.*;
-import org.json.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 
 
 
@@ -60,13 +64,14 @@ public class DataFetcher {
 
     }
 
-    public void fetchData(String urlString) {
+    public String fetchData(String urlString) {
         /* Download inspection list CSV file. */
 
         assert fileLocation != null;
 
         // Get updated URL for inspection file before downloading.
         String dataURL = fetchDataURL(urlString);
+
         String fileName;
         if (dataURL.contains("restaurants.csv")) {
             restaurantDataURL = new String(dataURL);
@@ -90,6 +95,7 @@ public class DataFetcher {
             throw new RuntimeException(e);
         }
         // End of repurposed code.
+        return dataURL;
 
     }
 
@@ -99,6 +105,7 @@ public class DataFetcher {
     public static String getInspectionFileName() {
         return inspectionFileName;
     }
+
 
     // Currently, the DataParser can't handle the orientation of data in the new CSV file.
     // Either the parser needs to be amended, or the data itself must be manipulated.

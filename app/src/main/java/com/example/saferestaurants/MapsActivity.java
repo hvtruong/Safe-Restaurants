@@ -1,10 +1,5 @@
 package com.example.saferestaurants;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -19,6 +14,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import com.example.saferestaurants.model.ClusterMarker;
 import com.example.saferestaurants.model.Restaurant;
@@ -79,7 +79,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         long time = System.currentTimeMillis();
         if (isUpdateTime(time) && isRestaurantsEmpty()) {
-            showUpdatePopUp(time);
+            new checkServer().execute();
         }
 
         if (isRestaurantsEmpty()) {
@@ -94,13 +94,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         @Override
         protected Void doInBackground(Void... voids) {
-            if(!isCancelled()){
-                dataFetcher.fetchData(DataFetcher.restaurantDatabaseURL);
-            }
-
-            if(!isCancelled()){
-                dataFetcher.fetchData(DataFetcher.inspectionDatabaseURL);
-            }
+            saveURL(dataFetcher.fetchData(DataFetcher.restaurantDatabaseURL), "URL Restaurants");
+            saveURL(dataFetcher.fetchData(DataFetcher.inspectionDatabaseURL), "URL Inspections");
             return null;
         }
 
@@ -135,15 +130,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             setData();
             loadingAlert.dismiss();
+        }
+    }
 
+    class checkServer extends AsyncTask<Void, Void, Void> {
+        public String URLRestaurant;
+        public String URLInspection;
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            URLRestaurant = DataFetcher.fetchDataURL(DataFetcher.restaurantDatabaseURL);
+            URLInspection = DataFetcher.fetchDataURL(DataFetcher.inspectionDatabaseURL);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(loadURL("URL Restaurants").length() == 0){
+                showUpdatePopUp();
+            }
+            if(loadURL("URL Inspections").length() == 0){
+                showUpdatePopUp();
+            }
+            if(!loadURL("URL Restaurants").equals(URLRestaurant)){
+                showUpdatePopUp();
+            } else if(!loadURL("URL Inspections").equals(URLInspection)){
+                showUpdatePopUp();
+            }
         }
     }
 
     //         // new stuff for time //         //
     private boolean isUpdateTime(long currentTime){
         long time = loadTime();
-        return currentTime - time >= 7.2E7;
+        return (currentTime - time >= 7.2E7);
     }
+
     private void saveTime(long time){
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -161,10 +183,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     //              //              //              //
 
+    private String loadURL(String URLType){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString(URLType, String.valueOf(0));
+        Type type = new TypeToken<String>() {}.getType();
+        return (String)gson.fromJson(json, type);
+    }
+    private void saveURL(String URL, String URLType){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(URL);
+        editor.putString(URLType, json);
+        editor.apply();
+    }
 //  ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   //
 
     //              //              //              //
-    private void showUpdatePopUp(final long time){
+    private void showUpdatePopUp(){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
         builder.setMessage("Do you want to update your restaurant data?");

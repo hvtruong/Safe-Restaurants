@@ -61,6 +61,8 @@ public class Violation {
             type = "Building";
         } else if (isQualificationsType()){
             type = "Qualifications";
+        } else {
+            type = "Food";
         }
     }
 
