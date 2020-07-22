@@ -1,5 +1,7 @@
 package com.example.saferestaurants.model;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 
 /* Restaurants class holds a collection of all restaurants within the data set

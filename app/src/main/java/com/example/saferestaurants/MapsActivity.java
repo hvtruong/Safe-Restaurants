@@ -3,14 +3,10 @@ package com.example.saferestaurants;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,19 +24,22 @@ import com.example.saferestaurants.model.ClusterMarker;
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
 import com.example.saferestaurants.util.ClusterManagerRenderer;
+import com.example.saferestaurants.util.CustomMarkerInfoWindow;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+
+import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 
 import java.io.BufferedReader;
@@ -54,6 +53,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -379,7 +379,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // move the camera view to the given location
     private void moveCamera (LatLng latLng, float zoom){
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,zoom));
+
+        if(RestaurantDetail.gpsClicked == true){
+            LatLng rData = new LatLng(RestaurantDetail.selectedLad, RestaurantDetail.selectedLong);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(rData,zoom));
+            //make pin info appear here
+        } else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+        }
     }
 
     //verify permissions
@@ -430,12 +437,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void displayRestaurantPegs(){
+
+        //Initialize clusterManager
         if(clusterManager == null) {
             clusterManager = new ClusterManager<ClusterMarker>(getApplicationContext(), mMap);
-            mMap.setOnCameraIdleListener(clusterManager);
-            mMap.setOnMarkerClickListener(clusterManager);
-            mMap.setOnInfoWindowClickListener(clusterManager);
         }
+
+        //Initialize clusterManagerRenderer
         if(clusterManagerRenderer == null){
             clusterManagerRenderer = new ClusterManagerRenderer(
                     MapsActivity.this,
@@ -444,76 +452,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             );
             clusterManager.setRenderer(clusterManagerRenderer);
         }
-        for(int i = 0; i < restaurants.size(); i++){
+
+        mMap.setInfoWindowAdapter(clusterManager.getMarkerManager());
+        clusterManager.getMarkerCollection().setInfoWindowAdapter(new CustomMarkerInfoWindow(MapsActivity.this));
+        mMap.setOnCameraIdleListener(clusterManager);
+        mMap.setOnMarkerClickListener(clusterManager);
+        mMap.setOnInfoWindowClickListener(clusterManager);
+
+        //Display pegs for restaurants
+        for(int i = 0; i < restaurants.size(); i++) {
             Restaurant currentRestaurant = restaurants.get(i);
             LatLng restaurantGPS = new LatLng(currentRestaurant.getLatitude(), currentRestaurant.getLongitude());
+
+            //Extract hazard color of restaurants
             String hazardLevel;
-            if(currentRestaurant.getInspection().size()!= 0){
+            if (currentRestaurant.getInspection().size() != 0) {
                 hazardLevel = currentRestaurant.getInspection().get(0).getHazardRating();
-            }
-            else{
+            } else {
                 hazardLevel = ("Low");
             }
+
+            //Assign hazard color for pegs
             int hazardIcon;
-            if(hazardLevel.equals("Low")){
+            if (hazardLevel.equals("Low")) {
                 hazardIcon = R.drawable.low_hazard_24dp;
-            }
-            else if (hazardLevel.equals("Moderate")){
+            } else if (hazardLevel.equals("Moderate")) {
                 hazardIcon = R.drawable.moderate_hazard_24;
-            }
-            else{
+            } else {
                 hazardIcon = R.drawable.high_hazard_24dp;
             }
+
+            //Add new ClusterMarker
             ClusterMarker newClusterMarker = new ClusterMarker(
                     restaurantGPS,
                     currentRestaurant.getName(),
-                    currentRestaurant.getPhysicalAddress(),
-                    hazardIcon
+                    currentRestaurant.getPhysicalAddress() + getString(R.string.end_line) +
+                            getString(R.string.Hazard_level) + hazardLevel,
+                    hazardIcon,
+                    i
             );
             clusterManager.addItem(newClusterMarker);
 
-            if(currentRestaurant.getInspection().size()!= 0){
-                hazardLevel = currentRestaurant.getInspection().get(0).getHazardRating();
-            }
-            else{
-                hazardLevel = ("Low");
-            }
-
-            /*if(hazardLevel.equals(getString(R.string.moderate))){
-                mMap.addMarker(new MarkerOptions()
-                        .position(restaurantGPS)
-                        .title(currentRestaurant.getName())
-                        .icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.moderate_hazard_24))
-                        .snippet(currentRestaurant.getPhysicalAddress() + getString(R.string.end_line) + getString(R.string.Hazard_level) + hazardLevel)
-                );
-            }
-            else if(hazardLevel.equals(getString(R.string.low))){
-                mMap.addMarker(new MarkerOptions()
-                        .position(restaurantGPS)
-                        .title(currentRestaurant.getName())
-                        .icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.low_hazard_24dp))
-                        .snippet(currentRestaurant.getPhysicalAddress() + getString(R.string.end_line) + getString(R.string.Hazard_level) + hazardLevel)
-                );
-            }
-            else{
-                mMap.addMarker(new MarkerOptions()
-                        .position(restaurantGPS)
-                        .title(currentRestaurant.getName())
-                        .icon(bitmapDescriptorFromVector(getApplicationContext(), R.drawable.high_hazard_24dp))
-                        .snippet(currentRestaurant.getPhysicalAddress() + getString(R.string.end_line) + getString(R.string.Hazard_level) + hazardLevel)
-                );
-            }*/
+            clusterManager.setOnClusterItemInfoWindowClickListener(new ClusterManager.OnClusterItemInfoWindowClickListener<ClusterMarker>() {
+                @Override
+                public void onClusterItemInfoWindowClick(ClusterMarker item) {
+                    Intent intent = RestaurantDetail.makeIntent(MapsActivity.this, item.getRestaurantID());
+                    startActivity(intent);
+                    finish();
+                }
+            });
         }
         clusterManager.cluster();
     }
-
-    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
-        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
-        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
-        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        vectorDrawable.draw(canvas);
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
-    }
-
 }
