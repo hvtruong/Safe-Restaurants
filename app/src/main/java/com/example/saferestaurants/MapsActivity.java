@@ -1,10 +1,5 @@
 package com.example.saferestaurants;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -12,20 +7,22 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import com.example.saferestaurants.model.ClusterMarker;
 import com.example.saferestaurants.model.Restaurant;
@@ -33,7 +30,6 @@ import com.example.saferestaurants.model.Restaurants;
 import com.example.saferestaurants.util.ClusterManagerRenderer;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -41,17 +37,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-
-import com.example.saferestaurants.model.Inspection;
-import com.example.saferestaurants.model.Inspections;
-import com.example.saferestaurants.model.Restaurant;
-import com.example.saferestaurants.model.Restaurants;
 import com.google.maps.android.clustering.ClusterManager;
 
 import java.io.BufferedReader;
@@ -65,7 +54,6 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -91,7 +79,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         long time = System.currentTimeMillis();
         if (isUpdateTime(time) && isRestaurantsEmpty()) {
-            showUpdatePopUp(time);
+            new checkServer().execute();
         }
 
         if (isRestaurantsEmpty()) {
@@ -106,13 +94,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         @Override
         protected Void doInBackground(Void... voids) {
-            if(!isCancelled()){
-                dataFetcher.fetchData(DataFetcher.restaurantDatabaseURL);
-            }
-
-            if(!isCancelled()){
-                dataFetcher.fetchData(DataFetcher.inspectionDatabaseURL);
-            }
+            saveURL(dataFetcher.fetchData(DataFetcher.restaurantDatabaseURL), "URL Restaurants");
+            saveURL(dataFetcher.fetchData(DataFetcher.inspectionDatabaseURL), "URL Inspections");
             return null;
         }
 
@@ -147,15 +130,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             setData();
             loadingAlert.dismiss();
+        }
+    }
 
+    class checkServer extends AsyncTask<Void, Void, Void> {
+        public String URLRestaurant;
+        public String URLInspection;
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            URLRestaurant = DataFetcher.fetchDataURL(DataFetcher.restaurantDatabaseURL);
+            URLInspection = DataFetcher.fetchDataURL(DataFetcher.inspectionDatabaseURL);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(loadURL("URL Restaurants").length() == 0){
+                showUpdatePopUp();
+            }
+            if(loadURL("URL Inspections").length() == 0){
+                showUpdatePopUp();
+            }
+            if(!loadURL("URL Restaurants").equals(URLRestaurant)){
+                showUpdatePopUp();
+            } else if(!loadURL("URL Inspections").equals(URLInspection)){
+                showUpdatePopUp();
+            }
         }
     }
 
     //         // new stuff for time //         //
     private boolean isUpdateTime(long currentTime){
         long time = loadTime();
-        return currentTime - time >= 7.2E7;
+        return (currentTime - time >= 7.2E7);
     }
+
     private void saveTime(long time){
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -173,10 +183,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     //              //              //              //
 
+    private String loadURL(String URLType){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString(URLType, String.valueOf(0));
+        Type type = new TypeToken<String>() {}.getType();
+        return (String)gson.fromJson(json, type);
+    }
+    private void saveURL(String URL, String URLType){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(URL);
+        editor.putString(URLType, json);
+        editor.apply();
+    }
 //  ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   //
 
     //              //              //              //
-    private void showUpdatePopUp(final long time){
+    private void showUpdatePopUp(){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
         builder.setMessage("Do you want to update your restaurant data?");
