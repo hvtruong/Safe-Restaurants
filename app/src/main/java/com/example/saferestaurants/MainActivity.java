@@ -35,8 +35,8 @@ import com.example.saferestaurants.model.Inspection;
 import com.example.saferestaurants.model.Inspections;
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+//import com.google.gson.Gson;
+//import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 
@@ -128,7 +128,11 @@ public class MainActivity extends AppCompatActivity {
             lastInspectionDate.setText(getDateOfLastInspection(restaurant.getInspection()));
 
             ImageView imageView = (ImageView) itemView.findViewById(R.id.restaurantImage);
+
             imageView.setImageResource(R.drawable.plate);
+            setRestaurantIcon(imageView, restaurant.getName());
+
+
 
             //set hazard level image and colour;
             ImageView hazardImage = (ImageView) itemView.findViewById(R.id.harzardLevelImage);
@@ -158,6 +162,34 @@ public class MainActivity extends AppCompatActivity {
         }
         int issuesFound = getNumberOfIssues(restaurant.getInspection());
         return getString(R.string.numOfIssues) + " " + issuesFound;
+    }
+
+    private void setRestaurantIcon(ImageView imageView, String restaurantName) {
+
+        restaurantName = restaurantName.toLowerCase();
+
+        if (restaurantName.contains("7-eleven")) {
+            imageView.setImageResource(R.drawable.seven11);
+        } else if (restaurantName.contains("a&w")) {
+            imageView.setImageResource(R.drawable.aw);
+        } else if (restaurantName.contains("boston pizza")) {
+            imageView.setImageResource(R.drawable.bp);
+        } else if (restaurantName.contains("domino's pizza")) {
+            imageView.setImageResource(R.drawable.dominos);
+        } else if (restaurantName.contains("mac's convenience store")) {
+            imageView.setImageResource(R.drawable.macs);
+        } else if (restaurantName.contains("mcdonald's")) {
+            imageView.setImageResource(R.drawable.mcd);
+        } else if (restaurantName.contains("pizza hut")) {
+            imageView.setImageResource(R.drawable.pizzahut);
+        } else if (restaurantName.contains("starbucks coffee")) {
+            imageView.setImageResource(R.drawable.starbucks);
+        } else if (restaurantName.contains("subway")) {
+            imageView.setImageResource(R.drawable.subway);
+        } else if (restaurantName.contains("tim hortons")) {
+            imageView.setImageResource(R.drawable.timmies);
+        }
+
     }
 
     private boolean isModerateHazard(Inspection inspection) {
