@@ -32,14 +32,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-
-import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 
 import java.io.BufferedReader;
@@ -53,7 +49,6 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
-import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -68,6 +63,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static ProgressDialog loadingAlert;
     private ClusterManager<ClusterMarker> clusterManager;
     private ClusterManagerRenderer clusterManagerRenderer;
+    private static ProgressDialog settingAlert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +92,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         protected Void doInBackground(Void... voids) {
             saveURL(dataFetcher.fetchData(DataFetcher.restaurantDatabaseURL), "URL Restaurants");
             saveURL(dataFetcher.fetchData(DataFetcher.inspectionDatabaseURL), "URL Inspections");
+            publishProgress();
             return null;
         }
 
@@ -108,16 +105,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            loadingAlert.dismiss();
                             RetrieveData.this.cancel(true);
+                            loadingAlert.dismiss();
                         }
                     }
             );
+
             loadingAlert.show();
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+
             restaurants = Restaurants.newInstance();
             saveTime(System.currentTimeMillis());
             try {
@@ -130,6 +129,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             setData();
             loadingAlert.dismiss();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            loadingAlert.getButton(DialogInterface.BUTTON_NEGATIVE).setEnabled(false);
+            loadingAlert.setMessage("Setting data, Please wait..");
         }
     }
 
