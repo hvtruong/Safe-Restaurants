@@ -1,3 +1,4 @@
+/*This class is to show the maps and pegs for all restaurants we have */
 package com.example.saferestaurants;
 
 import android.Manifest;
@@ -503,7 +504,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 public void onClusterItemInfoWindowClick(ClusterMarker item) {
                     Intent intent = RestaurantDetail.makeIntent(MapsActivity.this, item.getRestaurantID());
                     startActivity(intent);
-                    finish();
                 }
             });
         }

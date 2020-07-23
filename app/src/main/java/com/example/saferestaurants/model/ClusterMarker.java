@@ -1,3 +1,4 @@
+/*THis class is to make a customize marker to cluster*/
 package com.example.saferestaurants.model;
 
 import androidx.annotation.NonNull;
