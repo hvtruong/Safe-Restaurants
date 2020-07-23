@@ -1,26 +1,8 @@
-/**
- * File Name: MainActivity.java
- * Date completed: July 8, 2020
- * Completed by: Jaiveer Dhanju
- * Purpose: This is the main activity, which is the start of the app.
- *          At the beginning this activity displays restaurants and
- *          information about there most recent health inspection
- */
+
 package com.example.saferestaurants;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,27 +13,20 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.example.saferestaurants.model.Inspection;
 import com.example.saferestaurants.model.Inspections;
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
-//import com.google.gson.Gson;
-//import com.google.gson.reflect.TypeToken;
-
-import java.io.BufferedReader;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.nio.charset.Charset;
 
 import java.util.Calendar;
 import java.util.Date;
 
-
+// This class shows the restaurant list view activity and contains all the logic associated with that page //
 public class MainActivity extends AppCompatActivity {
     //Fields
     private Restaurants restaurants = Restaurants.getInstance();

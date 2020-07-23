@@ -1,14 +1,4 @@
-/*This class is displaying the details about a single restaurant including:
- -name
- -physical address
- -GPS coordinates
- -a list of inspections that happened to this restaurant.*/
 package com.example.saferestaurants;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,10 +12,22 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.example.saferestaurants.model.Inspection;
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
 
+/*
+This class is displaying the details about a single restaurant including:
+ -name
+ -physical address
+ -GPS coordinates
+ -a list of inspections that happened to this restaurant.
+ */
 public class RestaurantDetail extends AppCompatActivity {
     Restaurants restaurants = Restaurants.getInstance();
     Restaurant restaurant;
@@ -64,8 +66,6 @@ public class RestaurantDetail extends AppCompatActivity {
                 restaurantPicked = restaurant;
                 Intent intent = new Intent(RestaurantDetail.this, MapsActivity.class);
                 startActivity(intent);
-                //not sure what to do
-                //finish();
             }
         });
 

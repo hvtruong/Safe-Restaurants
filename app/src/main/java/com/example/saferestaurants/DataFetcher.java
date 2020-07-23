@@ -13,8 +13,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
-
-
+// This class visits the Data server and fetches new data from the inspection and restaurant database
 public class DataFetcher {
 
     public final static String inspectionDatabaseURL = "https://data.surrey.ca/api/3/action/package_show?id=fraser-health-restaurant-inspection-reports";
@@ -105,11 +104,4 @@ public class DataFetcher {
     public static String getInspectionFileName() {
         return inspectionFileName;
     }
-
-
-    // Currently, the DataParser can't handle the orientation of data in the new CSV file.
-    // Either the parser needs to be amended, or the data itself must be manipulated.
-    // The former seems to be the method that will give the smallest headache.
-
-
 }

@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /*
-DataParser class parses the data file and sets up the Restaurants object with that data.
+DataParser class parses a data file and sets up the Restaurants object with that data.
  */
 public class DataParser {
     public static void parseRestaurants(BufferedReader reader) {
@@ -85,19 +85,6 @@ public class DataParser {
                 if (rawInspectionAttributes.length == 0) {
                     break;
                 }
-
-                /*
-                // x = last character in the string.
-                char x = line.charAt(line.length()-1);
-
-                if(x == ',') { // if a line ends in a comma then it has no violations
-                    inspectionAttributes = line.split(",", 6);
-                    inspectionAttributes[5] = inspectionAttributes[5].replaceAll(",", "");
-                } else {
-                    inspectionAttributes = line.split(",", 7);
-                }
-
-                 */
 
                 // Separate the data into elements of a string array.
                 for (int i = 0; i < 5; i++) {
