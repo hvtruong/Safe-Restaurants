@@ -1,3 +1,4 @@
+/*This class is to customize the Info Window of pegs*/
 package com.example.saferestaurants.util;
 
 import android.app.Activity;
@@ -42,13 +43,6 @@ public class CustomMarkerInfoWindow implements GoogleMap.InfoWindowAdapter {
         if(!restaurantAddressAndHazard.equals("")){
             restaurant_Address_And_Hazard.setText(restaurantAddressAndHazard);
         }
-        /*Button navigateButton = markerItemView.findViewById(R.id.navigateButton);
-        navigateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = RestaurantDetail.makeIntent(, clusterMarker.getRestaurantID())
-            }
-        });*/
     }
 
     @Override

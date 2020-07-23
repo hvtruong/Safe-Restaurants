@@ -1,3 +1,4 @@
+/*This class is to customize icons for pegs*/
 package com.example.saferestaurants.util;
 
 import android.content.Context;
