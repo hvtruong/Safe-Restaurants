@@ -1,4 +1,4 @@
-/*THis class is to make a customize marker to cluster*/
+
 package com.example.saferestaurants.model;
 
 import androidx.annotation.NonNull;
@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
+/*THis class is to make a customize marker to cluster*/
 public class ClusterMarker implements ClusterItem{
     private LatLng position;
     private String title;

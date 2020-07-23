@@ -1,4 +1,3 @@
-/*This class is to show the maps and pegs for all restaurants we have */
 package com.example.saferestaurants;
 
 import android.Manifest;
@@ -51,6 +50,7 @@ import java.lang.reflect.Type;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 
+//This class is to shows the map and pegs for all restaurants we have within the local data
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private static final String TAG = "Problem!";
@@ -64,7 +64,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static ProgressDialog loadingAlert;
     private ClusterManager<ClusterMarker> clusterManager;
     private ClusterManagerRenderer clusterManagerRenderer;
-    private static ProgressDialog settingAlert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,7 +165,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    //         // new stuff for time //         //
+    //         // stuff for time //         //
     private boolean isUpdateTime(long currentTime){
         long time = loadTime();
         return (currentTime - time >= 7.2E7);

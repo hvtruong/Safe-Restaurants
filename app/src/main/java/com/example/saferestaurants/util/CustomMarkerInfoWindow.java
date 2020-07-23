@@ -1,23 +1,16 @@
-/*This class is to customize the Info Window of pegs*/
 package com.example.saferestaurants.util;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.saferestaurants.MapsActivity;
 import com.example.saferestaurants.R;
-import com.example.saferestaurants.RestaurantDetail;
 import com.example.saferestaurants.model.ClusterMarker;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
-import java.util.zip.Inflater;
-
+// This class is to customize the Info Window of pegs within the map view //
 public class CustomMarkerInfoWindow implements GoogleMap.InfoWindowAdapter {
     private final View markerItemView;
     private Context context;
