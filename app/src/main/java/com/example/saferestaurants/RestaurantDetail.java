@@ -65,6 +65,7 @@ public class RestaurantDetail extends AppCompatActivity {
                 gpsClicked = true;
                 restaurantPicked = restaurant;
                 Intent intent = new Intent(RestaurantDetail.this, MapsActivity.class);
+                intent.putExtra("restaurantID",restaurantID);
                 startActivity(intent);
             }
         });

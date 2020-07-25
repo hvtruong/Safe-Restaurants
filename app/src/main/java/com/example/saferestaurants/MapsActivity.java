@@ -36,6 +36,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
@@ -54,6 +55,7 @@ import java.lang.reflect.Type;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 //This class is to shows the map and pegs for all restaurants we have within the local data
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -72,6 +74,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<ClusterMarker> collectionOfMarker = new ArrayList<>();
     private int returnedRestaurantID = -1;
     private EditText searchContent;
+    private HashMap<Integer, Marker> myHashMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -378,17 +381,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         if(RestaurantDetail.gpsClicked){
-            displayInfoWindow();
+            extractGPSInfoWindow();
         }
-
+        
         //Display and cluster pegs for restaurants in out list
         displayRestaurantPegs();
 
+        //myHashMap = clusterManagerRenderer.getMarkerClusterMap();
+        /*Marker marker = clusterManagerRenderer.makeClusterMap.get(0);
+        marker.showInfoWindow();*/
         init();
 
     }
 
-    private void displayInfoWindow(){
+    private void extractGPSInfoWindow(){
         returnedRestaurantID = getIntent().getIntExtra("restaurantID",-1);
     }
 
@@ -419,7 +425,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // move the camera view to the given location
     private void moveCamera (LatLng latLng, float zoom){
+        if(RestaurantDetail.gpsClicked){
+            LatLng rData = new LatLng(RestaurantDetail.selectedLad, RestaurantDetail.selectedLong);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(rData,zoom));
+            //make pin info appear here
+        } else {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+        }
     }
 
     //verify permissions
@@ -537,11 +549,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             });
         }
         clusterManager.cluster();
-
-        /*if(RestaurantDetail.gpsClicked){
-            ClusterMarker chosenMarker = collectionOfMarker.get(returnedRestaurantID);
-            moveCamera(chosenMarker.getPosition(),18f);
-        }*/
     }
 
     private void modifyMap(){
