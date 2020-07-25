@@ -11,8 +11,12 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -49,6 +53,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 
 //This class is to shows the map and pegs for all restaurants we have within the local data
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -64,11 +69,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static ProgressDialog loadingAlert;
     private ClusterManager<ClusterMarker> clusterManager;
     private ClusterManagerRenderer clusterManagerRenderer;
+    private ArrayList<ClusterMarker> collectionOfMarker = new ArrayList<>();
+    private int returnedRestaurantID = -1;
+    private EditText searchContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        searchContent = findViewById(R.id.search_content);
         //verify permissions
         getLocationAccess();
         setUpToggleButton();
@@ -81,7 +91,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (isRestaurantsEmpty()) {
             setData();
         }
+    }
 
+    private void init(){
+        searchContent.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE
+                        || event.getAction() == event.ACTION_DOWN
+                        || event.getAction() == event.KEYCODE_ENTER){
+                    modifyMap();
+                }
+                return false;
+            }
+        });
     }
 
     class RetrieveData extends AsyncTask<Void, Void, Void> {
@@ -353,8 +376,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             mMap.setMyLocationEnabled(true);
         }
+
+        if(RestaurantDetail.gpsClicked){
+            displayInfoWindow();
+        }
+
         //Display and cluster pegs for restaurants in out list
         displayRestaurantPegs();
+
+        init();
+
+    }
+
+    private void displayInfoWindow(){
+        returnedRestaurantID = getIntent().getIntExtra("restaurantID",-1);
     }
 
     private void getDeviceLocation(){
@@ -369,7 +404,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (task.isSuccessful()) {
                             //found the location
                             Location currentL = (Location) task.getResult();
-                            moveCamera(new LatLng(currentL.getLatitude(), currentL.getLongitude()), 15f);
+                            moveCamera(new LatLng(currentL.getLatitude(), currentL.getLongitude()), 18f);
                         } else {
                             //Didn't find location
                             Toast.makeText(MapsActivity.this, "Cant get current location", Toast.LENGTH_SHORT).show();
@@ -384,14 +419,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // move the camera view to the given location
     private void moveCamera (LatLng latLng, float zoom){
-
-        if(RestaurantDetail.gpsClicked == true){
-            LatLng rData = new LatLng(RestaurantDetail.selectedLad, RestaurantDetail.selectedLong);
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(rData,zoom));
-            //make pin info appear here
-        } else {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
-        }
     }
 
     //verify permissions
@@ -453,7 +481,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             clusterManagerRenderer = new ClusterManagerRenderer(
                     MapsActivity.this,
                     mMap,
-                    clusterManager
+                    clusterManager,
+                    returnedRestaurantID
             );
             clusterManager.setRenderer(clusterManagerRenderer);
         }
@@ -497,6 +526,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     i
             );
             clusterManager.addItem(newClusterMarker);
+            collectionOfMarker.add(newClusterMarker);
 
             clusterManager.setOnClusterItemInfoWindowClickListener(new ClusterManager.OnClusterItemInfoWindowClickListener<ClusterMarker>() {
                 @Override
@@ -507,5 +537,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             });
         }
         clusterManager.cluster();
+
+        /*if(RestaurantDetail.gpsClicked){
+            ClusterMarker chosenMarker = collectionOfMarker.get(returnedRestaurantID);
+            moveCamera(chosenMarker.getPosition(),18f);
+        }*/
+    }
+
+    private void modifyMap(){
+
     }
 }

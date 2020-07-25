@@ -20,11 +20,13 @@ import com.google.maps.android.ui.IconGenerator;
 public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker> {
     private IconGenerator iconGenerator;
     private ImageView imageView;
+    private int returnedRestaurantID;
 
-    public ClusterManagerRenderer(Context context, GoogleMap map, ClusterManager<ClusterMarker> clusterManager) {
+    public ClusterManagerRenderer(Context context, GoogleMap map, ClusterManager<ClusterMarker> clusterManager, int restaurantID) {
         super(context, map, clusterManager);
         this.iconGenerator = iconGenerator;
         this.imageView = imageView;
+        this.returnedRestaurantID = restaurantID;
 
         iconGenerator = new IconGenerator(context.getApplicationContext());
         imageView = new ImageView(context.getApplicationContext());
@@ -41,10 +43,13 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
     @Override
     protected void onClusterItemRendered(ClusterMarker clusterItem, Marker marker) {
         super.onClusterItemRendered(clusterItem, marker);
+        if(clusterItem.getRestaurantID() == returnedRestaurantID){
+            getMarker(clusterItem).showInfoWindow();
+        }
     }
 
     @Override
     protected boolean shouldRenderAsCluster(@NonNull Cluster<ClusterMarker> cluster) {
-        return cluster.getSize() > 3;
+        return cluster.getSize() > 6;
     }
 }
