@@ -54,6 +54,7 @@
             android:textColor="#000"
             android:id="@+id/search_content"
             android:imeOptions="actionSearch"
+            android:inputType="textCapSentences"
             />
         
     </RelativeLayout>

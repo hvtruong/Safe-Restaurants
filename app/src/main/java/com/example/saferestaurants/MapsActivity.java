@@ -54,6 +54,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -73,15 +74,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ClusterManagerRenderer clusterManagerRenderer;
     private ArrayList<ClusterMarker> collectionOfMarker = new ArrayList<>();
     private int returnedRestaurantID = -1;
-    private EditText searchContent;
+    private EditText search_Content;
     private HashMap<Integer, Marker> myHashMap;
+    String searchContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        searchContent = findViewById(R.id.search_content);
+        search_Content = findViewById(R.id.search_content);
+        searchContent = "";
         //verify permissions
         getLocationAccess();
         setUpToggleButton();
@@ -94,20 +97,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (isRestaurantsEmpty()) {
             setData();
         }
-    }
-
-    private void init(){
-        searchContent.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE
-                        || event.getAction() == event.ACTION_DOWN
-                        || event.getAction() == event.KEYCODE_ENTER){
-                    modifyMap();
-                }
-                return false;
-            }
-        });
     }
 
     class RetrieveData extends AsyncTask<Void, Void, Void> {
@@ -290,7 +279,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Setting up Restaurants Class Data //
         InputStream inputStreamRestaurants = getResources().openRawResource(R.raw.restaurants_itr1);
         BufferedReader readerRestaurants = new BufferedReader(
-                new InputStreamReader(inputStreamRestaurants, Charset.forName("UTF-8"))
+                new InputStreamReader(inputStreamRestaurants, StandardCharsets.UTF_8)
         );
         DataParser.parseRestaurantsIteration1(readerRestaurants);
         //                                  //
@@ -298,7 +287,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Setting up Inspections Data for each Restaurant //
         InputStream inputStreamInspections = getResources().openRawResource(R.raw.inspectionreports_itr1);
         BufferedReader readerInspections = new BufferedReader(
-                new InputStreamReader(inputStreamInspections, Charset.forName("UTF-8"))
+                new InputStreamReader(inputStreamInspections, StandardCharsets.UTF_8)
         );
         DataParser.parseInspectionsIteration1(readerInspections);
         //                                                //
@@ -316,7 +305,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             inputStreamRestaurants = new FileInputStream(file);
             BufferedReader readerRestaurants = new BufferedReader(
-                    new InputStreamReader(inputStreamRestaurants, Charset.forName("UTF-8"))
+                    new InputStreamReader(inputStreamRestaurants, StandardCharsets.UTF_8)
             );
             DataParser.parseRestaurants(readerRestaurants);
 
@@ -333,7 +322,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             inputStreamInspections = new FileInputStream(file);
             BufferedReader readerInspections = new BufferedReader(
-                    new InputStreamReader(inputStreamInspections, Charset.forName("UTF-8"))
+                    new InputStreamReader(inputStreamInspections, StandardCharsets.UTF_8)
             );
             DataParser.parseInspections(readerInspections);
 
@@ -383,15 +372,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(RestaurantDetail.gpsClicked){
             extractGPSInfoWindow();
         }
-        
-        //Display and cluster pegs for restaurants in out list
-        displayRestaurantPegs();
 
-        //myHashMap = clusterManagerRenderer.getMarkerClusterMap();
-        /*Marker marker = clusterManagerRenderer.makeClusterMap.get(0);
-        marker.showInfoWindow();*/
+        //Display and cluster pegs for restaurants in out list
+        displayRestaurantPegs(searchContent);
+        
         init();
 
+    }
+
+    private void init(){
+        search_Content.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE
+                        || event.getAction() == KeyEvent.ACTION_DOWN
+                        || event.getAction() == KeyEvent.KEYCODE_ENTER){
+                    searchContent = search_Content.getText().toString();
+                    displayRestaurantPegs(searchContent);
+                }
+                return false;
+            }
+        });
     }
 
     private void extractGPSInfoWindow(){
@@ -481,10 +482,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return restaurants.size() == 0;
     }
 
-    public void displayRestaurantPegs(){
+    public void displayRestaurantPegs(String searchedContent){
 
         //Initialize clusterManager
-        if(clusterManager == null) {
+        if(clusterManager != null) {
+            clusterManager.clearItems();
+            mMap.clear();
+        }
+        else{
             clusterManager = new ClusterManager<ClusterMarker>(getApplicationContext(), mMap);
         }
 
@@ -506,8 +511,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnInfoWindowClickListener(clusterManager);
 
         //Display pegs for restaurants
-        for(int i = 0; i < restaurants.size(); i++) {
+        for(int i = 0; i < restaurants.size(); i++)
+        {
             Restaurant currentRestaurant = restaurants.get(i);
+            String restaurantName = currentRestaurant.getName();
+            String lowerCaseRestaurantName = currentRestaurant.getName().toLowerCase();
+            boolean isSearchedRestaurantInspectedRecently = currentRestaurant.getInspection().size() != 0;
+            if(searchedContent.equals("")){
+                isSearchedRestaurantInspectedRecently = true;
+            }
+            if((restaurantName.contains(searchedContent) || lowerCaseRestaurantName.contains(searchedContent)) && isSearchedRestaurantInspectedRecently)
+            {
             LatLng restaurantGPS = new LatLng(currentRestaurant.getLatitude(), currentRestaurant.getLongitude());
 
             //Extract hazard color of restaurants
@@ -547,11 +561,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     startActivity(intent);
                 }
             });
+            }
         }
         clusterManager.cluster();
-    }
-
-    private void modifyMap(){
 
     }
 }

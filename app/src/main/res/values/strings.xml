@@ -10,7 +10,7 @@
     <string name="address">\Address: \</string>
     <string name="gps">\GPS: \</string>
     <string name="inspection">\Inspection \</string>
-    <string name="days_ago"> days ago: </string>
+    <string name="days_ago">\ days ago: </string>
     <string name="inspection_on">Inspection on \</string>
     <string name="space">\ \</string>
     <string name="colon">\: \</string>
@@ -26,7 +26,7 @@
     <string name="numOfIssues">Number Of issues: </string>
     <string name="noInspection">No Inspections Done</string>
     <string name="lastInspection">Last Inspection: </string>
-    <string name="daysAgo"> days ago</string>
+    <string name="daysAgo">\ days ago</string>
     <string name="low">Low</string>
     <string name="moderate">Moderate</string>
     <string name="violation_critical_rating_icon">violation critical rating icon</string>
