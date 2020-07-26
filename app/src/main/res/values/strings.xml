@@ -57,5 +57,11 @@
     <string name="map_view">Map View</string>
     <string name="Hazard_level">"Hazard level: "</string>
     <string name="end_line">\n</string>
+    <string name="critical_Issues">Critical Issues</string>
+    <string-array name="signs">
+        <item> One </item>
+        <item> Two </item>
+        <item> Three </item>
+    </string-array>
 
 </resources>

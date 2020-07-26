@@ -1,3 +1,4 @@
+//This class is to shows the map and pegs for all restaurants we have within the local data
 package com.example.saferestaurants;
 
 import android.Manifest;
@@ -14,8 +15,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,7 +62,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-//This class is to shows the map and pegs for all restaurants we have within the local data
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private static final String TAG = "Problem!";
@@ -77,6 +80,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private EditText search_Content;
     private HashMap<Integer, Marker> myHashMap;
     String searchContent;
+    Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +89,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         search_Content = findViewById(R.id.search_content);
         searchContent = "";
+        spinner = findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.signs ,android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
         //verify permissions
         getLocationAccess();
         setUpToggleButton();
@@ -99,6 +107,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    //Update data functions:
+    //          //          //          //          //          //          //          //          //
     class RetrieveData extends AsyncTask<Void, Void, Void> {
         // Asynchronously fetch inspection data.
         DataFetcher dataFetcher = new DataFetcher();
@@ -203,6 +213,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     //              //              //              //
 
+    private boolean isRestaurantsEmpty() {
+        return restaurants.size() == 0;
+    }
     private String loadURL(String URLType){
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
@@ -334,19 +347,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setInitialData();
         }
     }
-
-    private void setUpToggleButton() {
-        Button btn = (Button) findViewById(R.id.listToggle);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MapsActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-                //finish
-            }
-        });
-    }
+    //          //          //          //          //          //          //          //          //
+    // End of Update data functions
 
 
     /**
@@ -380,6 +382,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    // Map display functions:
+    //          //          //          //          //          //          //          //          //
     private void init(){
         search_Content.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -478,10 +482,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(MapsActivity.this);
     }
 
-    private boolean isRestaurantsEmpty() {
-        return restaurants.size() == 0;
-    }
-
     public void displayRestaurantPegs(String searchedContent){
 
         //Initialize clusterManager
@@ -504,6 +504,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             clusterManager.setRenderer(clusterManagerRenderer);
         }
 
+        //Set up for cluster
         mMap.setInfoWindowAdapter(clusterManager.getMarkerManager());
         clusterManager.getMarkerCollection().setInfoWindowAdapter(new CustomMarkerInfoWindow(MapsActivity.this));
         mMap.setOnCameraIdleListener(clusterManager);
@@ -520,7 +521,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if(searchedContent.equals("")){
                 isSearchedRestaurantInspectedRecently = true;
             }
-            if((restaurantName.contains(searchedContent) || lowerCaseRestaurantName.contains(searchedContent)) && isSearchedRestaurantInspectedRecently)
+            if((restaurantName.contains(searchedContent) || lowerCaseRestaurantName.contains(searchedContent)) &&
+                    isSearchedRestaurantInspectedRecently)
             {
             LatLng restaurantGPS = new LatLng(currentRestaurant.getLatitude(), currentRestaurant.getLongitude());
 
@@ -554,6 +556,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             clusterManager.addItem(newClusterMarker);
             collectionOfMarker.add(newClusterMarker);
 
+            //Go to detail if Info Window clicked
             clusterManager.setOnClusterItemInfoWindowClickListener(new ClusterManager.OnClusterItemInfoWindowClickListener<ClusterMarker>() {
                 @Override
                 public void onClusterItemInfoWindowClick(ClusterMarker item) {
@@ -565,5 +568,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         clusterManager.cluster();
 
+    }
+    //          //          //          //          //          //          //          //          //
+    // End of Map display functions
+
+    //Toggle to List
+    private void setUpToggleButton() {
+        Button btn = (Button) findViewById(R.id.listToggle);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MapsActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                //finish
+            }
+        });
     }
 }
