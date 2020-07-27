@@ -10,7 +10,7 @@
     <string name="address">\Address: \</string>
     <string name="gps">\GPS: \</string>
     <string name="inspection">\Inspection \</string>
-    <string name="days_ago"> days ago: </string>
+    <string name="days_ago">\ days ago: </string>
     <string name="inspection_on">Inspection on \</string>
     <string name="space">\ \</string>
     <string name="colon">\: \</string>
@@ -26,7 +26,7 @@
     <string name="numOfIssues">Number Of issues: </string>
     <string name="noInspection">No Inspections Done</string>
     <string name="lastInspection">Last Inspection: </string>
-    <string name="daysAgo"> days ago</string>
+    <string name="daysAgo">\ days ago</string>
     <string name="low">Low</string>
     <string name="moderate">Moderate</string>
     <string name="violation_critical_rating_icon">violation critical rating icon</string>
@@ -57,5 +57,20 @@
     <string name="map_view">Map View</string>
     <string name="Hazard_level">"Hazard level: "</string>
     <string name="end_line">\n</string>
+    <string name="critical_Issues">Critical Issues: </string>
+    <string name="advanced">Advanced</string>
+    <string name="filter">Filter</string>
+    <string name="search_filter">Search Filter</string>
+    <string name="specific_hazard_level">Specific hazard level:</string>
+    <string name="display_only_favorite">Display only favorite:</string>
+    <string name="low_moderate_high">Ex: low, moderate, high</string>
+    <string name="ex_0_1_2">Ex: 0,1,2,...</string>
+    <string name="display_only_favorite_restaurants">Display only favorite restaurants</string>
+    <string name="save">Save</string>
+    <string-array name="signs">
+        <item> </item>
+        <item>less than or equal to</item>
+        <item>greater than or equal to</item>
+    </string-array>
 
 </resources>

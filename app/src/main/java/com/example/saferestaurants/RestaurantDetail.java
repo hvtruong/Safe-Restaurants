@@ -33,8 +33,8 @@ public class RestaurantDetail extends AppCompatActivity {
     Restaurant restaurant;
     int restaurantID;
     ListView inspectionListView;
-    public static final String SHARED_PREF = "sharedPrefs";
-    public static final String reservedRestaurantID = "restaurantID";
+    private static final String SHARED_PREF = "sharedPrefs";
+    private static final String reservedRestaurantID = "restaurantID";
     public static double selectedLad;
     public static double selectedLong;
     public static boolean gpsClicked = false;
@@ -65,6 +65,7 @@ public class RestaurantDetail extends AppCompatActivity {
                 gpsClicked = true;
                 restaurantPicked = restaurant;
                 Intent intent = new Intent(RestaurantDetail.this, MapsActivity.class);
+                intent.putExtra("restaurantID",restaurantID);
                 startActivity(intent);
             }
         });

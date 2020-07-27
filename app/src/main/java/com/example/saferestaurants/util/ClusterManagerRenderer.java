@@ -2,6 +2,7 @@ package com.example.saferestaurants.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -16,19 +17,28 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 
+import java.util.HashMap;
+
 // This class is to customize icons for pegs within the map view
 public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker> {
     private IconGenerator iconGenerator;
     private ImageView imageView;
+    private int returnedRestaurantID;
+    public HashMap<Integer, Marker> makeClusterMap;
 
-    public ClusterManagerRenderer(Context context, GoogleMap map, ClusterManager<ClusterMarker> clusterManager) {
+    public ClusterManagerRenderer(Context context, GoogleMap map, ClusterManager<ClusterMarker> clusterManager, int restaurantID) {
         super(context, map, clusterManager);
         this.iconGenerator = iconGenerator;
         this.imageView = imageView;
+        this.returnedRestaurantID = restaurantID;
 
         iconGenerator = new IconGenerator(context.getApplicationContext());
         imageView = new ImageView(context.getApplicationContext());
         iconGenerator.setContentView(imageView);
+    }
+
+    public HashMap<Integer, Marker> getMarkerClusterMap(){
+        return makeClusterMap;
     }
 
     @Override
@@ -41,10 +51,13 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
     @Override
     protected void onClusterItemRendered(ClusterMarker clusterItem, Marker marker) {
         super.onClusterItemRendered(clusterItem, marker);
+        if(clusterItem.getRestaurantID() == returnedRestaurantID) {
+            getMarker(clusterItem).showInfoWindow();
+        }
     }
 
     @Override
     protected boolean shouldRenderAsCluster(@NonNull Cluster<ClusterMarker> cluster) {
-        return cluster.getSize() > 3;
+        return cluster.getSize() > 6;
     }
 }

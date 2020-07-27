@@ -1,4 +1,4 @@
-
+// This class shows the restaurant list view activity and contains all the logic associated with that page //
 package com.example.saferestaurants;
 
 import android.content.Intent;
@@ -25,8 +25,6 @@ import com.example.saferestaurants.model.Restaurants;
 
 import java.util.Calendar;
 import java.util.Date;
-
-// This class shows the restaurant list view activity and contains all the logic associated with that page //
 public class MainActivity extends AppCompatActivity {
     //Fields
     private Restaurants restaurants = Restaurants.getInstance();
