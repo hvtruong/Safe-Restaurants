@@ -52,4 +52,16 @@ public class Inspections {
     public ArrayList<Inspection> getInspections() {
         return this.inspections;
     }
+
+    public int totalNumberOfCriticalIssuesLastYear(){
+        int result = 0;
+        for(int i = 0; i < inspections.size(); i++){
+            Inspection inspection = inspections.get(i);
+            if(inspection.inspectionTimeDifferent() <= 365){
+                result += inspection.getCriticalIssues();
+            }
+            break;
+        }
+        return result;
+    }
 }

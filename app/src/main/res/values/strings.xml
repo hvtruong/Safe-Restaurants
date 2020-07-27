@@ -57,11 +57,20 @@
     <string name="map_view">Map View</string>
     <string name="Hazard_level">"Hazard level: "</string>
     <string name="end_line">\n</string>
-    <string name="critical_Issues">Critical Issues</string>
+    <string name="critical_Issues">Critical Issues: </string>
+    <string name="advanced">Advanced</string>
+    <string name="filter">Filter</string>
+    <string name="search_filter">Search Filter</string>
+    <string name="specific_hazard_level">Specific hazard level:</string>
+    <string name="display_only_favorite">Display only favorite:</string>
+    <string name="low_moderate_high">Ex: low, moderate, high</string>
+    <string name="ex_0_1_2">Ex: 0,1,2,...</string>
+    <string name="display_only_favorite_restaurants">Display only favorite restaurants</string>
+    <string name="save">Save</string>
     <string-array name="signs">
-        <item> One </item>
-        <item> Two </item>
-        <item> Three </item>
+        <item> </item>
+        <item>less than or equal to</item>
+        <item>greater than or equal to</item>
     </string-array>
 
 </resources>

@@ -51,5 +51,6 @@ public class InspectionsTest {
 
         ArrayList<Inspection> inspectionsCopy = inspections.getInspections();
         assertEquals(4,inspectionsCopy.size());
+        assertEquals(0,inspections.totalNumberOfCriticalIssuesLastYear());
     }
 }

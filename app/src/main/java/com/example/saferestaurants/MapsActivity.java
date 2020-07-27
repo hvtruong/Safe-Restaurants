@@ -61,6 +61,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Filter;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -78,21 +79,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<ClusterMarker> collectionOfMarker = new ArrayList<>();
     private int returnedRestaurantID = -1;
     private EditText search_Content;
-    private HashMap<Integer, Marker> myHashMap;
-    String searchContent;
-    Spinner spinner;
+    private String searchContent;
+    private static final String SHARED_PREF = "sharedPrefs";
+    private static final String numOfCrit = "searchedNumber";
+    private static final String inequality = "inequality";
+    private static final String specificHazardLevel = "hazardLevel";
+    private static final String onlyFavorite = "favorite";
+    private String inequalityExtracted = "";
+    private int numberOfCriticalIssuesExtracted = -1;
+    private String hazardLevelExtracted = "";
+    private boolean displayOnlyFavorite = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        //Extract search content from search bar
         search_Content = findViewById(R.id.search_content);
         searchContent = "";
-        spinner = findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.signs ,android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+
+        //Goes to Filter Option screen if users want
+        Button filterOption = findViewById(R.id.Filter);
+        filterOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MapsActivity.this, FilterOption.class);
+                startActivity(intent);
+            }
+        });
+
         //verify permissions
         getLocationAccess();
         setUpToggleButton();
@@ -484,6 +500,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void displayRestaurantPegs(String searchedContent){
 
+        if(FilterOption.filterSaved){
+            extractSearchCriteria();
+        }
+
         //Initialize clusterManager
         if(clusterManager != null) {
             clusterManager.clearItems();
@@ -517,12 +537,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Restaurant currentRestaurant = restaurants.get(i);
             String restaurantName = currentRestaurant.getName();
             String lowerCaseRestaurantName = currentRestaurant.getName().toLowerCase();
-            boolean isSearchedRestaurantInspectedRecently = currentRestaurant.getInspection().size() != 0;
-            if(searchedContent.equals("")){
-                isSearchedRestaurantInspectedRecently = true;
-            }
             if((restaurantName.contains(searchedContent) || lowerCaseRestaurantName.contains(searchedContent)) &&
-                    isSearchedRestaurantInspectedRecently)
+                    hasTheSpecificHazardLevel(currentRestaurant) &&
+                    satisfyNumOfCriticalIssuesInequality(currentRestaurant) &&
+                    (!displayOnlyFavorite || isFavoriteRestaurant(currentRestaurant))
+                )
             {
             LatLng restaurantGPS = new LatLng(currentRestaurant.getLatitude(), currentRestaurant.getLongitude());
 
@@ -584,5 +603,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //finish
             }
         });
+    }
+
+    private void extractSearchCriteria(){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
+
+        inequalityExtracted = sharedPreferences.getString(inequality, "");
+        numberOfCriticalIssuesExtracted = sharedPreferences.getInt(numOfCrit,-1);
+        hazardLevelExtracted = sharedPreferences.getString(specificHazardLevel,"");
+        displayOnlyFavorite = sharedPreferences.getBoolean(onlyFavorite, false);
+    }
+
+    private boolean hasTheSpecificHazardLevel(Restaurant restaurant){
+        if(hazardLevelExtracted.equals("") ||
+                (restaurant.getInspection().size() != 0 &&
+                        (hazardLevelExtracted.equals(restaurant.getInspection().get(0).getHazardRating()) ||
+                        hazardLevelExtracted.equals(restaurant.getInspection().get(0).getHazardRating().toLowerCase())))
+        ){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean satisfyNumOfCriticalIssuesInequality(Restaurant restaurant){
+        if(numberOfCriticalIssuesExtracted == -1 ||
+        inequalityExtracted.equals("") ||
+                (inequalityExtracted.equals("less than or equal to") &&
+                        restaurant.getInspection().totalNumberOfCriticalIssuesLastYear() <= numberOfCriticalIssuesExtracted) ||
+                (inequalityExtracted.equals("greater than or equal to") &&
+                        restaurant.getInspection().totalNumberOfCriticalIssuesLastYear() >= numberOfCriticalIssuesExtracted)
+        ){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isFavoriteRestaurant(Restaurant restaurant){
+        if(displayOnlyFavorite){
+            //Add condition for favorite restaurants later
+            return true;
+        }
+        return false;
     }
 }
