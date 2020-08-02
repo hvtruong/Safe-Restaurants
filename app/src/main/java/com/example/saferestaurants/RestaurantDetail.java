@@ -188,11 +188,11 @@ public class RestaurantDetail extends AppCompatActivity {
     }
 
     private boolean isModerateHazard(Inspection inspection) {
-        return inspection.getHazardRating().equals(getString(R.string.moderate));
+        return inspection.getHazardRating().equals("Moderate");
     }
 
     private boolean isLowHazard(Inspection inspection) {
-        return inspection.getHazardRating().equals(getString(R.string.low));
+        return inspection.getHazardRating().equals("Low");
     }
 
     //Return a String which tells how long ago a specific inspection happened

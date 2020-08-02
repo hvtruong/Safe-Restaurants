@@ -166,11 +166,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isModerateHazard(Inspection inspection) {
-        return inspection.getHazardRating().equals(getString(R.string.moderate));
+        return inspection.getHazardRating().equals("Moderate");
     }
 
     private boolean isLowHazard(Inspection inspection) {
-        return inspection.getHazardRating().equals(getString(R.string.low));
+        return inspection.getHazardRating().equals("Low");
     }
 
     private boolean isInspectionsEmpty(Restaurant restaurant){

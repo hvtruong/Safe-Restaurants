@@ -2,21 +2,21 @@
     <string name="app_name">Safe Restaurants</string>
     <string name="todo">TODO</string>
     <string name="name">Name</string>
-    <string name="numer_of_issues_0">Numer of issues: 0</string>
+    <string name="numer_of_issues_0">Number of issues: 0</string>
     <string name="last_inspection_x_days_ago">Last inspection: x days ago</string>
     <string name="non_critical_issues_found">\ Non-Critical Issues Found!</string>
-    <string name="critical_issues_found">\ Critical Issues Found! \</string>
-    <string name="empty" />
+    <string name="critical_issues_found">\ Critical Issues Found!</string>
+    <string name="empty" translatable="false" />
     <string name="address">\Address: \</string>
-    <string name="gps">\GPS: \</string>
+    <string name="gps" translatable="false">\GPS: \</string>
     <string name="inspection">\Inspection \</string>
     <string name="days_ago">\ days ago: </string>
     <string name="inspection_on">Inspection on \</string>
-    <string name="space">\ \</string>
-    <string name="colon">\: \</string>
-    <string name="textOffSet">\t\t\t\t\t\t</string>
+    <string name="space" translatable="false">\ \</string>
+    <string name="colon" translatable="false">\: \</string>
+    <string name="textOffSet" translatable="false">\t\t\t\t\t\t</string>
     <string name="no_critical_issue_found">\t\t\t\t\t\tNo Critical Issue Found!</string>
-    <string name="Line">"- "</string>
+    <string name="Line" translatable="false">"- "</string>
     <string name="no_non_critical_issue_found">\t\t\t\t\t\tNo Non-Critical Issue Found!</string>
     <string name="hazard_level_icon">hazard level icon</string>
     <string name="back">BACK</string>
@@ -32,18 +32,18 @@
     <string name="violation_critical_rating_icon">violation critical rating icon</string>
     <string name="violation_category_icon">violation category icon</string>
     <string name="safe_restaurants">Safe Restaurants</string>
-    <string name="jan">Jan</string>
-    <string name="feb">Feb</string>
-    <string name="mar">Mar</string>
-    <string name="apr">Apr</string>
+    <string name="jan">January</string>
+    <string name="feb">February</string>
+    <string name="mar">March</string>
+    <string name="apr">April</string>
     <string name="may">May</string>
-    <string name="jun">Jun</string>
-    <string name="jul">Jul</string>
-    <string name="aug">Aug</string>
-    <string name="sep">Sep</string>
-    <string name="oct">Oct</string>
-    <string name="nov">Nov</string>
-    <string name="dec">Dec</string>
+    <string name="jun">June</string>
+    <string name="jul">July</string>
+    <string name="aug">August</string>
+    <string name="sep">September</string>
+    <string name="oct">October</string>
+    <string name="nov">November</string>
+    <string name="dec">December</string>
     <string name="hazard_level">"Hazard Level: "</string>
     <string name="date">"Date: "</string>
     <string name="type">"Type: "</string>
@@ -56,7 +56,7 @@
     <string name="list_view">List View</string>
     <string name="map_view">Map View</string>
     <string name="Hazard_level">"Hazard level: "</string>
-    <string name="end_line">\n</string>
+    <string name="end_line" translatable="false">\n</string>
     <string name="critical_Issues">Critical Issues: </string>
     <string name="advanced">Advanced</string>
     <string name="filter">Filter</string>
@@ -64,7 +64,7 @@
     <string name="specific_hazard_level">Specific hazard level:</string>
     <string name="display_only_favorite">Display only favorite:</string>
     <string name="low_moderate_high">Ex: low, moderate, high</string>
-    <string name="ex_0_1_2">Ex: 0,1,2,...</string>
+    <string name="ex_0_1_2" translatable="false">Ex: 0,1,2,...</string>
     <string name="display_only_favorite_restaurants">Display only favorite restaurants</string>
     <string name="save">Save</string>
     <string-array name="signs">
