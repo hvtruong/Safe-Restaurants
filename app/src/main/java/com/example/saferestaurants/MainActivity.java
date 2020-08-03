@@ -28,6 +28,7 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
     //Fields
     private Restaurants restaurants = Restaurants.getInstance();
+    private Restaurants searchRestaurants = Restaurants.getSearchInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,18 +50,30 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent;
         switch (item.getItemId()){
             case R.id.mapview:
-                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                intent = new Intent(MainActivity.this, MapsActivity.class);
                 startActivity(intent);
                 finish();
+                break;
+            case R.id.searchMenuOption:
+                intent = new Intent(MainActivity.this, SearchActivity.class);
+                startActivity(intent);
+                finish();
+                break;
 
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void setUpListView() {
-        ArrayAdapter<Restaurant> adapter = new MyListAdapter();
+        ArrayAdapter<Restaurant> adapter;
+
+
+        adapter = new MyListAdapter();
+
+
         ListView list = (ListView) findViewById(R.id.restaurantsListView);
         list.setAdapter(adapter);
     }
@@ -69,7 +82,11 @@ public class MainActivity extends AppCompatActivity {
 
         public MyListAdapter() {
             super(MainActivity.this, R.layout.restaurants_item_view, restaurants.getList());
+        }
 
+        // This constructor is for using the search results instead of the full list.
+        public MyListAdapter(boolean useSearchResults) {
+            super(MainActivity.this, R.layout.restaurants_item_view, searchRestaurants.getList());
         }
 
         @NonNull

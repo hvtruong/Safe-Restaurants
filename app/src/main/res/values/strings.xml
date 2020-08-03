@@ -68,6 +68,7 @@
     <string name="display_only_favorite_restaurants">Display only favorite restaurants</string>
     <string name="save">Save</string>
     <string name="clear">Clear</string>
+    <string name="searchInMenu">Search</string>
     <string-array name="signs">
         <item>(None) </item>
         <item>&lt;=</item>

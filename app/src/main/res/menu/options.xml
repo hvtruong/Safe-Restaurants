@@ -3,4 +3,6 @@
     <item android:id="@+id/mapview"
         android:title="@string/map_view"
         />
+    <item android:id="@+id/searchMenuOption"
+        android:title="@string/searchInMenu"/>
 </menu>
