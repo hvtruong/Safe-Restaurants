@@ -89,6 +89,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private int numberOfCriticalIssuesExtracted = -1;
     private String hazardLevelExtracted = "";
     private boolean displayOnlyFavorite = false;
+    private static ArrayList<Restaurant> favList = new ArrayList<Restaurant>();
+    private  static ArrayList<Restaurant> updatedFavList = new ArrayList<Restaurant>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +122,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if (isRestaurantsEmpty()) {
             setData();
+        }
+
+
+    }
+
+    private void updateFavChecker() {
+        SharedPreferences prefs = getSharedPreferences("favList", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = prefs.getString("favList", null);
+        Type type = new TypeToken<ArrayList<Restaurant>>() {}.getType();
+        favList = gson.fromJson(json, type);
+        if(favList == null){
+            favList = new ArrayList<Restaurant>();
+            System.out.println("NULL!!!!!!");
+            return;
+        }
+
+        for(int i = 0; i < restaurants.size(); i++){
+            Restaurant tmp = restaurants.get(i);
+            System.out.println("looping!!!!!!");
+
+            for(int j = 0; j < favList.size(); j++){
+                if(favList.get(j).getName().equals(tmp.getName()) && favList.get(j).getPhysicalAddress().equals(tmp.getPhysicalAddress())){
+                    if(tmp.getInspection().size() > favList.get(j).getInspection().size()){
+                        System.out.println("Working!!!!!!");
+                        //update shared prefs
+                        favList.remove(j);
+                        favList.add(tmp);
+
+                        SharedPreferences prefs2 = getSharedPreferences("favList", MODE_PRIVATE);
+                        SharedPreferences.Editor prefEdit2 = prefs2.edit();
+                        Gson gson2 = new Gson();
+                        String json2 = gson2.toJson(favList);
+                        prefEdit2.putString("favList", json2);
+                        prefEdit2.apply();
+                        updatedFavList.add(tmp);
+                    }
+                }
+            }
         }
     }
 
@@ -361,6 +402,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if(isRestaurantsEmpty()){
             setInitialData();
+        }
+        System.out.println("# of restaurants is: " + restaurants.size());
+        updateFavChecker();
+        if(updatedFavList.size() > 0){
+            Toast.makeText(this,"Updated", Toast.LENGTH_SHORT).show();
+            System.out.println("Updated");
         }
     }
     //          //          //          //          //          //          //          //          //

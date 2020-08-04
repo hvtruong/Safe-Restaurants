@@ -74,7 +74,7 @@ public class RestaurantDetail extends AppCompatActivity {
         }
         SharedPreferences prefs = getSharedPreferences("favList", MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = prefs.getString("favList", "");
+        String json = prefs.getString("favList", null);
         Type type = new TypeToken<ArrayList<Restaurant>>() {}.getType();
         favList = gson.fromJson(json, type);
         if(favList == null){
