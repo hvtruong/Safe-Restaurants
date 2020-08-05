@@ -71,6 +71,7 @@
     <string name="clear">Clear</string>
     <string name="error_message">Not an appropriate hazard level, please try again!</string>
     <string name="unmark_favorite">Unmark Favorite</string>
+    <string name="updateFav">Updates to Favorite Restaurants</string>
     <string-array name="signs">
         <item>(None) </item>
         <item>&lt;=</item>
