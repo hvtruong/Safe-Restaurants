@@ -429,6 +429,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setInitialData();
         }
         System.out.println("# of restaurants is: " + restaurants.size());
+
+        if(updatedFavList.size() > 0){
+            runFavActivity();
+            System.out.println("Updated");
+        }
+
+        updateFavChecker();
+        if(updatedFavList.size() > 0){
+            runFavActivity();
+            System.out.println("Updated");
+        }
     }
 
     //          //          //          //          //          //          //          //          //
