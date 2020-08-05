@@ -591,6 +591,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MapsActivity.this, MainActivity.class);
+                intent.putExtra("searchContent", searchContent);
                 startActivity(intent);
                 finish();
                 //finish
@@ -598,6 +599,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    //Apply search filters
     private void extractSearchCriteria(){
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
 
@@ -620,10 +622,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private boolean satisfyNumOfCriticalIssuesInequality(Restaurant restaurant){
         if(numberOfCriticalIssuesExtracted == -1 ||
-        inequalityExtracted.equals("") ||
-                (inequalityExtracted.equals("less than or equal to") &&
+        inequalityExtracted.equals("") || inequalityExtracted.equals("(None)") ||
+                (inequalityExtracted.equals("<=") &&
                         restaurant.getInspection().totalNumberOfCriticalIssuesLastYear() <= numberOfCriticalIssuesExtracted) ||
-                (inequalityExtracted.equals("greater than or equal to") &&
+                (inequalityExtracted.equals(">=") &&
                         restaurant.getInspection().totalNumberOfCriticalIssuesLastYear() >= numberOfCriticalIssuesExtracted)
         ){
             return true;
@@ -638,4 +640,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return false;
     }
+    //End of search filters
 }
