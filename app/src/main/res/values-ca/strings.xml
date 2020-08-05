@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Restaurants Segurs</string>
+    <string name="todo">FER</string>
+    <string name="name">Nom</string>
+    <string name="numer_of_issues_0">Nombre d\'emissions: 0</string>
+    <string name="last_inspection_x_days_ago">Última inspecció: fa x dies</string>
+    <string name="non_critical_issues_found">S\'han trobat Problemes no crítics!</string>
+    <string name="critical_issues_found">\ Problemes crítics trobats!</string>
+    <string name="address">\Adreça: \</string>
+    <string name="inspection">\ Inspecció \</string>
+    <string name="days_ago">\ fa uns dies:</string>
+    <string name="inspection_on">Inspecció a \</string>
+    <string name="no_critical_issue_found">\t\t\t\t\t\tNo s\'ha trobat cap problema crític!</string>
+    <string name="no_non_critical_issue_found">\t\t\t\t\t\tNo s\'ha trobat cap problema no crític!</string>
+    <string name="hazard_level_icon">icona de nivell de perill</string>
+    <string name="back">ESQUENA</string>
+    <string name="non_critical_issue_found">S\'ha trobat un problema no crític!</string>
+    <string name="critical_issue_found">\ S\'ha trobat un problema crític!</string>
+    <string name="zeroIssues">Nombre d\'emissions: 0</string>
+    <string name="numOfIssues">Nombre de problemes: </string>
+    <string name="noInspection">No s’han realitzat inspeccions</string>
+    <string name="lastInspection">Última inspecció: </string>
+    <string name="daysAgo">\ fa uns dies</string>
+    <string name="low">baix</string>
+    <string name="moderate">Moderada</string>
+    <string name="violation_critical_rating_icon">icona de qualificació crítica de violació</string>
+    <string name="violation_category_icon">icona de categoria de violació</string>
+    <string name="safe_restaurants">Restaurants Segurs</string>
+    <string name="jan">Gener</string>
+    <string name="feb">Febrer</string>
+    <string name="mar">Març</string>
+    <string name="apr">Abril</string>
+    <string name="may">Maig</string>
+    <string name="jun">Juny</string>
+    <string name="jul">Juliol</string>
+    <string name="aug">Agost</string>
+    <string name="sep">Setembre</string>
+    <string name="oct">Octubre</string>
+    <string name="nov">Novembre</string>
+    <string name="dec">Desembre</string>
+    <string name="hazard_level">"Nivell de perill: "</string>
+    <string name="date">"Data: "</string>
+    <string name="type">"Tipus: "</string>
+    <string name="critical_issues">"Problemes crítics: "</string>
+    <string name="non_critical_issue">"Problemes no crítics: "</string>
+    <string name="violation">"Violació: "</string>
+    <string name="category">Categoria: %s</string>
+    <string name="critical_rating">Puntuació crítica: %s</string>
+    <string name="title_activity_maps">Mapa</string>
+    <string name="list_view">Visualització de llista</string>
+    <string name="map_view">Visualització de mapa</string>
+    <string name="Hazard_level">"Nivell de perill: "</string>
+    <string name="critical_Issues">Problemes crítics: </string>
+    <string name="advanced">Avançat</string>
+    <string name="filter">Filtre</string>
+    <string name="search_filter">Filtre de cerca</string>
+    <string name="specific_hazard_level">Nivell de perill específic: </string>
+    <string name="display_only_favorite">Favorit només de visualització: </string>
+    <string name="low_moderate_high">Ex: baix, moderat, alt</string>
+    <string name="display_only_favorite_restaurants">Mostra només restaurants preferits</string>
+    <string name="save">Desa</string>
+    <string name="updating">Actualitzant dades, espera..</string>
+    <string name="cancelButton">Cancel · lar</string>
+    <string name="setting">Configuració de les dades, espera..</string>
+    <string name="updatePrompt">Voleu actualitzar les dades del restaurant?</string>
+    <string name="updateTitle">Actualització disponible</string>
+    <string name="updateButton">Actualitza</string>
+    <string-array name="signs">
+        <item> </item>
+        <item>menor o igual a</item>
+        <item>major o igual a</item>
+    </string-array>
+</resources>

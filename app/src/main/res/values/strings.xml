@@ -72,5 +72,11 @@
         <item>less than or equal to</item>
         <item>greater than or equal to</item>
     </string-array>
+    <string name="updating">Updating data, Please wait..</string>
+    <string name="cancelButton">Cancel</string>
+    <string name="setting">Setting data, Please wait..</string>
+    <string name="updatePrompt">Do you want to update your restaurant data?</string>
+    <string name="updateTitle">Update Available</string>
+    <string name="updateButton">Update</string>
 
 </resources>

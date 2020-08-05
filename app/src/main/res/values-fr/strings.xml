@@ -60,4 +60,15 @@
     <string name="date">"Date: "</string>
     <string name="type">"Type: "</string>
     <string name="violation">"Violation: "</string>
+    <string name="updating">Mise à jour des données, veuillez patienter ..</string>
+    <string name="cancelButton">Annuler</string>
+    <string name="setting">Données de configuration, veuillez patienter..</string>
+    <string name="updatePrompt">Voulez-vous mettre à jour les données de votre restaurant?</string>
+    <string name="updateTitle">Mise à jour disponible</string>
+    <string name="updateButton">Mettre à jour</string>
+    <string-array name="signs">
+        <item> </item>
+        <item>inférieur ou égal à</item>
+        <item>Plus grand ou égal à</item>
+    </string-array>
 </resources>
