@@ -2,6 +2,8 @@
 package com.example.saferestaurants;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,12 +24,17 @@ import com.example.saferestaurants.model.Inspection;
 import com.example.saferestaurants.model.Inspections;
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 public class MainActivity extends AppCompatActivity {
     //Fields
-    private Restaurants restaurants = Restaurants.getInstance();
+    public static Restaurants restaurants = Restaurants.getInstance();
+    private ArrayList<Restaurant> favList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +42,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+        getFavList();
         setUpListView();
         Toolbar myToolbar = (Toolbar) findViewById(R.id.mainActivityBar);
         setSupportActionBar(myToolbar);
+    }
+
+    private void getFavList() {
+        SharedPreferences prefs = getSharedPreferences("favList", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = prefs.getString("favList", null);
+        Type type = new TypeToken<ArrayList<Restaurant>>() {}.getType();
+        favList = gson.fromJson(json, type);
+        System.out.println("NOT NULL");
+
+        if(favList == null){
+            System.out.println("ITS NULL!");
+            favList = new ArrayList<Restaurant>();
+        }
     }
 
     @Override
@@ -93,6 +115,14 @@ public class MainActivity extends AppCompatActivity {
 
             TextView name = (TextView) itemView.findViewById(R.id.RestaurantName);
             name.setText(restaurant.getName());
+
+            for(int i = 0; i < favList.size(); i++){
+                if((favList.get(i).getName().equals(restaurant.getName())) && (favList.get(i).getPhysicalAddress().equals(restaurant.getPhysicalAddress()))){
+                    name.setTextColor(Color.rgb(244, 155, 0));
+                    System.out.println("COLOR SET!");
+                    restaurant.setFavorite(true);
+                }
+            }
 
             TextView issues = (TextView) itemView.findViewById(R.id.issuesFound);
             issues.setText(getStringOfIssues(restaurant));

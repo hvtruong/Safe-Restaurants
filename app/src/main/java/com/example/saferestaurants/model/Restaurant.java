@@ -14,6 +14,7 @@ public class Restaurant {
     private double latitude;
     private double longitude;
     private Inspections inspection;
+    private boolean isFavorite = false;
 
     // constructor //
     public Restaurant(String trackingNumber,
@@ -64,4 +65,11 @@ public class Restaurant {
         this.inspection.add(inspection);
     }
 
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
 }
