@@ -79,4 +79,8 @@
     <string name="follow_up">Segueix</string>
     <string name="critical">Crítics</string>
     <string name="non_critical">No és crític</string>
+    <string name="mark_favorite">marca el favorit</string>
+    <string name="error_message">No és un nivell de perill adequat, torna-ho a provar.</string>
+    <string name="unmark_favorite">Desmarca Favorits</string>
+    <string name="updateFav">Actualitzacions de restaurants preferits</string>
 </resources>

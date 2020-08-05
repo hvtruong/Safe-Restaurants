@@ -79,5 +79,9 @@
     <string name="follow_up">Suivre</string>
     <string name="critical">Critique</string>
     <string name="non_critical">Pas critique</string>
+    <string name="mark_favorite">marquer comme favori</string>
+    <string name="error_message">Pas un niveau de danger approprié, veuillez réessayer!</string>
+    <string name="unmark_favorite">Supprimer le favori</string>
+    <string name="updateFav">Mises à jour des restaurants préférés</string>
 
 </resources>
