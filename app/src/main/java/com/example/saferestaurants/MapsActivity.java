@@ -545,6 +545,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             } else {
                 hazardLevel = ("Low");
             }
+            switch(hazardLevel){
+                case "Low":
+                    hazardLevel = getString(R.string.low);
+                    break;
+                case "Moderate":
+                    hazardLevel = getString(R.string.moderate);
+                    break;
+                case "High":
+                    hazardLevel = getString(R.string.high);
+                    break;
+            }
 
             //Assign hazard color for pegs
             int hazardIcon;

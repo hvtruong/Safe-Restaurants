@@ -29,6 +29,7 @@
     <string name="daysAgo">\ days ago</string>
     <string name="low">Low</string>
     <string name="moderate">Moderate</string>
+    <string name="high">High</string>
     <string name="violation_critical_rating_icon">violation critical rating icon</string>
     <string name="violation_category_icon">violation category icon</string>
     <string name="safe_restaurants">Safe Restaurants</string>
@@ -79,5 +80,15 @@
     <string name="updatePrompt">Do you want to update your restaurant data?</string>
     <string name="updateTitle">Update Available</string>
     <string name="updateButton">Update</string>
-
+    <string name="Food">Food</string>
+    <string name="Pest">Pest</string>
+    <string name="Equipment">Equipment</string>
+    <string name="Sanitary">Sanitary</string>
+    <string name="Employee">Employee</string>
+    <string name="Building">Building</string>
+    <string name="Qualifications">Qualifications</string>
+    <string name="routine">Routine</string>
+    <string name="follow_up">Follow-Up</string>
+    <string name="critical">Critical</string>
+    <string name="non_critical">Not Critical</string>
 </resources>

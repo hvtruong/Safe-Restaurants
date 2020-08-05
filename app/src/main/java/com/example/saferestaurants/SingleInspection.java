@@ -2,10 +2,6 @@
 
 package com.example.saferestaurants;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import androidx.annotation.NonNull;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.saferestaurants.model.Inspection;
 import com.example.saferestaurants.model.Restaurants;
@@ -63,8 +63,8 @@ public class SingleInspection extends AppCompatActivity {
 
 
         // Organize data into arrays for iterative updating of TextViews.
-        int[] textViews = {R.id.textHazardLevel, R.id.textInspectionDate, R.id.textInspectionType, R.id.textCritical, R.id.textNonCritical};
-        String[] textPrefixes = {getString(R.string.hazard_level), getString(R.string.date), getString(R.string.type), getString(R.string.critical_issues), getString(R.string.non_critical_issue)};
+        int[] textViews = { R.id.textInspectionDate, R.id.textCritical, R.id.textNonCritical};
+        String[] textPrefixes = {getString(R.string.date), getString(R.string.critical_issues), getString(R.string.non_critical_issue)};
 
         String inspectionDate = (inspection.getInspectionMonth() + " " +
                 inspection.getInspectionDay() + ", " +
@@ -72,9 +72,7 @@ public class SingleInspection extends AppCompatActivity {
         );
 
         String[] inspectionDetails = {
-                inspection.getHazardRating(),
                 inspectionDate,
-                inspection.getType(),
                 Integer.toString(inspection.getCriticalIssues()),
                 Integer.toString(inspection.getNonCriticalIssues())
         };
@@ -85,18 +83,31 @@ public class SingleInspection extends AppCompatActivity {
             view.setText(String.format("%s%s", textPrefixes[i], inspectionDetails[i]));
         }
 
+        TextView typeText = findViewById(R.id.textInspectionType);
+        switch(inspection.getType()){
+            case "Routine":
+                typeText.setText(String.format("%s%s", getString(R.string.type), getString(R.string.routine)));
+                break;
+            case "Follow-Up":
+                typeText.setText(String.format("%s%s", getString(R.string.type), getString(R.string.follow_up)));
+                break;
+        }
+
         ImageView ratingImage = findViewById(R.id.imageHazardLevel);
         TextView ratingText = findViewById(R.id.textHazardLevel);
         switch (inspection.getHazardRating()) {
             case "Low":
+                ratingText.setText(String.format("%s%s", getString(R.string.hazard_level), getString(R.string.low)));
                 ratingText.setBackgroundColor(Color.parseColor("#9090FF81"));
                 ratingImage.setImageResource(R.drawable.low_hazard);
                 break;
             case "Moderate":
+                ratingText.setText(String.format("%s%s", getString(R.string.hazard_level), getString(R.string.moderate)));
                 ratingText.setBackgroundColor(Color.parseColor("#88FFD372"));
                 ratingImage.setImageResource(R.drawable.moderate_hazard);
                 break;
             case "High":
+                ratingText.setText(String.format("%s%s", getString(R.string.hazard_level), getString(R.string.high)));
                 ratingText.setBackgroundColor(Color.parseColor("#83FF8273"));
                 ratingImage.setImageResource(R.drawable.high_hazard);
                 break;
@@ -131,29 +142,34 @@ public class SingleInspection extends AppCompatActivity {
             ImageView imageCriticalRating;
             ImageView imageViolationCategory = (ImageView) convertView.findViewById(R.id.violationCategoryIcon);
 
-            textCategory.setText(String.format(getString(R.string.category), violation.getType()));
-
             switch(violation.getType()) {
                 case "Food":
                     imageViolationCategory.setImageResource(R.drawable.food);
+                    textCategory.setText(String.format(getString(R.string.category), getString(R.string.Food)));
                     break;
                 case "Pest":
                     imageViolationCategory.setImageResource(R.drawable.pest);
+                    textCategory.setText(String.format(getString(R.string.category), getString(R.string.Pest)));
                     break;
                 case "Equipment":
                     imageViolationCategory.setImageResource(R.drawable.equipment);
+                    textCategory.setText(String.format(getString(R.string.category), getString(R.string.Equipment)));
                     break;
                 case "Sanitary":
                     imageViolationCategory.setImageResource(R.drawable.sanitary);
+                    textCategory.setText(String.format(getString(R.string.category), getString(R.string.Sanitary)));
                     break;
                 case "Employee":
                     imageViolationCategory.setImageResource(R.drawable.employee);
+                    textCategory.setText(String.format(getString(R.string.category), getString(R.string.Employee)));
                     break;
                 case "Building":
                     imageViolationCategory.setImageResource(R.drawable.building);
+                    textCategory.setText(String.format(getString(R.string.category), getString(R.string.Building)));
                     break;
                 case "Qualifications":
                     imageViolationCategory.setImageResource(R.drawable.qualifications);
+                    textCategory.setText(String.format(getString(R.string.category), getString(R.string.Qualifications)));
                     break;
             }
 
@@ -168,8 +184,15 @@ public class SingleInspection extends AppCompatActivity {
 
 
             textDescription.setText(shortDescription);
-            textCriticalRating.setText(String.format(getString(R.string.critical_rating), violation.getCriticalValue()));
 
+            switch (violation.getCriticalValue()){
+                case "Critical":
+                    textCriticalRating.setText(String.format(getString(R.string.critical_rating), getString(R.string.critical)));
+                    break;
+                case "Not Critical":
+                    textCriticalRating.setText(String.format(getString(R.string.critical_rating), getString(R.string.non_critical)));
+                    break;
+            }
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

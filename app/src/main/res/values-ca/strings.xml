@@ -67,4 +67,16 @@
     <string name="updateTitle">Actualització disponible</string>
     <string name="updateButton">Actualitza</string>
     <string name="clear">Clar</string>
+    <string name="Food">Menjar</string>
+    <string name="Pest">Plaga</string>
+    <string name="Equipment">Equipament</string>
+    <string name="Sanitary">Sanitaris</string>
+    <string name="Employee">Empleat</string>
+    <string name="Building">Edifici</string>
+    <string name="Qualifications">Qualificacions</string>
+    <string name="high">Alt</string>
+    <string name="routine">Rutina</string>
+    <string name="follow_up">Segueix</string>
+    <string name="critical">Crítics</string>
+    <string name="non_critical">No és crític</string>
 </resources>

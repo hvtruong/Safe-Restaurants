@@ -67,5 +67,17 @@
     <string name="updateTitle">Actualización disponible</string>
     <string name="updateButton">Actualizar</string>
     <string name="clear">Claro</string>
+    <string name="Food">Comida</string>
+    <string name="Pest">Parásito</string>
+    <string name="Equipment">Equipo</string>
+    <string name="Sanitary">Sanitario</string>
+    <string name="Employee">Empleado</string>
+    <string name="Building">Edificio</string>
+    <string name="Qualifications">Calificaciones</string>
+    <string name="high">Alto</string>
+    <string name="routine">Rutina</string>
+    <string name="follow_up">Seguimiento</string>
+    <string name="critical">Crítico</string>
+    <string name="non_critical">No crítico</string>
 
 </resources>
