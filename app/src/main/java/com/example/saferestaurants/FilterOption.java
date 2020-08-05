@@ -1,3 +1,4 @@
+//This class is to let users filter their searches
 package com.example.saferestaurants;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -109,6 +110,7 @@ public class FilterOption extends AppCompatActivity implements AdapterView.OnIte
         return true;
     }
 
+    //Save data to apply to Map
     private void saveData(){
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -142,6 +144,7 @@ public class FilterOption extends AppCompatActivity implements AdapterView.OnIte
         finish();
     }
 
+    //Load and saved filters
     private void loadData(){
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
 
@@ -152,6 +155,7 @@ public class FilterOption extends AppCompatActivity implements AdapterView.OnIte
         savedPosition = sharedPreferences.getInt(position,0);
     }
 
+    //Display saved filters
     private void displayCurrentSearchFilter(){
         String numberOfSavedCritical = getString(R.string.empty);
         spinner.setSelection(savedPosition);
@@ -163,6 +167,7 @@ public class FilterOption extends AppCompatActivity implements AdapterView.OnIte
         radioButton.setChecked(onlyFavoriteDisplayed);
     }
 
+    //Clear all the filters
     private void clear(){
         chosenInequality = spinner.getItemAtPosition(0).toString();
         numberOfCrit.setText(getString(R.string.empty));
