@@ -3,6 +3,7 @@ package com.example.saferestaurants;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 import android.view.View;
@@ -31,6 +32,10 @@ public class FavActivity extends AppCompatActivity {
         favList = MapsActivity.updatedFavList;
 
         setUpListView();
+        Toolbar toolbar = findViewById(R.id.FavActivityBar);
+        toolbar.setTitle("Updates to Favorite Restaurants");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void setUpListView() {
