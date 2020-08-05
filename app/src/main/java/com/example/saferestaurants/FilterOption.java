@@ -103,6 +103,12 @@ public class FilterOption extends AppCompatActivity implements AdapterView.OnIte
         displayCurrentSearchFilter();
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
     private void saveData(){
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

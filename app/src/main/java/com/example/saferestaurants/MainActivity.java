@@ -34,18 +34,25 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
     //Fields
     public static Restaurants restaurants = Restaurants.getInstance();
+    private static final String SHARED_PREF = "sharedPrefs";
     private ArrayList<Restaurant> favList;
+    private String searchContent = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         getFavList();
         setUpListView();
         Toolbar myToolbar = (Toolbar) findViewById(R.id.mainActivityBar);
         setSupportActionBar(myToolbar);
+
+        loadSearchContent();
+
+        if(getIntent().getStringExtra("searchContent") != null){
+            extractSearchContent();
+        }
     }
 
     private void getFavList() {
@@ -74,11 +81,31 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.mapview:
                 Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                intent.putExtra("searchContent", searchContent);
                 startActivity(intent);
                 finish();
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void extractSearchContent(){
+        Intent intent = getIntent();
+        searchContent = intent.getStringExtra("searchContent");
+    }
+
+    private void loadSearchContent(){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
+
+        searchContent = sharedPreferences.getString("searchContent", "");
+    }
+
+    private void saveSearchContent(){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString("searchContent",searchContent);
+        editor.apply();
     }
 
     private void setUpListView() {
@@ -106,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    saveSearchContent();
                     Intent i = RestaurantDetail.makeIntent(MainActivity.this, position);
                     startActivity(i);
                 }
