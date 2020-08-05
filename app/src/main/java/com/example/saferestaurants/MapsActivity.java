@@ -126,6 +126,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (isRestaurantsEmpty()) {
             setData();
         }
+
+        updateFavChecker();
+        if(updatedFavList.size() > 0){
+            runFavActivity();
+            System.out.println("Updated");
+        }
     }
 
     @Override
@@ -139,6 +145,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    //Functions for favorite restaurants
     private void updateFavChecker() {
         SharedPreferences prefs = getSharedPreferences("favList", MODE_PRIVATE);
         Gson gson = new Gson();
@@ -180,6 +187,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Intent intent = new Intent(MapsActivity.this, FavActivity.class);
     startActivity(intent);
     }
+    //End of favorite restaurants update
 
     //Update data functions:
     //          //          //          //          //          //          //          //          //
@@ -421,12 +429,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setInitialData();
         }
         System.out.println("# of restaurants is: " + restaurants.size());
-
-        updateFavChecker();
-        if(updatedFavList.size() > 0){
-            runFavActivity();
-            System.out.println("Updated");
-        }
     }
 
     //          //          //          //          //          //          //          //          //
@@ -568,7 +570,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void displayRestaurantPegs(String searchedContent){
-            extractSearchCriteria();
+        extractSearchCriteria();
 
         //Initialize clusterManager
         if(clusterManager != null) {
@@ -672,6 +674,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    //Get search filters
     private void extractSearchContent(){
         Intent intent = getIntent();
         searchContent = intent.getStringExtra("searchContent");
