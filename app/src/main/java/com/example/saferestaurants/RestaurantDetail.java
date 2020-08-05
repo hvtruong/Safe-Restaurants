@@ -68,9 +68,9 @@ public class RestaurantDetail extends AppCompatActivity {
     private void setUpFavButtonText() {
         Button button = findViewById(R.id.fav);
         if(!restaurant.isFavorite()){
-            button.setText("Mark Favorite");
+            button.setText(R.string.mark_favorite);
         } else{
-            button.setText("Unmark Favorite");
+            button.setText(R.string.unmark_favorite);
         }
         SharedPreferences prefs = getSharedPreferences("favList", MODE_PRIVATE);
         Gson gson = new Gson();
@@ -106,7 +106,7 @@ public class RestaurantDetail extends AppCompatActivity {
                     }
 
                     //update list view activity
-                    button.setText("Mark Favorite");
+                    button.setText(R.string.mark_favorite);
                     restaurant.setFavorite(false);
                 } else{
                     favList.add(restaurant);
@@ -117,7 +117,7 @@ public class RestaurantDetail extends AppCompatActivity {
                     prefEdit.putString("favList", json);
                     prefEdit.apply();
                     //update list view activity
-                    button.setText("Unmark Favorite");
+                    button.setText(R.string.unmark_favorite);
                     restaurant.setFavorite(true);
                     System.out.println("now a fav!");
                 }
@@ -126,6 +126,7 @@ public class RestaurantDetail extends AppCompatActivity {
 
     }
 
+    //Go to Map by clicking on GPS
     private void GpsClickSetUp() {
         TextView textView = findViewById(R.id.restaurantGPS);
         textView.setOnClickListener(new View.OnClickListener() {
