@@ -68,7 +68,11 @@
     <string name="ex_0_1_2" translatable="false">Ex: 0,1,2,...</string>
     <string name="display_only_favorite_restaurants">Display only favorite restaurants</string>
     <string name="save">Save</string>
+    <string name="mark_favorite">mark favorite</string>
     <string name="clear">Clear</string>
+    <string name="error_message">Not an appropriate hazard level, please try again!</string>
+    <string name="unmark_favorite">Unmark Favorite</string>
+    <string name="updateFav">Updates to Favorite Restaurants</string>
     <string-array name="signs">
         <item>(None) </item>
         <item>&lt;=</item>

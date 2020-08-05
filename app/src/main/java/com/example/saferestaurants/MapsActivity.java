@@ -2,6 +2,7 @@
 package com.example.saferestaurants;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -15,8 +16,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +41,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
@@ -55,6 +60,9 @@ import java.lang.reflect.Type;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Filter;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -82,6 +90,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private int numberOfCriticalIssuesExtracted = -1;
     private String hazardLevelExtracted = "";
     private boolean displayOnlyFavorite = false;
+    private static ArrayList<Restaurant> favList = new ArrayList<Restaurant>();
+    public static ArrayList<Restaurant> updatedFavList = new ArrayList<Restaurant>();
+    public static boolean useFavList = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +109,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MapsActivity.this, FilterOption.class);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
         });
 
@@ -114,7 +125,68 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (isRestaurantsEmpty()) {
             setData();
         }
+
+        updateFavChecker();
+        if(updatedFavList.size() > 0){
+            runFavActivity();
+            System.out.println("Updated");
+        }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+            }
+            displayRestaurantPegs(searchContent);
+        }
+    }
+
+    //Functions for favorite restaurants
+    private void updateFavChecker() {
+        SharedPreferences prefs = getSharedPreferences("favList", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = prefs.getString("favList", null);
+        Type type = new TypeToken<ArrayList<Restaurant>>() {}.getType();
+        favList = gson.fromJson(json, type);
+        if(favList == null){
+            favList = new ArrayList<Restaurant>();
+            System.out.println("NULL!!!!!!");
+            return;
+        }
+
+        for(int i = 0; i < restaurants.size(); i++){
+            Restaurant tmp = restaurants.get(i);
+            System.out.println("looping!!!!!!");
+
+            for(int j = 0; j < favList.size(); j++){
+                if(favList.get(j).getName().equals(tmp.getName()) && favList.get(j).getPhysicalAddress().equals(tmp.getPhysicalAddress())){
+                    if(tmp.getInspection().size() > favList.get(j).getInspection().size()){
+                        System.out.println("Working!!!!!!");
+                        //update shared prefs
+                        favList.remove(j);
+                        favList.add(tmp);
+
+                        SharedPreferences prefs2 = getSharedPreferences("favList", MODE_PRIVATE);
+                        SharedPreferences.Editor prefEdit2 = prefs2.edit();
+                        Gson gson2 = new Gson();
+                        String json2 = gson2.toJson(favList);
+                        prefEdit2.putString("favList", json2);
+                        prefEdit2.apply();
+                        updatedFavList.add(tmp);
+                    }
+                }
+            }
+        }
+    }
+
+    private void runFavActivity() {
+    Intent intent = new Intent(MapsActivity.this, FavActivity.class);
+    startActivity(intent);
+    }
+    //End of favorite restaurants update
 
     //Update data functions:
     //          //          //          //          //          //          //          //          //
@@ -355,7 +427,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(isRestaurantsEmpty()){
             setInitialData();
         }
+        System.out.println("# of restaurants is: " + restaurants.size());
     }
+
     //          //          //          //          //          //          //          //          //
     // End of Update data functions
 
@@ -384,6 +458,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             extractGPSInfoWindow();
         }
 
+        if(getIntent().getStringExtra("searchContent") != null){
+            extractSearchContent();
+        }
         //Display and cluster pegs for restaurants in out list
         displayRestaurantPegs(searchContent);
         
@@ -492,10 +569,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void displayRestaurantPegs(String searchedContent){
-
-        if(FilterOption.filterSaved){
-            extractSearchCriteria();
-        }
+        extractSearchCriteria();
 
         //Initialize clusterManager
         if(clusterManager != null) {
@@ -610,6 +684,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    //Get search filters
+    private void extractSearchContent(){
+        Intent intent = getIntent();
+        searchContent = intent.getStringExtra("searchContent");
+        search_Content.setText(searchContent);
+    }
+
     //Apply search filters
     private void extractSearchCriteria(){
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
@@ -644,9 +725,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return false;
     }
 
+    private boolean isInFavoriteList(Restaurant restaurant){
+        for(int i = 0; i < favList.size(); i++){
+            Restaurant currentRestaurant = favList.get(i);
+            if(currentRestaurant.getName().equals(restaurant.getName()) &&
+                    currentRestaurant.getPhysicalAddress().equals(restaurant.getPhysicalAddress())
+            ){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean isFavoriteRestaurant(Restaurant restaurant){
-        if(displayOnlyFavorite){
-            //Add condition for favorite restaurants later
+        if(displayOnlyFavorite && isInFavoriteList(restaurant)){
             return true;
         }
         return false;
