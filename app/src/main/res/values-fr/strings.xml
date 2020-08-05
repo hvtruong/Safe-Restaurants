@@ -66,9 +66,6 @@
     <string name="updatePrompt">Voulez-vous mettre à jour les données de votre restaurant?</string>
     <string name="updateTitle">Mise à jour disponible</string>
     <string name="updateButton">Mettre à jour</string>
-    <string-array name="signs">
-        <item> </item>
-        <item>inférieur ou égal à</item>
-        <item>Plus grand ou égal à</item>
-    </string-array>
+    <string name="clear">Clair</string>
+
 </resources>
