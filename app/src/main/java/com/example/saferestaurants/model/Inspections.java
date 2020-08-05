@@ -60,7 +60,7 @@ public class Inspections {
             if(inspection.inspectionTimeDifferent() <= 365){
                 result += inspection.getCriticalIssues();
             }
-            break;
+            continue;
         }
         return result;
     }

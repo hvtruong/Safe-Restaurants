@@ -68,10 +68,11 @@
     <string name="display_only_favorite_restaurants">Display only favorite restaurants</string>
     <string name="save">Save</string>
     <string name="mark_favorite">mark favorite</string>
+    <string name="clear">Clear</string>
     <string-array name="signs">
-        <item> </item>
-        <item>less than or equal to</item>
-        <item>greater than or equal to</item>
+        <item>(None) </item>
+        <item>&lt;=</item>
+        <item>&gt;=</item>
     </string-array>
 
 </resources>
