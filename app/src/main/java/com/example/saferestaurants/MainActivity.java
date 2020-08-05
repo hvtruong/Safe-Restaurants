@@ -33,7 +33,7 @@ import java.util.Calendar;
 import java.util.Date;
 public class MainActivity extends AppCompatActivity {
     //Fields
-    private Restaurants restaurants = Restaurants.getInstance();
+    public static Restaurants restaurants = Restaurants.getInstance();
     private ArrayList<Restaurant> favList;
 
     @Override

@@ -61,6 +61,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Filter;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -90,7 +91,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String hazardLevelExtracted = "";
     private boolean displayOnlyFavorite = false;
     private static ArrayList<Restaurant> favList = new ArrayList<Restaurant>();
-    private  static ArrayList<Restaurant> updatedFavList = new ArrayList<Restaurant>();
+    public static ArrayList<Restaurant> updatedFavList = new ArrayList<Restaurant>();
+    public static boolean useFavList = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +164,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         }
+    }
+
+    private void runFavActivity() {
+    Intent intent = new Intent(MapsActivity.this, FavActivity.class);
+    startActivity(intent);
     }
 
     //Update data functions:
@@ -406,10 +413,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         System.out.println("# of restaurants is: " + restaurants.size());
         updateFavChecker();
         if(updatedFavList.size() > 0){
-            Toast.makeText(this,"Updated", Toast.LENGTH_SHORT).show();
+            runFavActivity();
             System.out.println("Updated");
         }
     }
+
     //          //          //          //          //          //          //          //          //
     // End of Update data functions
 
