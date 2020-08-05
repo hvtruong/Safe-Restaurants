@@ -2,6 +2,7 @@
 package com.example.saferestaurants;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -109,7 +110,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MapsActivity.this, FilterOption.class);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
         });
 
@@ -126,7 +127,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setData();
         }
 
+        updateFavChecker();
+        if(updatedFavList.size() > 0){
+            runFavActivity();
+            System.out.println("Updated");
+        }
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+            }
+            displayRestaurantPegs(searchContent);
+        }
     }
 
     private void updateFavChecker() {
@@ -411,11 +427,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setInitialData();
         }
         System.out.println("# of restaurants is: " + restaurants.size());
-        updateFavChecker();
-        if(updatedFavList.size() > 0){
-            runFavActivity();
-            System.out.println("Updated");
-        }
     }
 
     //          //          //          //          //          //          //          //          //
@@ -554,10 +565,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void displayRestaurantPegs(String searchedContent){
-
-        if(FilterOption.filterSaved){
             extractSearchCriteria();
-        }
 
         //Initialize clusterManager
         if(clusterManager != null) {
@@ -695,9 +703,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return false;
     }
 
+    private boolean isInFavoriteList(Restaurant restaurant){
+        for(int i = 0; i < favList.size(); i++){
+            Restaurant currentRestaurant = favList.get(i);
+            if(currentRestaurant.getName().equals(restaurant.getName()) &&
+                    currentRestaurant.getPhysicalAddress().equals(restaurant.getPhysicalAddress())
+            ){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean isFavoriteRestaurant(Restaurant restaurant){
-        if(displayOnlyFavorite){
-            //Add condition for favorite restaurants later
+        if(displayOnlyFavorite && isInFavoriteList(restaurant)){
             return true;
         }
         return false;

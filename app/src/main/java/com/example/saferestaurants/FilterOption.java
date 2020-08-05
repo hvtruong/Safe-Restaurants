@@ -3,9 +3,12 @@ package com.example.saferestaurants;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -57,6 +60,20 @@ public class FilterOption extends AppCompatActivity implements AdapterView.OnIte
         //End of setting up spinner
 
         radioButton = findViewById(R.id.radioButton);
+
+        View.OnTouchListener radioButtonListener = new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(((RadioButton) v).isChecked()){
+                    radioButton.setChecked(false);
+                    onlyFavoriteDisplayed = false;
+                    return true;
+                }
+                return false;
+            }
+        };
+        radioButton.setOnTouchListener(radioButtonListener);
+
         radioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,11 +83,10 @@ public class FilterOption extends AppCompatActivity implements AdapterView.OnIte
 
         Button save = findViewById(R.id.saveSearch);
         save.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
                 saveData();
-                filterSaved = true;
-                finish();
             }
         });
 
@@ -82,6 +98,7 @@ public class FilterOption extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
+        //Load and display current search filter
         loadData();
         displayCurrentSearchFilter();
     }
@@ -90,13 +107,19 @@ public class FilterOption extends AppCompatActivity implements AdapterView.OnIte
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        searchedHazardLevel = specific_hazardLevel.getText().toString();
+        searchedHazardLevel = specific_hazardLevel.getText().toString().toLowerCase();
         String numberOfSearchedCrit = numberOfCrit.getText().toString();
         if(!numberOfSearchedCrit.equals("")){
             numberOfCritical = Integer.parseInt(numberOfSearchedCrit);
         }
         else{
             numberOfCritical = -1;
+        }
+
+        if(!searchedHazardLevel.equals("") && !searchedHazardLevel.equals("low") &&
+        !searchedHazardLevel.equals("moderate") && !searchedHazardLevel.equals("high")){
+            Toast.makeText(this, R.string.error_message, Toast.LENGTH_LONG).show();
+            return;
         }
 
         editor.putString(inequality, chosenInequality);
@@ -106,6 +129,11 @@ public class FilterOption extends AppCompatActivity implements AdapterView.OnIte
         editor.putInt(position,savedPosition);
 
         editor.apply();
+
+        filterSaved = true;
+        Intent backIntent = new Intent(FilterOption.this,MapsActivity.class);
+        setResult(Activity.RESULT_CANCELED,backIntent);
+        finish();
     }
 
     private void loadData(){
