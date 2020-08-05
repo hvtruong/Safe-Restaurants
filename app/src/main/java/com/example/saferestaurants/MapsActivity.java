@@ -127,6 +127,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setData();
         }
 
+        updateFavChecker();
+        if(updatedFavList.size() > 0){
+            runFavActivity();
+            System.out.println("Updated");
+        }
     }
 
     @Override
@@ -422,12 +427,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setInitialData();
         }
         System.out.println("# of restaurants is: " + restaurants.size());
-
-        updateFavChecker();
-        if(updatedFavList.size() > 0){
-            runFavActivity();
-            System.out.println("Updated");
-        }
     }
 
     //          //          //          //          //          //          //          //          //
@@ -458,6 +457,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             extractGPSInfoWindow();
         }
 
+        if(getIntent().getStringExtra("searchContent") != null){
+            extractSearchContent();
+        }
         //Display and cluster pegs for restaurants in out list
         displayRestaurantPegs(searchContent);
         
@@ -668,6 +670,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //finish
             }
         });
+    }
+
+    private void extractSearchContent(){
+        Intent intent = getIntent();
+        searchContent = intent.getStringExtra("searchContent");
+        search_Content.setText(searchContent);
     }
 
     //Apply search filters
