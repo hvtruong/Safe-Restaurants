@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -20,6 +22,11 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.saferestaurants.model.Inspection;
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 /*
 This class is displaying the details about a single restaurant including:
@@ -39,6 +46,7 @@ public class RestaurantDetail extends AppCompatActivity {
     public static double selectedLong;
     public static boolean gpsClicked = false;
     public static Restaurant restaurantPicked;
+    private static ArrayList<Restaurant> favList = new ArrayList<Restaurant>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +61,72 @@ public class RestaurantDetail extends AppCompatActivity {
         setUpTitle();
         setUpListView();
         GpsClickSetUp();
+        setUpFavButtonText();
+        setUpFavButton();
     }
 
+    private void setUpFavButtonText() {
+        Button button = findViewById(R.id.fav);
+        if(!restaurant.isFavorite()){
+            button.setText(R.string.mark_favorite);
+        } else{
+            button.setText(R.string.unmark_favorite);
+        }
+        SharedPreferences prefs = getSharedPreferences("favList", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = prefs.getString("favList", null);
+        Type type = new TypeToken<ArrayList<Restaurant>>() {}.getType();
+        favList = gson.fromJson(json, type);
+        if(favList == null){
+            favList = new ArrayList<Restaurant>();
+        }
+    }
+
+    private void setUpFavButton() {
+        final Button button = findViewById(R.id.fav);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //System.out.println("clicked!");
+                if(restaurant.isFavorite()){
+                    if(favList != null) {
+                        for (int i = 0; i < favList.size(); i++) {
+                            if (favList.get(i).getName().equals(restaurant.getName()) && favList.get(i).getPhysicalAddress().equals(restaurant.getPhysicalAddress())) {
+                                favList.remove(i);
+                                SharedPreferences prefs = getSharedPreferences("favList", MODE_PRIVATE);
+                                SharedPreferences.Editor prefEdit = prefs.edit();
+                                Gson gson = new Gson();
+                                String json = gson.toJson(favList);
+                                prefEdit.putString("favList", json);
+                                prefEdit.apply();
+                                System.out.println("Not a fav!");
+                                break;
+                            }
+                        }
+                    }
+
+                    //update list view activity
+                    button.setText(R.string.mark_favorite);
+                    restaurant.setFavorite(false);
+                } else{
+                    favList.add(restaurant);
+                    SharedPreferences prefs = getSharedPreferences("favList", MODE_PRIVATE);
+                    SharedPreferences.Editor prefEdit = prefs.edit();
+                    Gson gson = new Gson();
+                    String json = gson.toJson(favList);
+                    prefEdit.putString("favList", json);
+                    prefEdit.apply();
+                    //update list view activity
+                    button.setText(R.string.unmark_favorite);
+                    restaurant.setFavorite(true);
+                    System.out.println("now a fav!");
+                }
+            }
+        });
+
+    }
+
+    //Go to Map by clicking on GPS
     private void GpsClickSetUp() {
         TextView textView = findViewById(R.id.restaurantGPS);
         textView.setOnClickListener(new View.OnClickListener() {

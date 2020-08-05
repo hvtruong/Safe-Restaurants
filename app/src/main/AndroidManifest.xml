@@ -19,6 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".SearchActivity"></activity>
+        <activity android:name=".FavActivity"></activity>
         <activity
             android:name=".FilterOption"
             android:parentActivityName=".MapsActivity" />

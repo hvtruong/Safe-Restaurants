@@ -2,6 +2,8 @@
 package com.example.saferestaurants;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,23 +24,59 @@ import com.example.saferestaurants.model.Inspection;
 import com.example.saferestaurants.model.Inspections;
 import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.nio.charset.MalformedInputException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 public class MainActivity extends AppCompatActivity {
     //Fields
-    private Restaurants restaurants = Restaurants.getInstance();
+    public static Restaurants restaurants = Restaurants.getInstance();
     private Restaurants searchRestaurants = Restaurants.getSearchInstance();
+    private static final String SHARED_PREF = "sharedPrefs";
+    private ArrayList<Restaurant> favList;
+    private String searchContent = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        getFavList();
         setUpListView();
         Toolbar myToolbar = (Toolbar) findViewById(R.id.mainActivityBar);
         setSupportActionBar(myToolbar);
+
+        loadSearchContent();
+
+        if(getIntent().getStringExtra("searchContent") != null){
+            extractSearchContent();
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Intent intent = new Intent(MainActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void getFavList() {
+        SharedPreferences prefs = getSharedPreferences("favList", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = prefs.getString("favList", null);
+        Type type = new TypeToken<ArrayList<Restaurant>>() {}.getType();
+        favList = gson.fromJson(json, type);
+        System.out.println("NOT NULL");
+
+        if(favList == null){
+            System.out.println("ITS NULL!");
+            favList = new ArrayList<Restaurant>();
+        }
     }
 
     @Override
@@ -54,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.mapview:
                 intent = new Intent(MainActivity.this, MapsActivity.class);
+                intent.putExtra("searchContent", searchContent);
                 startActivity(intent);
                 finish();
                 break;
@@ -67,13 +106,27 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void extractSearchContent(){
+        Intent intent = getIntent();
+        searchContent = intent.getStringExtra("searchContent");
+    }
+
+    private void loadSearchContent(){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
+
+        searchContent = sharedPreferences.getString("searchContent", "");
+    }
+
+    private void saveSearchContent(){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString("searchContent",searchContent);
+        editor.apply();
+    }
+
     private void setUpListView() {
-        ArrayAdapter<Restaurant> adapter;
-
-
-        adapter = new MyListAdapter();
-
-
+        ArrayAdapter<Restaurant> adapter = new MyListAdapter();
         ListView list = (ListView) findViewById(R.id.restaurantsListView);
         list.setAdapter(adapter);
     }
@@ -101,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    saveSearchContent();
                     Intent i = RestaurantDetail.makeIntent(MainActivity.this, position);
                     startActivity(i);
                 }
@@ -110,6 +164,15 @@ public class MainActivity extends AppCompatActivity {
 
             TextView name = (TextView) itemView.findViewById(R.id.RestaurantName);
             name.setText(restaurant.getName());
+            name.setTextColor(Color.BLACK);
+
+            for(int i = 0; i < favList.size(); i++){
+                if(favList.get(i).getName().equals(restaurant.getName()) && favList.get(i).getPhysicalAddress().equals(restaurant.getPhysicalAddress())){
+                    name.setTextColor(Color.rgb(244, 155, 0));
+                    System.out.println("COLOR SET!");
+                    restaurant.setFavorite(true);
+                }
+            }
 
             TextView issues = (TextView) itemView.findViewById(R.id.issuesFound);
             issues.setText(getStringOfIssues(restaurant));
