@@ -115,9 +115,10 @@ public class MainActivity extends AppCompatActivity {
 
             TextView name = (TextView) itemView.findViewById(R.id.RestaurantName);
             name.setText(restaurant.getName());
+            name.setTextColor(Color.BLACK);
 
             for(int i = 0; i < favList.size(); i++){
-                if((favList.get(i).getName().equals(restaurant.getName())) && (favList.get(i).getPhysicalAddress().equals(restaurant.getPhysicalAddress()))){
+                if(favList.get(i).getName().equals(restaurant.getName()) && favList.get(i).getPhysicalAddress().equals(restaurant.getPhysicalAddress())){
                     name.setTextColor(Color.rgb(244, 155, 0));
                     System.out.println("COLOR SET!");
                     restaurant.setFavorite(true);

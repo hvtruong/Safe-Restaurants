@@ -127,11 +127,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setData();
         }
 
-        updateFavChecker();
-        if(updatedFavList.size() > 0){
-            runFavActivity();
-            System.out.println("Updated");
-        }
     }
 
     @Override
@@ -427,6 +422,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setInitialData();
         }
         System.out.println("# of restaurants is: " + restaurants.size());
+
+        updateFavChecker();
+        if(updatedFavList.size() > 0){
+            runFavActivity();
+            System.out.println("Updated");
+        }
     }
 
     //          //          //          //          //          //          //          //          //
