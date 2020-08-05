@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -22,6 +23,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * Created by: Jaiveer Dhanju
+ * Purpose: Display all the users favorite Restaurants that have had a recent inspection
+ * Date completed: August 5th 2020
+ */
 public class FavActivity extends AppCompatActivity {
     private ArrayList<Restaurant> favList;
 
@@ -33,7 +39,7 @@ public class FavActivity extends AppCompatActivity {
 
         setUpListView();
         Toolbar toolbar = findViewById(R.id.FavActivityBar);
-        toolbar.setTitle("Updates to Favorite Restaurants");
+        toolbar.setTitle(R.string.updateFav);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -42,6 +48,14 @@ public class FavActivity extends AppCompatActivity {
         ArrayAdapter<Restaurant> adapter = new FavActivity.MyListAdapter();
         ListView list = (ListView) findViewById(R.id.FavListView);
         list.setAdapter(adapter);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == android.R.id.home){
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private class MyListAdapter extends ArrayAdapter<Restaurant> {
