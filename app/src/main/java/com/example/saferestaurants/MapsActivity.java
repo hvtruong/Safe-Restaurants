@@ -127,10 +127,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         updateFavChecker();
-        if(updatedFavList.size() > 0){
-            runFavActivity();
-            System.out.println("Updated");
-        }
     }
 
     @Override
@@ -140,6 +136,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
             }
+            displayRestaurantPegs(searchContent);
+        }
+        else if (requestCode == 2) {
+            updateFavChecker();
             displayRestaurantPegs(searchContent);
         }
     }
@@ -428,6 +428,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setInitialData();
         }
         System.out.println("# of restaurants is: " + restaurants.size());
+
+        updateFavChecker();
+        if(updatedFavList.size() > 0){
+            runFavActivity();
+            System.out.println("Updated");
+        }
     }
 
     //          //          //          //          //          //          //          //          //
@@ -658,7 +664,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 @Override
                 public void onClusterItemInfoWindowClick(ClusterMarker item) {
                     Intent intent = RestaurantDetail.makeIntent(MapsActivity.this, item.getRestaurantID());
-                    startActivity(intent);
+                    startActivityForResult(intent,2);
                 }
             });
             }
