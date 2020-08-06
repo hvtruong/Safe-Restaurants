@@ -16,7 +16,13 @@ import com.example.saferestaurants.model.Restaurant;
 import com.example.saferestaurants.model.Restaurants;
 
 import java.util.ArrayList;
-
+/*
+ * Provides an interface for searching through restaurants. Currently supposed filtering by:
+ *  - a given search term
+ *  - most recent inspection hazard level
+ *  - <= or >= a given number of critical violations within the past year
+ *  - favourited restaurants
+ * */
 public class SearchActivity extends AppCompatActivity {
 
     private final String SHARED_PREF = "sharedPrefs";
@@ -121,23 +127,7 @@ public class SearchActivity extends AppCompatActivity {
 
         for (Restaurant restaurant : fullList) {
             // Hazard level
-            /*
-            if (this.hazardLevel.equals("") || restaurant.getInspection().get(0).getHazardRating().equals(this.hazardLevel)) {
-                if (criticalIssueCount == -1 || (criticalIssueInequality.equals("<=") &&
-                        restaurant.getInspection().get(0).getCriticalIssues() <= criticalIssueCount) || (!this.hazardLevel.equals("") &&
-                        restaurant.getInspection().get(0).getHazardRating().equals(this.hazardLevel))) {
-                    if (this.onlyFavourites && restaurant.isFavorite() || !this.onlyFavourites) {
-                        if (restaurant.getName().contains(this.searchTerm)) {
-                            if (this.hazardLevel.equals("") || restaurant.getInspection().size() != 0) {
-                                if (restaurant.getInspection().get(0).getHazardRating().equals(this.hazardLevel))
-                            }
-                            newList.add(restaurant);
-                        }
-                    }
-                }
-            }
 
-             */
 
             if (restaurant.getInspection().size() == 0) {
                 if (!hazardLevel.equals("")) { continue; }
