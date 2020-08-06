@@ -175,7 +175,7 @@ public class SearchActivity extends AppCompatActivity {
             } else { continue; }
 
             // Check if the search term is in the restaurant name.
-            if (restaurant.getName().contains(searchTerm)) {
+            if (restaurant.getName().toLowerCase().contains(searchTerm.toLowerCase())) {
                 ;
             } else { continue; }
 
