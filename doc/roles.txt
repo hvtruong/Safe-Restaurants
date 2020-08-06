@@ -1,6 +1,6 @@
 Roles For Iteration 2
 
-Scrum Master: Derik (derikp)
-Product Owner: Jaiveer (jaiveerd)
-Repo Manager: Jasleen (jphangar)
-Team Member: Viet (hvtruong)
+Scrum Master: Viet (hvtruong)
+Product Owner: Jasleen (jphangar)
+Repo Manager: Jaiveer (jaiveerd)
+Team Member: Derik (derikp)
