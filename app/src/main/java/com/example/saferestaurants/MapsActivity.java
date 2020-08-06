@@ -128,12 +128,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
 
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
-        String searchTerm = sharedPreferences.getString("searchTerm", "");
-        TextView searchBar = (TextView) findViewById(R.id.search_content);
-        searchBar.setText(searchTerm);
+
 
         updateFavChecker();
+
     }
 
     @Override
@@ -437,10 +435,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         System.out.println("# of restaurants is: " + restaurants.size());
 
         updateFavChecker();
+
         if(updatedFavList.size() > 0){
             runFavActivity();
             System.out.println("Updated");
         }
+
+
     }
 
     //          //          //          //          //          //          //          //          //
@@ -474,6 +475,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(getIntent().getStringExtra("searchContent") != null){
             extractSearchContent();
         }
+
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
+        String searchTerm = sharedPreferences.getString("searchTerm", "");
+        searchContent = searchTerm;
+        search_Content.setText(searchContent);
+
+
         //Display and cluster pegs for restaurants in out list
         displayRestaurantPegs(searchContent);
         
@@ -667,6 +675,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 @Override
                 public void onClusterItemInfoWindowClick(ClusterMarker item) {
                     Intent intent = RestaurantDetail.makeIntent(MapsActivity.this, item.getRestaurantID());
+                    intent.putExtra("source", "maps");
                     startActivityForResult(intent,2);
                 }
             });
@@ -704,6 +713,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Intent intent = getIntent();
         searchContent = intent.getStringExtra("searchContent");
         search_Content.setText(searchContent);
+
     }
 
     //Apply search filters

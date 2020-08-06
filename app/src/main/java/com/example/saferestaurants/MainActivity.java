@@ -169,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     saveSearchContent();
                     Intent i = RestaurantDetail.makeIntent(MainActivity.this, position);
+                    i.putExtra("source", "list");
                     startActivity(i);
                 }
             });
