@@ -83,6 +83,10 @@ public class Restaurants {
         return index;
     }
 
+    public void setList(ArrayList<Restaurant> restaurants) {
+        this.restaurants = restaurants;
+    }
+
     public ArrayList<Restaurant> getList(){
         return  this.restaurants;
     }

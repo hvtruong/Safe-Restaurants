@@ -485,6 +485,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         || event.getAction() == KeyEvent.ACTION_DOWN
                         || event.getAction() == KeyEvent.KEYCODE_ENTER){
                     searchContent = search_Content.getText().toString();
+
+                    // Add search term to sharedprefs.
+                    SharedPreferences sharedPrefs = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPrefs.edit();
+                    editor.putString("searchTerm", searchContent);
+                    editor.apply();
+
                     displayRestaurantPegs(searchContent);
                 }
                 return false;
