@@ -115,7 +115,10 @@ public class SearchActivity extends AppCompatActivity {
         startMainActivity();
     }
 
-    private void updateSearchList() {
+    public static void updateSearchList(Restaurants allRestaurants, String hazardLevel,
+                                         int criticalIssueCount, String criticalIssueInequality,
+                                         Restaurants searchRestaurants, boolean onlyFavourites,
+                                         String searchTerm) {
 
         ArrayList<Restaurant> fullList = allRestaurants.getList();
         ArrayList<Restaurant> newList = new ArrayList<>();
@@ -142,7 +145,7 @@ public class SearchActivity extends AppCompatActivity {
 
             if (restaurant.getInspection().size() == 0) {
                 if (!hazardLevel.equals("")) { continue; }
-            } else if (hazardLevel.equals("") || restaurant.getInspection().get(0).getHazardRating().toLowerCase().equals(this.hazardLevel)) {
+            } else if (hazardLevel.equals("") || restaurant.getInspection().get(0).getHazardRating().toLowerCase().equals(hazardLevel)) {
                 ;
             } else {
                 continue;
@@ -167,12 +170,12 @@ public class SearchActivity extends AppCompatActivity {
             }
 
             // Favourite
-            if (!this.onlyFavourites || restaurant.isFavorite()) {
+            if (!onlyFavourites || restaurant.isFavorite()) {
                 ;
             } else { continue; }
 
             // Check if the search term is in the restaurant name.
-            if (restaurant.getName().contains(this.searchTerm)) {
+            if (restaurant.getName().contains(searchTerm)) {
                 ;
             } else { continue; }
 
@@ -220,7 +223,8 @@ public class SearchActivity extends AppCompatActivity {
 
 
 
-                updateSearchList();
+                updateSearchList(allRestaurants, hazardLevel, criticalIssueCount,
+                        criticalIssueInequality, searchRestaurants, onlyFavourites, searchTerm);
 
 
 
