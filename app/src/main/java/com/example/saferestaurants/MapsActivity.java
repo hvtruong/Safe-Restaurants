@@ -16,11 +16,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +38,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
@@ -58,12 +54,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.channels.FileChannel;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Filter;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -210,10 +202,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected void onPreExecute() {
             loadingAlert = new ProgressDialog(MapsActivity.this);
-            loadingAlert.setMessage("Updating data, Please wait..");
+            loadingAlert.setMessage(getString(R.string.updating));
             loadingAlert.setCancelable(false);
             loadingAlert.setButton(
-                    DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                    DialogInterface.BUTTON_NEGATIVE, getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             RetrieveData.this.cancel(true);
@@ -245,7 +237,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected void onProgressUpdate(Void... values) {
             loadingAlert.getButton(DialogInterface.BUTTON_NEGATIVE).setEnabled(false);
-            loadingAlert.setMessage("Setting data, Please wait..");
+            loadingAlert.setMessage(getString(R.string.setting));
         }
     }
 
@@ -323,11 +315,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void showUpdatePopUp(){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
-        builder.setMessage("Do you want to update your restaurant data?");
-        builder.setTitle("Update Available");
+        builder.setMessage(getString(R.string.updatePrompt));
+        builder.setTitle(getString(R.string.updateTitle));
         builder.setCancelable(false);
 
-        builder.setPositiveButton("Update", new DialogInterface.OnClickListener(){
+        builder.setPositiveButton(getString(R.string.updateButton), new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -337,7 +329,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }
         });
@@ -647,15 +639,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             } else {
                 hazardLevel = ("Low");
             }
-
-            //Assign hazard color for pegs
             int hazardIcon;
-            if (hazardLevel.equals("Low")) {
-                hazardIcon = R.drawable.low_hazard_24dp;
-            } else if (hazardLevel.equals("Moderate")) {
-                hazardIcon = R.drawable.moderate_hazard_24;
-            } else {
-                hazardIcon = R.drawable.high_hazard_24dp;
+            switch(hazardLevel){
+                case "Low":
+                    hazardLevel = getString(R.string.low);
+                    hazardIcon = R.drawable.low_hazard_24dp;
+                    break;
+                case "Moderate":
+                    hazardLevel = getString(R.string.moderate);
+                    hazardIcon = R.drawable.moderate_hazard_24;
+                    break;
+                default:
+                    hazardLevel = getString(R.string.high);
+                    hazardIcon = R.drawable.high_hazard_24dp;
+                    break;
             }
 
             //Add new ClusterMarker
@@ -667,6 +664,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     hazardIcon,
                     i
             );
+
             clusterManager.addItem(newClusterMarker);
             collectionOfMarker.add(newClusterMarker);
 

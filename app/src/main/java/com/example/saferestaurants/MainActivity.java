@@ -28,7 +28,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.nio.charset.MalformedInputException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -260,11 +259,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isModerateHazard(Inspection inspection) {
-        return inspection.getHazardRating().equals(getString(R.string.moderate));
+        return inspection.getHazardRating().equals("Moderate");
     }
 
     private boolean isLowHazard(Inspection inspection) {
-        return inspection.getHazardRating().equals(getString(R.string.low));
+        return inspection.getHazardRating().equals("Low");
     }
 
     private boolean isInspectionsEmpty(Restaurant restaurant){
@@ -321,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
      * @return
      */
     private int monthStringToInt(String month){
-        String[] months = {getString(R.string.jan), getString(R.string.feb), getString(R.string.mar), getString(R.string.apr), getString(R.string.may), getString(R.string.jun), getString(R.string.jul), getString(R.string.aug), getString(R.string.sep), getString(R.string.oct), getString(R.string.nov), getString(R.string.dec)};
+        String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
         for(int i = 0; i < months.length; i++){
             if(month.equals(months[i])){
                 return i;
