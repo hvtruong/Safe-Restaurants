@@ -164,7 +164,19 @@ public class RestaurantDetail extends AppCompatActivity {
         if(restaurantID == -1){
             getReservedRestaurantID();
         }
-        restaurant = restaurants.get(restaurantID);
+        Restaurants restaurants_temp;
+        String source = intent.getStringExtra("source");
+        switch (source) {
+            case ("maps"):
+                restaurants_temp = Restaurants.getInstance();
+                break;
+            case ("list"):
+                restaurants_temp = Restaurants.getSearchInstance();
+                break;
+            default:
+                restaurants_temp = Restaurants.getInstance();
+        }
+        restaurant = restaurants_temp.get(restaurantID);
     }
 
     public void getReservedRestaurantID(){

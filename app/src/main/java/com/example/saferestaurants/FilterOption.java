@@ -164,7 +164,9 @@ public class FilterOption extends AppCompatActivity implements AdapterView.OnIte
     //Display saved filters
     private void displayCurrentSearchFilter(){
         String numberOfSavedCritical = getString(R.string.empty);
-        spinner.setSelection(savedPosition);
+
+        String[] signs_array = getResources().getStringArray(R.array.signs);
+        spinner.setSelection(java.util.Arrays.asList(signs_array).indexOf(chosenInequality));
         specific_hazardLevel.setText(searchedHazardLevel);
         if(numberOfCritical != -1){
             numberOfSavedCritical = numberOfSavedCritical + numberOfCritical;
