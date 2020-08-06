@@ -235,4 +235,10 @@ public class SingleInspection extends AppCompatActivity {
 
         editor.apply();
     }
+
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
+    }
 }
