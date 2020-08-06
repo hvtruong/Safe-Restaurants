@@ -51,6 +51,12 @@ public class RestaurantDetail extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
+        if (sharedPreferences.getBoolean("useSearchResults", false)) {
+            restaurants = Restaurants.getSearchInstance();
+        }
+
         setContentView(R.layout.activity_restaurant_detail);
         Toolbar toolbar = findViewById(R.id.singleRestaurantToolbar);
         setSupportActionBar(toolbar);

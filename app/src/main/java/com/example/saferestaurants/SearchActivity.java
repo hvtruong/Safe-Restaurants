@@ -99,7 +99,7 @@ public class SearchActivity extends AppCompatActivity {
         CheckBox checkFavourite = (CheckBox) findViewById(R.id.checkFavourite);
         checkFavourite.setChecked(onlyFavourites);
 
-        searchTerm = sharedPreferences.getString(searchTermName, "");
+        searchTerm = sharedPreferences.getString("searchTerm", "");
         TextView entrySearchTerm = (TextView) findViewById(R.id.entrySearchField);
         entrySearchTerm.setText(searchTerm);
     }
