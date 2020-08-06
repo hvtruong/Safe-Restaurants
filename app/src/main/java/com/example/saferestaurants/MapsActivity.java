@@ -139,6 +139,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             displayRestaurantPegs(searchContent);
         }
+        else if (requestCode == 2) {
+            updateFavChecker();
+            displayRestaurantPegs(searchContent);
+        }
     }
 
     //Functions for favorite restaurants
@@ -650,7 +654,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 @Override
                 public void onClusterItemInfoWindowClick(ClusterMarker item) {
                     Intent intent = RestaurantDetail.makeIntent(MapsActivity.this, item.getRestaurantID());
-                    startActivity(intent);
+                    startActivityForResult(intent,2);
                 }
             });
             }
