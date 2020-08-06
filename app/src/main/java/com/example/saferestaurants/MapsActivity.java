@@ -16,11 +16,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +38,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
@@ -60,9 +56,6 @@ import java.lang.reflect.Type;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Filter;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -638,26 +631,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             } else {
                 hazardLevel = ("Low");
             }
+            int hazardIcon;
             switch(hazardLevel){
                 case "Low":
                     hazardLevel = getString(R.string.low);
+                    hazardIcon = R.drawable.low_hazard_24dp;
                     break;
                 case "Moderate":
                     hazardLevel = getString(R.string.moderate);
+                    hazardIcon = R.drawable.moderate_hazard_24;
                     break;
-                case "High":
+                default:
                     hazardLevel = getString(R.string.high);
+                    hazardIcon = R.drawable.high_hazard_24dp;
                     break;
-            }
-
-            //Assign hazard color for pegs
-            int hazardIcon;
-            if (hazardLevel.equals("Low")) {
-                hazardIcon = R.drawable.low_hazard_24dp;
-            } else if (hazardLevel.equals("Moderate")) {
-                hazardIcon = R.drawable.moderate_hazard_24;
-            } else {
-                hazardIcon = R.drawable.high_hazard_24dp;
             }
 
             //Add new ClusterMarker
@@ -669,6 +656,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     hazardIcon,
                     i
             );
+
             clusterManager.addItem(newClusterMarker);
             collectionOfMarker.add(newClusterMarker);
 

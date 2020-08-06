@@ -83,4 +83,9 @@
     <string name="error_message">No és un nivell de perill adequat, torna-ho a provar.</string>
     <string name="unmark_favorite">Desmarca Favorits</string>
     <string name="updateFav">Actualitzacions de restaurants preferits</string>
+    <string name="searchInMenu">Cerca</string>
+    <string name="favourites_only">Només els preferits?</string>
+    <string name="number_of_critical_issues">Nombre de problemes crítics ...</string>
+    <string name="search">Cerca...</string>
+    <string name="search_field">Camp de cerca:</string>
 </resources>

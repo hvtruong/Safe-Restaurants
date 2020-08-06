@@ -18,7 +18,7 @@
             android:id="@+id/textSearchField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Search Field:" />
+            android:text="@string/search_field" />
 
         <EditText
             android:id="@+id/entrySearchField"
@@ -27,14 +27,14 @@
             android:layout_marginTop="0dp"
             android:layout_marginBottom="40dp"
             android:ems="10"
-            android:hint="Search..."
+            android:hint="@string/search"
             android:inputType="text" />
 
         <TextView
             android:id="@+id/textCriticalViolationCount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Critical Issues:" />
+            android:text="@string/critical_Issues" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="40dp"
                 android:ems="10"
-                android:hint="Number of critical issues..."
+                android:hint="@string/number_of_critical_issues"
                 android:inputType="number" />
 
         </LinearLayout>
@@ -63,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Hazard Level:" />
+            android:text="@string/Hazard_level" />
 
         <Spinner
             android:id="@+id/spinnerHazardLevel"
@@ -76,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"
-            android:text="Favourites only?" />
+            android:text="@string/favourites_only" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -88,14 +88,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Clear" />
+                android:text="@string/clear" />
 
             <Button
                 android:id="@+id/buttonSave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Save" />
+                android:text="@string/save" />
         </LinearLayout>
 
     </LinearLayout>

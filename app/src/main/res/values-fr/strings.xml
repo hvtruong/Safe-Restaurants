@@ -83,5 +83,10 @@
     <string name="error_message">Pas un niveau de danger approprié, veuillez réessayer!</string>
     <string name="unmark_favorite">Supprimer le favori</string>
     <string name="updateFav">Mises à jour des restaurants préférés</string>
+    <string name="searchInMenu">Chercher</string>
+    <string name="favourites_only">Favoris seulement?</string>
+    <string name="number_of_critical_issues">Nombre de problèmes critiques ...</string>
+    <string name="search">Chercher...</string>
+    <string name="search_field">Champ de recherche:</string>
 
 </resources>

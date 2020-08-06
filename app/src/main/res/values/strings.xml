@@ -96,4 +96,8 @@
     <string name="follow_up">Follow-Up</string>
     <string name="critical">Critical</string>
     <string name="non_critical">Not Critical</string>
+    <string name="favourites_only">Favourites only?</string>
+    <string name="number_of_critical_issues">Number of critical issues...</string>
+    <string name="search">Search...</string>
+    <string name="search_field">Search Field:</string>
 </resources>

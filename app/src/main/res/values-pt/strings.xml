@@ -83,5 +83,10 @@
     <string name="error_message">Não é um nível de risco apropriado, tente novamente!</string>
     <string name="unmark_favorite">Desmarcar favorito</string>
     <string name="updateFav">Atualizações para restaurantes favoritos</string>
+    <string name="searchInMenu">Procurar</string>
+    <string name="favourites_only">Apenas favoritos?</string>
+    <string name="number_of_critical_issues">Número de problemas críticos ...</string>
+    <string name="search">Procurar...</string>
+    <string name="search_field">Campo de Pesquisa:</string>
 
 </resources>
