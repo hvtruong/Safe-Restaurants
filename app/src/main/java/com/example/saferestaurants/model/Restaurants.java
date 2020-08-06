@@ -9,6 +9,7 @@ public class Restaurants {
 
     // attributes //
     private static Restaurants instance;
+    private static Restaurants searchInstance;
     private ArrayList<Restaurant> restaurants = new ArrayList<>();
 
     // instance //
@@ -17,6 +18,13 @@ public class Restaurants {
             instance = new Restaurants();
         }
         return instance;
+    }
+
+    public static Restaurants getSearchInstance() {
+        if (searchInstance == null) {
+            searchInstance = new Restaurants();
+        }
+        return searchInstance;
     }
 
     public static Restaurants newInstance(){
@@ -73,6 +81,10 @@ public class Restaurants {
             }
         }
         return index;
+    }
+
+    public void setList(ArrayList<Restaurant> restaurants) {
+        this.restaurants = restaurants;
     }
 
     public ArrayList<Restaurant> getList(){
