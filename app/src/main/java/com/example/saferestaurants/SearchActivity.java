@@ -153,13 +153,13 @@ public class SearchActivity extends AppCompatActivity {
                 if (restaurant.getInspection().size() == 0) { continue; }
 
                 if (criticalIssueInequality.equals("<=")) {
-                    if (restaurant.getInspection().get(0).getCriticalIssues() <= criticalIssueCount) {
+                    if (restaurant.getInspection().totalNumberOfCriticalIssuesLastYear() <= criticalIssueCount) {
                         ;
                     } else { continue; }
                 }
 
                 if (criticalIssueInequality.equals(">=")) {
-                    if (restaurant.getInspection().get(0).getCriticalIssues() >= criticalIssueCount) {
+                    if (restaurant.getInspection().totalNumberOfCriticalIssuesLastYear() >= criticalIssueCount) {
                         ;
                     } else { continue; }
                 }
