@@ -95,6 +95,10 @@ public class FilterOption extends AppCompatActivity implements AdapterView.OnIte
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("useSearchResults", false);
+                editor.apply();
                 clear();
             }
         });
@@ -135,6 +139,8 @@ public class FilterOption extends AppCompatActivity implements AdapterView.OnIte
         editor.putString(specificHazardLevel, searchedHazardLevel);
         editor.putBoolean(onlyFavorite, onlyFavoriteDisplayed);
         editor.putInt(position,savedPosition);
+
+        editor.putBoolean("useSearchResults", true);
 
         editor.apply();
 

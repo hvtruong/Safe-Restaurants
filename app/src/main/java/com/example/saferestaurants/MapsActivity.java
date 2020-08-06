@@ -127,6 +127,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setData();
         }
 
+
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
+        String searchTerm = sharedPreferences.getString("searchTerm", "");
+        TextView searchBar = (TextView) findViewById(R.id.search_content);
+        searchBar.setText(searchTerm);
+
         updateFavChecker();
     }
 
@@ -485,6 +491,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         || event.getAction() == KeyEvent.ACTION_DOWN
                         || event.getAction() == KeyEvent.KEYCODE_ENTER){
                     searchContent = search_Content.getText().toString();
+
+                    // Add search term to sharedprefs.
+                    SharedPreferences sharedPrefs = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPrefs.edit();
+                    editor.putString("searchTerm", searchContent);
+                    editor.apply();
+
                     displayRestaurantPegs(searchContent);
                 }
                 return false;
@@ -671,6 +684,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                SharedPreferences sp = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
+
+                SearchActivity.updateSearchList(Restaurants.getInstance(), sp.getString(specificHazardLevel, ""), sp.getInt(numOfCrit, -1),
+                        sp.getString(inequality, ""), Restaurants.getSearchInstance(), sp.getBoolean(onlyFavorite, false), sp.getString("searchTerm", ""));
+
                 Intent intent = new Intent(MapsActivity.this, MainActivity.class);
                 intent.putExtra("searchContent", searchContent);
                 startActivity(intent);

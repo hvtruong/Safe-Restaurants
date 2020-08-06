@@ -35,6 +35,7 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
     //Fields
     public static Restaurants restaurants = Restaurants.getInstance();
+    private Restaurants searchRestaurants = Restaurants.getSearchInstance();
     private static final String SHARED_PREF = "sharedPrefs";
     private ArrayList<Restaurant> favList;
     private String searchContent = "";
@@ -87,12 +88,19 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent;
         switch (item.getItemId()){
             case R.id.mapview:
-                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                intent = new Intent(MainActivity.this, MapsActivity.class);
                 intent.putExtra("searchContent", searchContent);
                 startActivity(intent);
                 finish();
+                break;
+            case R.id.searchMenuOption:
+                intent = new Intent(MainActivity.this, SearchActivity.class);
+                startActivity(intent);
+                finish();
+                break;
 
         }
         return super.onOptionsItemSelected(item);
@@ -118,16 +126,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpListView() {
-        ArrayAdapter<Restaurant> adapter = new MyListAdapter();
+        ArrayAdapter<Restaurant> adapter;
+
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
+        boolean useSearchList = sharedPreferences.getBoolean("useSearchResults", false);
+
+        if (useSearchList) {
+            adapter = new MyListAdapter(true);
+        } else {
+            adapter = new MyListAdapter();
+        }
+
         ListView list = (ListView) findViewById(R.id.restaurantsListView);
         list.setAdapter(adapter);
     }
 
     private class MyListAdapter extends ArrayAdapter<Restaurant> {
+        Restaurants usedRestaurants;
 
         public MyListAdapter() {
             super(MainActivity.this, R.layout.restaurants_item_view, restaurants.getList());
+            usedRestaurants = restaurants;
+        }
 
+        // This constructor is for using the search results instead of the full list.
+        public MyListAdapter(boolean useSearchResults) {
+            super(MainActivity.this, R.layout.restaurants_item_view, searchRestaurants.getList());
+            usedRestaurants = searchRestaurants;
         }
 
         @NonNull
@@ -148,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            Restaurant restaurant = restaurants.get(position);
+            Restaurant restaurant = usedRestaurants.get(position);
 
             TextView name = (TextView) itemView.findViewById(R.id.RestaurantName);
             name.setText(restaurant.getName());

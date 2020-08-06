@@ -69,6 +69,7 @@
     <string name="save">Save</string>
     <string name="mark_favorite">mark favorite</string>
     <string name="clear">Clear</string>
+    <string name="searchInMenu">Search</string>
     <string name="error_message">Not an appropriate hazard level, please try again!</string>
     <string name="unmark_favorite">Unmark Favorite</string>
     <string name="updateFav">Updates to Favorite Restaurants</string>
