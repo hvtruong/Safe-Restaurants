@@ -75,7 +75,7 @@ public class DataFetcher {
         if (dataURL.contains("restaurants.csv")) {
             restaurantDataURL = new String(dataURL);
             fileName = restaurantFileName;
-        } else if (dataURL.contains("inspectionreports.csv")) {
+        } else if (dataURL.contains("inspection_reports.csv")) {
             inspectionDataURL = new String(dataURL);
             fileName = inspectionFileName;
         } else {
